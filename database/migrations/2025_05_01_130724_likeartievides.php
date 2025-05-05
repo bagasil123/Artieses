@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('likeartievides', function (Blueprint $table) {
             $table->id('likeartievidesid');
-            $table->unsignedBigInteger('userid');
+            $table->unsignedBigInteger('userid')->unique();
             $table->foreign('userid')->references('userid')->on('users')->onDelete('cascade');
             $table->unsignedBigInteger('artievidesid');
             $table->foreign('artievidesid')->references('artievidesid')->on('artievides')->onDelete('cascade');

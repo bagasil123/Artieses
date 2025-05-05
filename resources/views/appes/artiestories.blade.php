@@ -37,7 +37,7 @@
             <button type="button" class="uploades" id="cardupload-artiestories">Masukan </button>
             <div id="uploadfile-artiestories" class="uploadfiles-artiestories hidden">
                 <div id="drop-area-artiestories" class="drop-area">
-                    <img src="{{ asset('drages.png') }}">
+                    <img src="{{ asset('partses/drages.png') }}">
                     <p>Pilih atau Tarik dan lepas file ke sini atau klik untuk memilih</p>
                     <input type="file" id="fileElem-artiestories" name="file" hidden required>
                 </div>

@@ -62,11 +62,6 @@ a {
 .hidden {
     display: none !important;
 }
-.wrapper {
-  display: flex;
-  flex-wrap: wrap;  
-  gap: 2.5%;
-}
 .card-main {
   align-items: center;
   justify-content: center;

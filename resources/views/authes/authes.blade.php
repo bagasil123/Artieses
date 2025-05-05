@@ -28,4 +28,34 @@
     var iconPath = "{{ asset('partses/icon.png') }}";
   </script>
   <script src="{{ asset('js/authes/authes.js') }}"></script>
+  <script>
+document.addEventListener('DOMContentLoaded', function () {
+    const alert = sessionStorage.getItem('alert');
+    const form = sessionStorage.getItem('form');
+
+    if (alert) {
+        // Kirim ke server agar bisa diproses sebagai session Laravel
+        fetch("{{ route('set.alert.session') }}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({
+                alert: alert,
+                form: form
+            })
+        }).then(() => {
+            // Hapus dari sessionStorage setelah dikirim
+            sessionStorage.removeItem('alert');
+            sessionStorage.removeItem('form');
+
+            // Reload untuk menampilkan dari Blade
+            window.location.reload();
+        });
+    }
+});
+</script>
+
+
 </html>

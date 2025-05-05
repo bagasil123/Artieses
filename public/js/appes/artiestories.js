@@ -66,4 +66,71 @@ document.addEventListener("DOMContentLoaded", function () {
           kategoriBox.classList.add("hidden");
       });
   }
+    // const button1 = document.getElementById('rbtnry1');
+    // const button2 = document.getElementById('rbtnry2');
+    // const srcard2 = document.getElementById('srcard2');
+    // const srcard1 = document.getElementById('srcard1');
+    // // const button4 = document.getElementById('rbtnry4');
+
+    // button1.addEventListener('mouseenter', () => {
+    //     srcard1.classList.remove('hidden');
+    // });
+
+    // button1.addEventListener('mouseleave', () => {
+    //     setTimeout(() => {
+    //         if (!srcard1.matches(':hover')) {
+    //             srcard1.classList.add('hidden');
+    //         }
+    //     }, 0);
+    // });
+    // button2.addEventListener('mouseenter', () => {
+    //     srcard2.classList.remove('hidden');
+    // });
+    // button2.addEventListener('mouseleave', () => {
+    //     setTimeout(() => {
+    //         if (!srcard2.matches(':hover')) {
+    //             srcard2.classList.add('hidden');
+    //         }
+    //     }, 0);
+    // });
+    // button4.addEventListener('mouseenter', () => {
+    //     srcard4.classList.remove('hidden');
+    // });
+
+    // button4.addEventListener('mouseleave', () => {
+    //     setTimeout(() => {
+    //         if (!srcard4.matches(':hover')) {
+    //             srcard4.classList.add('hidden');
+    //         }
+    //     }, 0);
+    // });
+    // srcard1.addEventListener('mouseleave', () => {
+    //     srcard1.classList.add('hidden');
+    // });
+    // srcard2.addEventListener('mouseleave', () => {
+    //     srcard2.classList.add('hidden');
+    // });
+    // // srcard4.addEventListener('mouseleave', () => {
+    // //     srcard4.classList.add('hidden');
+    // // });
+    // srcard1.addEventListener('mouseenter', () => {
+    //     srcard1.classList.remove('hidden');
+    // });
+    // srcard2.addEventListener('mouseenter', () => {
+    //     srcard2.classList.remove('hidden');
+    // });
+    // srcard4.addEventListener('mouseenter', () => {
+    //     srcard4.classList.remove('hidden');
+    // });
+    
+    document.querySelectorAll('.seerepl').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            const targetId = this.getAttribute('data-target');
+            const target = document.getElementById(targetId);
+            if (target) {
+                target.classList.toggle('hidden');
+            }
+            this.remove();
+        });
+    });
 });

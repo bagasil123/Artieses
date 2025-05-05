@@ -15,7 +15,7 @@ class captchaesR2 extends Controller
         if (session('regis')){
             if ($kodeinput === $kodecapt){
                 $defaultImage = "defaultuser.png";
-                $source = public_path($defaultImage);
+                $source = public_path('partses/' . $defaultImage);
                 $destinationDir = public_path(session('username') . '/profil');
                 $destination = $destinationDir . '/' . $defaultImage;
                 if (!File::exists($destinationDir)) {

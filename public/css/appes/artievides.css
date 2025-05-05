@@ -163,11 +163,16 @@ h2 {
   margin-top: -12px !important;
   margin-left: 80px;
 }
+.wrapper {
+  display: flex;
+  flex-wrap: wrap;  
+  gap: 10px 2.5%;
+}
 .artievides-wrapper1 {
   display: flex;
   flex-wrap: wrap;  
-  margin-top: -27.1%;
-  gap: 243px 29.5px !important;
+  margin-top: -28%;
+  gap: 253px 29.5px !important;
 }
 .a-artievides {
   font-size: 12px;

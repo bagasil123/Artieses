@@ -26,10 +26,9 @@
                 <button type="button" class="uploades kategori-btn-artievides" data-kategori-artievides="Pariwisata">Pariwisata</button>
             </div>
         </div>
-
         <div class="input-group">
-            <label for="lseo">Label: </label>
-            <input type="text" id="lseo" name="lseo" placeholder="Masukkan Label Artievides" required>
+            <label for="lseo">Deskripsi: </label>
+            <input type="text" id="lseo" name="lseo" placeholder="Masukkan Deskripsi Artievides" required>
         </div>
 
         <div class="input-group">

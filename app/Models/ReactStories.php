@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class ReactStories extends Model
 {
     protected $table = 'reactartiestories'; 
-    protected $fillable = ['userid', 'artiestoriesid'];
+    protected $primaryKey = 'reactartiestoriesid';
+    protected $fillable = ['userid', 'artiestoriesid', 'reaksi'];
     public $timestamps = true;
+
 }

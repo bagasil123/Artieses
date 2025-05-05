@@ -13,6 +13,7 @@ use App\Http\Controllers\App\artieses\artieses;
 use App\Http\Controllers\App\artiekeles\FileController;
 use App\Http\Controllers\App\artievides\controllerartievides;
 use App\Http\Controllers\App\artiestories\controllerartiestories;
+use Illuminate\Support\Facades\Auth;
 
 
 use App\Models\Artiestories;
@@ -30,12 +31,12 @@ Route::post('/upload-file-artiestories', [controllerartiestories::class, 'upload
 Route::get('/', function () {
     if (!session('isLoggedIn')) {
         $videos = Artievides::with('usericonVides')->withCount('likeVides')->orderByDesc('like_vides_count')->orderByDesc('created_at')->take(6)->get();
-        $stories = Artiestories::with('usericonStories')->withCount('reactStories')->orderByDesc('react_stories_count')->latest()->take(3)->get();
+        $stories = Artiestories::withCount('reactStories')->orderByDesc('react_stories_count')->with('usericonStories', 'ReactStories', 'comments.replies', 'comments.userComments', 'comments.replies.userBalcom')->latest()->take(3)->get();
         $articles = Artiekeles::latest()->take(3)->get();
     }
     if (session('isLoggedIn')) {
         $videos = Artievides::with('usericonVides')->withCount('likeVides')->orderByDesc('like_vides_count')->orderByDesc('created_at')->take(6)->get();
-        $stories = Artiestories::with('usericonStories')->withCount('reactStories')->orderByDesc('react_stories_count')->latest()->take(3)->get();
+        $stories = Artiestories::withCount('reactStories')->orderByDesc('react_stories_count')->with('usericonStories', 'ReactStories', 'comments.replies', 'comments.userComments', 'comments.replies.userBalcom')->latest()->take(3)->get();
         $articles = Artiekeles::latest()->take(3)->get();
     }
     return view('appes.artieses', compact('videos', 'stories', 'articles'));
@@ -43,17 +44,33 @@ Route::get('/', function () {
 Route::get('/artieses', function () {
     if (!session('isLoggedIn')) {
         $videos = Artievides::with('usericonVides')->withCount('likeVides')->orderByDesc('like_vides_count')->orderByDesc('created_at')->take(6)->get();
-        $stories = Artiestories::with('usericonStories')->withCount('reactStories')->orderByDesc('react_stories_count')->latest()->take(3)->get();
+        $stories = Artiestories::withCount('reactStories')->orderByDesc('react_stories_count')->with('usericonStories', 'ReactStories', 'comments.replies', 'comments.userComments', 'comments.replies.userBalcom')->latest()->take(3)->get();
         $articles = Artiekeles::latest()->take(3)->get();
     }
     if (session('isLoggedIn')) {
         $videos = Artievides::with('usericonVides')->withCount('likeVides')->orderByDesc('like_vides_count')->orderByDesc('created_at')->take(6)->get();
-        $stories = Artiestories::with('usericonStories')->withCount('reactStories')->orderByDesc('react_stories_count')->latest()->take(3)->get();
+        $stories = Artiestories::withCount('reactStories')->orderByDesc('react_stories_count')->with('usericonStories', 'ReactStories', 'comments.replies', 'comments.userComments', 'comments.replies.userBalcom')->latest()->take(3)->get();
         $articles = Artiekeles::latest()->take(3)->get();
     }
     return view('appes.artieses', compact('videos', 'stories', 'articles'));
 })->name('artieses');
+Route::post('/reaksi', [controllerartiestories::class, 'store'])->name('uprcm0');
+Route::post('/uprcm0gg', [controllerartiestories::class, 'storeGG'])->name('uprcm0gg');
+Route::post('/reaksi3', [controllerartiestories::class, 'store3'])->name('uprcm2');
+Route::post('/reaksi2', [ControllerArtiestories::class, 'store2'])->name('uprcm1');
 
+Route::post('/cek-login', function () {
+})->name('cek.login');
+
+
+Route::get('/refresh-csrf', function () {
+    return response()->json(['csrf' => csrf_token()]);
+});
+Route::post('/set-alert-session', function (\Illuminate\Http\Request $request) {
+    session()->flash('alert', $request->input('alert'));
+    session()->flash('form', $request->input('form'));
+    return response()->json(['status' => 'ok']);
+})->name('set.alert.session');
 
 # AUTHENTICATION #
 Route::get('/authes', function () {
@@ -82,4 +99,3 @@ Route::get('/clartiestories', [artieses::class, 'clartiestories']);
 Route::get('/artiekeles', function(){
     return view('appes.artiekeles');
 });
-

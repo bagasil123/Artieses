@@ -13,10 +13,11 @@ return new class extends Migration
     {
         Schema::create('reactartiekeles', function (Blueprint $table) {
             $table->id('reactartiekelesid');
-            $table->unsignedBigInteger('userid');
+            $table->unsignedBigInteger('userid')->unique();
             $table->foreign('userid')->references('userid')->on('users')->onDelete('cascade');
             $table->unsignedBigInteger('artiekelesid');
             $table->foreign('artiekelesid')->references('artiekelesid')->on('artiekeles')->onDelete('cascade');
+            $table->string('reaksi')->nullable()->collation('utf8mb4_unicode_520_ci');
             $table->timestamps();
         });
     }

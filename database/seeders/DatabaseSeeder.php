@@ -13,6 +13,54 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        
+        // DB::table('rcm2story')->insert([
+        //     'userid' => '2',
+        //     'balcomstoriesid' => '1',
+        //     'reaksi' => 'marah',
+        //     'created_at' => now(),
+        //     'updated_at' => now(),
+        // ]);
+        // DB::table('commentartiestories')->insert([
+        //     'userid' => '2',
+        //     'artiestoriesid' => '1',
+        //     'commentses' => 'hai kamu dimana',
+        //     'created_at' => now(),
+        //     'updated_at' => now(),
+        // ]);
+        DB::table('balcomstories')->insert([
+            'userid' => '1',
+            'commentartiestoriesid' => '3',
+            'comment' => 'hai aku disini',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        // DB::table('likeartievides')->insert([
+        //     'userid' => '1',
+        //     'artievidesid' => '2',
+        //     'created_at' => now(),
+        //     'updated_at' => now(),
+        // ]);
+        // DB::table('likeartievides')->insert([
+        //     'userid' => '2',
+        //     'artievidesid' => '2',
+        //     'created_at' => now(),
+        //     'updated_at' => now(),
+        // ]);
+        // DB::table('reactartiestories')->insert([
+        //     'userid' => '1',
+        //     'artiestoriesid' => '1',
+        //     'reaksi' => 'sedih',
+        //     'created_at' => now(),
+        //     'updated_at' => now(),
+        // ]);
+        // DB::table('reactartiestories')->insert([
+        //     'userid' => '2',
+        //     'artiestoriesid' => '1',
+        //     'reaksi' => 'ketawa',
+        //     'created_at' => now(),
+        //     'updated_at' => now(),
+        // ]);
         DB::table('users')->insert([
             'username' => 'Ini Admin',
             'nameuse' => 'jangan senggol admin',

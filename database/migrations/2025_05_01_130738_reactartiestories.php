@@ -13,10 +13,11 @@ return new class extends Migration
     {
         Schema::create('reactartiestories', function (Blueprint $table) {
             $table->id('reactartiestoriesid');
-            $table->unsignedBigInteger('userid');
+            $table->unsignedBigInteger('userid')->unique();
             $table->foreign('userid')->references('userid')->on('users')->onDelete('cascade');
             $table->unsignedBigInteger('artiestoriesid');
             $table->foreign('artiestoriesid')->references('artiestoriesid')->on('artiestories')->onDelete('cascade');
+            $table->string('reaksi')->nullable()->collation('utf8mb4_unicode_520_ci');
             $table->timestamps();
         });
     }
