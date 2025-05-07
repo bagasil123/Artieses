@@ -24,5 +24,4 @@ class ComStories extends Model
     {
         return $this->hasMany(BalcomStories::class, 'commentartiestoriesid', 'commentartiestoriesid');
     }
-
 }

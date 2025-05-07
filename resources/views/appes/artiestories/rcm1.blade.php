@@ -18,14 +18,14 @@
         @endphp
             @if($check->isEmpty()) 
                 @include('appes.artiestories.reacted5')
-                <p class="rbtnry5-{{ $rcm2 }}" id="rbtnry5-{{ $rcm2 }}">suka</p>
+                <p class="comment0011 rbtnry5-{{ $rcm2 }}" id="rbtnry5-{{ $rcm2 }}">suka</p>
                 @include('appes.artiestories.js.commentarist3')
             @else
                 <div class="iclikeswrap rbtnry6-{{ $rcm2 }}" id="rbtnry6-{{ $rcm2 }}">
                 @foreach($check as $reaksi)
-                @include('appes.artiestories.reacted6')
-                <img src="{{ asset('partses/reaksi/' . $reaksi . '.png') }}" width="25px" height="25px">
-                @include('appes.artiestories.js.commentarist4')
-            @endforeach
-        </div>
+                    @include('appes.artiestories.reacted6')
+                    <img src="{{ asset('partses/reaksi/' . $reaksi . '.png') }}" width="25px" height="25px">
+                    @include('appes.artiestories.js.commentarist4')
+                @endforeach
+                </div>
         @endif

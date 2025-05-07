@@ -1,6 +1,6 @@
-@foreach($stories as $story)
+
     @php $storyId = $story->artiestoriesid; @endphp
-    <div class="card-artiestories" id="card-artiestories-{{ $storyId }} ">
+    <div class="card-artiestories" id="card-artiestories-{{ $storyId }}">
         @include('appes.artiestories.brecreies')
         <p class="p-artiestories">{{ $story->usericonStories->username }}</p>   
         <img src="{{ $story->konten }}" class="cardstories cardstories-{{ $storyId }}" id="cbtnry1-{{ $storyId }}">
@@ -8,6 +8,7 @@
         <div class="artiestories1" style="margin-left:10px; margin-top:10px;">
         @include('appes.artiestories.reacted1')
         <button class="rbtnry rbtnry-{{ $storyId }}" id="rbtnry1-{{ $storyId }}">
+            <input type="hidden" name="rbtnry[{{ $storyId }}]" value=" {{ $storyId }} ">
             <img class="iclikestory" loading="lazy"
                 data-light="{{ asset('partses/likelm.png') }}"
                 data-dark="{{ asset('partses/likedm.png') }}">
@@ -24,4 +25,3 @@
         @include('appes.artiestories.cek')
       </div>
       @include('appes.artiestories.js.commentarist')
-@endforeach

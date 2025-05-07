@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('rcm2story', function (Blueprint $table) {
             $table->id('rcm2storyid');
-            $table->unsignedBigInteger('userid')->unique();
+            $table->unsignedBigInteger('userid');
             $table->foreign('userid')->references('userid')->on('users')->onDelete('cascade');
-            $table->unsignedBigInteger('balcomstoriesid');
+            $table->unsignedBigInteger('balcomstoriesid')->unique();
             $table->foreign('balcomstoriesid')->references('balcomstoriesid')->on('balcomstories')->onDelete('cascade');
             $table->string('reaksi')->nullable()->collation('utf8mb4_unicode_520_ci');
             $table->timestamps();

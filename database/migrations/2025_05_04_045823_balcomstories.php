@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('balcomstories', function (Blueprint $table) {
             $table->id('balcomstoriesid');
-            $table->unsignedBigInteger('userid')->unique();
+            $table->unsignedBigInteger('userid');
             $table->foreign('userid')->references('userid')->on('users')->onDelete('cascade');
             $table->unsignedBigInteger('commentartiestoriesid');
             $table->foreign('commentartiestoriesid')->references('commentartiestoriesid')->on('commentartiestories')->onDelete('cascade');

@@ -1,7 +1,34 @@
+@php
+    $firstReply = $comment->replies->first();
+    $idbalcom = $firstReply->balcomstoriesid ?? null;
+    $commentlagi = $comment->commentartiestoriesid;
+    $storyId = $story->artiestoriesid;
+@endphp
         @if ($comment->replies->isEmpty())
-        @else
-            <p class="comment001 seerepl" data-target="replies-{{ $i }}" >Lihat Balasan</p>
-            <div class="replies hidden" id="replies-{{ $i }}">
+        <div class="balaskan001 ">
+            <p class="balaskan002 balaskansaja-{{ $commentlagi }} " id="balaskansaja-{{ $commentlagi }}">balas</p>
+            <p class="urungkan001 urungkansaja-{{ $commentlagi }} hidden" >urungkan</p>
+        </div>
+        <div class="dibales lagi-{{ $commentlagi }} hidden">
+            <form action="{{ route('ayokirim.komentar')}}" method="POST">
+                @csrf
+            <input type="text" class="inpbalassaja-{{ $commentlagi }}" name="inpbalassaja" id="inpbalassaja-{{ $commentlagi }}" placeholder="Kirim komentar..." required />
+            <input type="hidden" value="{{ $commentlagi }}" name="inpbalassajahidden">
+            <input type="hidden" value="{{ $storyId }}" name="arahan">
+            <button type="button" class="close-dibales close-dibales-{{ $commentlagi }}">&times;</button>
+            <button type="submit" class="btnimg-sendcom btnimg-sendcom-{{ $commentlagi }}">
+            <img class="iclikestory" loading="lazy" width="10px"
+                data-light="{{ asset('partses/sendcomlm.png') }}"
+                data-dark="{{ asset('partses/sendcomdm.png') }}">
+            </button>
+            </form>
+        </div>
+        
+        @include('appes.artiestories.js.balascommentarnya')
+        @else 
+            <p class="comment0010 {{ session('open_commentbalasan') == $commentlagi ? 'hidden' : 'block' }}" id="seerpl1-{{ $idbalcom }}">Lihat({{ count($comment->replies) }}) </p>
+            <p class="comment00101 {{ session('open_commentbalasan') == $commentlagi ? 'block' : 'hidden' }}" id="seerpl0-{{ $idbalcom }}" style="margin-left: 141px;">Tutup({{ count($comment->replies) }}) </p>
+            <div class="replies replies-{{ $commentlagi }} {{ session('open_commentbalasan') == $commentlagi ? 'block' : 'hidden' }}" id="seerpl2-{{ $idbalcom }}">
                 @foreach ($comment->replies as $reply)
                     <div class="reply">
                         @php
@@ -19,6 +46,23 @@
                         </div>
                     </div>
                     @include('appes.artiestories.rcm1')
+                    @include('appes.artiestories.cek2')
                 @endforeach
+                @include('appes.artiestories.js.balcomjs')
+                
+        <div class="dibales1 lagi-{{ $commentlagi }}">
+            <form action="{{ route('ayokirim.komentar')}}" method="POST">
+                @csrf
+            <input type="text" class="inpbalassaja-{{ $commentlagi }}" name="inpbalassaja" id="inpbalassaja-{{ $commentlagi }}" placeholder="Kirim komentar..." required />
+            <input type="hidden" value="{{ $commentlagi }}" name="inpbalassajahidden">
+            <input type="hidden" value="{{ $storyId }}" name="arahan">
+            <button type="button" class="close-dibales close-dibales-{{ $commentlagi }}">&times;</button>
+            <button type="submit" class="btnimg-sendcom btnimg-sendcom-{{ $commentlagi }}">
+            <img class="iclikestory" loading="lazy" width="10px"
+                data-light="{{ asset('partses/sendcomlm.png') }}"
+                data-dark="{{ asset('partses/sendcomdm.png') }}">
+            </button>
+            </form>
+        </div>
             </div>
     @endif

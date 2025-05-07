@@ -1,8 +1,8 @@
 
 @php $rcmId = $comment->commentartiestoriesid; @endphp
-<div class="srcard3 srcard3-{{ $rcmId }} hidden"style="margin-top:-15px; z-index:999;" id="srcard3-{{ $rcmId }}">
+<div class="srcard3 srcard3-{{ $rcmId }} hidden"style="margin-top:-55px; z-index:999;" id="srcard3-{{ $rcmId }}">
         <a href="javascript:void(0)" >
-            <img src="{{ asset('partses/reaksi/suka.png') }}" style="margin-left: 5px; margin-top:-10px !important;" class="iclikestory reaksi-btn2-{{ $rcmId }}" data-reaksi2="suka" data-artiestoriesid2="{{ $comment->commentartiestoriesid }}">
+            <img src="{{ asset('partses/reaksi/suka.png') }}" style="margin-left: 5px; margin-top:3px !important;" class="iclikestory reaksi-btn2-{{ $rcmId }}" data-reaksi2="suka" data-artiestoriesid2="{{ $comment->commentartiestoriesid }}">
         </a>
         <a href="javascript:void(0)">
             <img src="{{ asset('partses/reaksi/senang.png') }}" style="margin-top: 5px;" class="iclikestory reaksi-btn2-{{ $rcmId }}" data-reaksi2="senang" data-artiestoriesid2="{{ $comment->commentartiestoriesid }}">

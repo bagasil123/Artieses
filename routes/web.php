@@ -11,6 +11,8 @@ use App\Http\Controllers\captcha\captchaesR2;
 use App\Http\Controllers\App\artieses\searcheses;
 use App\Http\Controllers\App\artieses\artieses;
 use App\Http\Controllers\App\artiekeles\FileController;
+use App\Http\Controllers\App\artiestories\artiestoriescomments;
+use App\Http\Controllers\App\artiestories\artiestoriesreact;
 use App\Http\Controllers\App\artievides\controllerartievides;
 use App\Http\Controllers\App\artiestories\controllerartiestories;
 use Illuminate\Support\Facades\Auth;
@@ -54,10 +56,11 @@ Route::get('/artieses', function () {
     }
     return view('appes.artieses', compact('videos', 'stories', 'articles'));
 })->name('artieses');
-Route::post('/reaksi', [controllerartiestories::class, 'store'])->name('uprcm0');
-Route::post('/uprcm0gg', [controllerartiestories::class, 'storeGG'])->name('uprcm0gg');
-Route::post('/reaksi3', [controllerartiestories::class, 'store3'])->name('uprcm2');
-Route::post('/reaksi2', [ControllerArtiestories::class, 'store2'])->name('uprcm1');
+Route::post('/reaksi', [artiestoriesreact::class, 'store'])->name('uprcm0');
+Route::post('/uprcm0gg', [artiestoriescomments::class, 'storeGG'])->name('uprcm0gg');
+Route::post('/uprcm1gg', [artiestoriescomments::class, 'storeGG1'])->name('ayokirim.komentar');
+Route::post('/reaksi3', [artiestoriesreact::class, 'store3'])->name('uprcm2');
+Route::post('/reaksi2', [artiestoriesreact::class, 'store2'])->name('uprcm1');
 
 Route::post('/cek-login', function () {
 })->name('cek.login');

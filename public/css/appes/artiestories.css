@@ -180,6 +180,13 @@ h2 {
   width: 367px;
   height: 30px;
 }
+.inint {
+  display: flex;
+  flex-wrap: nowrap;
+  margin-left: 44px;
+  margin-top: 4.5px;
+  height: 40px;
+}
 .iclikeswrap {
   display: flex;
   flex-wrap: nowrap;
@@ -214,9 +221,23 @@ h2 {
 }
 .srcard3 {
   margin-left: 0px;
-  margin-top: -34px;
-  height: 40px;
-  width: 180px;
+  margin-top: -35px !important;
+  display: flex;
+  position: absolute;
+  flex-direction: row !important;
+  height: fit-content;
+  max-width: 590px;
+  background-color: #888;
+  border-radius: 12px;
+}
+.iclikeswrap .srcard3 {
+  margin-left: -40px;
+  margin-top: -35px !important;
+  display: flex;
+  position: absolute;
+  flex-direction: row !important;
+  height: fit-content;
+  max-width: 590px;
   background-color: #888;
   border-radius: 12px;
 }
@@ -232,7 +253,7 @@ h2 {
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.75);
   backdrop-filter: blur(8px);
-  z-index: 9999;
+  z-index: 10001;
 }
 .commentaristcardimg {
   flex: 1;
@@ -300,6 +321,10 @@ h2 {
   margin-left: 0px;
   font-size: 14px;
 }
+.ddispcanam {
+  display: flex;
+  flex-wrap: wrap;
+}
 .cardcom001 {
   display: flex;
   align-items: flex-start;
@@ -314,6 +339,25 @@ h2 {
 .dispcard .comment001 {
   margin: 5px 0px;
   font-size: 14px;
+}
+.comment0010 {
+  margin-top:-16.5px;
+  font-size:14.7px;
+  margin-left:105px;
+  position:sticky;
+}
+.comment00101 {
+  margin-top:-16.5px;
+  font-size:14.7px;
+  margin-left:103px !important;
+  position:sticky;
+}
+.comment0011 {
+  margin-top:4.5px;
+  font-size:16px;
+  margin-left:30px;
+  margin-bottom: 0px;
+  position:sticky;
 }
 .wrappercom2 .comment001  {
   margin-left: 20px;
@@ -339,8 +383,19 @@ h2 {
   margin-top: 10px;
 }
 .replies {
-  margin-left: 50px;
-  padding-left: 10px;
+  width: 85%;
+  margin-left: 47px;
+  padding-left: 0px;
+}
+.gg1 {
+  font-size: 15px !important;
+  margin-top:5.5px;
+  margin-left: 175px;
+}
+.gg2 {
+  font-size: 15px;
+  margin-top:-16.5px;
+  margin-left: 195px;
 }
 .cardcom001 .dispcard {
   padding-left: 15px;
@@ -348,6 +403,57 @@ h2 {
   padding-top: 10px;
   border-radius: 12px;
   flex: 1;
+}
+.dibales {
+  display: flex;
+  position: relative;
+  margin-left: 40px;
+  width: 86.5%;
+  border-radius: 12px;
+  align-items: center;
+  padding-top: 10px;
+  flex: 1;
+}
+.dibales input {
+  border-radius: 8px;
+  margin-left: 25px;
+  margin-bottom: 20px;
+  height: 25px;
+  width: 237px;
+  border: none;
+}
+.balaskan001 {
+  display: flex;
+  margin-top: -17px;
+  flex-wrap: nowrap;
+  margin-left: 95px;
+}
+.balaskan002, .urungkan001{
+  margin-top: -1px;
+  position:sticky;
+}
+.urungkan001{
+margin-left: 0px;
+}
+.balaskan002{
+  margin-left: 10px;
+}
+.dibales .btnimg-sendcom {
+  margin-bottom: 0px;
+  background: none;
+  border: none;
+  transform: translateY(29%);
+}
+.close-dibales {
+  background: none;
+  position: sticky;
+  border: none;
+  font-size: 22px;
+  transform: translateY(12%);
+  margin-left: -30px;
+}
+.dark-mode .dibales {
+  background-color: #777;
 }
 .reply .dispcard {
   padding-left: 15px;
@@ -407,7 +513,46 @@ h2 {
 }
 .wrappercom2 {
   display: flex;
-  max-height: 100px;
-  margin-top: -15px;
+  position: relative;
+  max-height: 22px;
+  margin-top: -20px;
   border-radius: 10px;
+}
+
+
+
+.dibales1 {
+  display: flex;
+  position: relative;
+  margin-left: 40px;
+  width: 86.5%;
+  border-radius: 12px;
+  align-items: center;
+  padding-top: 10px;
+  flex: 1;
+}
+.dibales1 input {
+  border-radius: 8px;
+  margin-left: 25px;
+  margin-bottom: 20px;
+  height: 25px;
+  width: 197px;
+  border: none;
+}
+.dibales1 .btnimg-sendcom {
+  margin-bottom: 0px;
+  background: none;
+  border: none;
+  transform: translateY(29%);
+}
+.close-dibales1 {
+  background: none;
+  position: sticky;
+  border: none;
+  font-size: 22px;
+  transform: translateY(12%);
+  margin-left: -30px;
+}
+.dark-mode .dibales1 {
+  background-color: #777;
 }

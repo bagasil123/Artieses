@@ -14,16 +14,17 @@
                 <img src="{{ asset($path) }}" class="creatorstories">
             @endif
             <div class="dispcard">
+                <div class="ddispcanam">
                 <p class="dispname">{{ $comment->userComments->username }}</p> 
+                </div>
                 <p class="comment001">{{ $comment->commentses }}</p>
             </div>
         </div>
         <div class="wrappercom2">
         @include('appes.artiestories.rcm')
-        <p class="comment001" >balas</p>
+        @include('appes.artiestories.cek1')
         </div>
         @include('appes.artiestories.commentses1')
-        @include('appes.artiestories.js.commentarist1')
     @endforeach
     </div>
 @endif

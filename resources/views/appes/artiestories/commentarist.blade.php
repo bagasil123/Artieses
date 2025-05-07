@@ -1,5 +1,5 @@
 @php $storyId = $story->artiestoriesid; @endphp
-<div id="commentarist-{{ $storyId }}" class="commentarist commentarist-{{ $storyId }} {{ session('open_commentarist') == $storyId ? '' : 'hidden' }}    ">
+<div id="commentarist-{{ $storyId }}" class="commentarist commentarist-{{ $storyId }} {{ session('open_commentarist') == $storyId ? 'block' : 'hidden' }}    ">
     <div class="commentaristcardimg">
         <img src="{{ $story->konten }}" class="crimg">
     </div>
@@ -39,4 +39,5 @@
     </form>
         @include('appes.artiestories.js.commentjs')
     <button class="closecmtrst closecmtrst-{{ $storyId }}" id="closeCommentarist-{{ $storyId }}">&times;</button>
+    @include('appes.artiestories.js.commentarist001')
 </div>

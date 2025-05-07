@@ -35,7 +35,10 @@
     
   {{-- Stories --}}
     <div class="wrapper">
+      @foreach($stories as $story)
       @include('appes.artiestories.artiestories')
+      @include('appes.artiestories.js.commentjs')
+      @endforeach
     </div>
   {{-- Articles --}}
     @foreach($articles as $article)
