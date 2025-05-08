@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id('userid');
             $table->string('username')->unique();
+            $table->string('bio')->collation('utf8mb4_unicode_520_ci');
             $table->string('nameuse')->collation('utf8mb4_unicode_520_ci');
             $table->string('email')->unique();
             $table->string('password');

@@ -1,11 +1,12 @@
-@foreach($videos as $video)
-        <a href="#" class="card-artievides">
+
+        <a href="#" class="">
           <div class="video-container">
             <video width="100%" muted class="hover-video">
               <source src="{{ asset($video->video) }}" type="video/mp4">
             </video>
           <div class="video-timer">00:00 / 00:00</div>
           </div><br>
+          <div class="cabot-artievides">
         @php
           $username = $video->usericonVides->username ?? 'defaultuser';
           $improfil = $video->usericonVides->improfil ?? 'default.png';
@@ -17,11 +18,12 @@
             <img src="{{ asset($path) }}" class="creatorvides">
           </div>
         @endif
+        <p class="h5-artievides">{{ $username }}</p>
         <h3 class="h3-artievides">{{ Str::limit($video->judul, 15) }}</h3>
         @php
             $now = \Carbon\Carbon::now();
             $waktu = $video->created_at;
-            $diffInMinutes1 = $waktu->diffInMinutes($now);
+            $diffInMinutes1 = $waktu->diffInMinutes($now); 
             $diffInHours1 = $waktu->diffInHours($now);
             $diffInDays1 = $waktu->diffInDays($now);
             $diffInWeeks1 = $waktu->diffInWeeks($now);
@@ -50,6 +52,6 @@
                 $timeAgo = $diffInYears . ' tahun yang lalu';
             }
         @endphp
-        <p class="p-artievides" style="margin-top: 30px;">{{ 0 + $video->like_vides_count }} Disukai | {{ $timeAgo }}</p>
+        <p class="date-artievides" style="margin-top: 30px;">{{ 0 + $video->like_vides_count }} Disukai | {{ $timeAgo }}</p>
+        </div>
       </a>
-    @endforeach

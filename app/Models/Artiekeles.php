@@ -7,6 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 class Artiekeles extends Model
 {
     protected $table = 'artiekeles'; 
-    protected $fillable = ['userid', 'judul', 'lseo', 'kseo', 'konten', 'deltime'];
+    protected $fillable = ['userid','codekeles', 'judul', 'lseo', 'kseo', 'konten', 'deltime'];
     public $timestamps = true;
 }

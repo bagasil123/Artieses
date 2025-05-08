@@ -2,7 +2,7 @@
     $firstReply = $comment->replies->first();
     $idbalcom = $firstReply->balcomstoriesid ?? null;
     $commentlagi = $comment->commentartiestoriesid;
-    $storyId = $story->artiestoriesid;
+    $storyCode = $story->coderies;
 @endphp
         @if ($comment->replies->isEmpty())
         <div class="balaskan001 ">
@@ -14,7 +14,7 @@
                 @csrf
             <input type="text" class="inpbalassaja-{{ $commentlagi }}" name="inpbalassaja" id="inpbalassaja-{{ $commentlagi }}" placeholder="Kirim komentar..." required />
             <input type="hidden" value="{{ $commentlagi }}" name="inpbalassajahidden">
-            <input type="hidden" value="{{ $storyId }}" name="arahan">
+            <input type="hidden" value="{{ $storyCode }}" name="arahan">
             <button type="button" class="close-dibales close-dibales-{{ $commentlagi }}">&times;</button>
             <button type="submit" class="btnimg-sendcom btnimg-sendcom-{{ $commentlagi }}">
             <img class="iclikestory" loading="lazy" width="10px"
@@ -55,7 +55,7 @@
                 @csrf
             <input type="text" class="inpbalassaja-{{ $commentlagi }}" name="inpbalassaja" id="inpbalassaja-{{ $commentlagi }}" placeholder="Kirim komentar..." required />
             <input type="hidden" value="{{ $commentlagi }}" name="inpbalassajahidden">
-            <input type="hidden" value="{{ $storyId }}" name="arahan">
+            <input type="hidden" value="{{ $storyCode }}" name="arahan">
             <button type="button" class="close-dibales close-dibales-{{ $commentlagi }}">&times;</button>
             <button type="submit" class="btnimg-sendcom btnimg-sendcom-{{ $commentlagi }}">
             <img class="iclikestory" loading="lazy" width="10px"

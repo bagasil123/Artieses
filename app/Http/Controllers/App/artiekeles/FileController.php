@@ -12,6 +12,18 @@ class FileController extends Controller
         if (!session('isLoggedIn')) {
             return redirect()->route('artieses')->with('alert', 'Harus login dulu.');
         }
+        function generateUniqueCodekeles($length = 20) {
+            $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            do {
+                $randomString = '';
+                for ($i = 0; $i < $length; $i++) {
+                    $randomString .= $characters[random_int(0, strlen($characters) - 1)];
+                }
+            } while (Artiekeles::where('codekeles', $randomString)->exists());
+        
+            return $randomString;
+        }
+        $randomString = generateUniqueCodekeles();
         
         $judul = $request->input('judul');
         $kseo = $request->input('kseo');
@@ -25,30 +37,34 @@ class FileController extends Controller
         $text = '';
         $filePath = storage_path('app/private/' . $path);
         if ($extension == 'docx') {
-            $text = $this->convertDocxToText($filePath);
+            $text = $this->convertDocxToText($filePath, $randomString);
         } elseif ($extension == 'pdf') {
-            // $text = $this->convertPdfToText($filePath);
+            // $text = $this->convertPdfToText($filePath, $randomString);
         } elseif ($extension == 'txt') {
-            $text = file_get_contents($filePath);
+            $text = file_get_contents($filePath, $randomString);
         }
         if (file_exists($filePath)) {
             unlink($filePath);
         }
+        
+        
         Artiekeles::create([
             'userid' => session('userid'),
+            'codekeles' => $randomString,
             'judul' => $judul,
             'lseo' => $lseo,
             'kseo' => $kseo,
             'konten' => $text,
         ]);
+        
         return redirect()->route('artieses')->with(['alert' => 'Artiekeles mu sudah di publish!']);
     }
 
-    protected function convertDocxToText($filePath)
+    protected function convertDocxToText($filePath, $randomString)
     {
         $username = session('username');
         $sofficePath = base_path('vendor/LibreOffice/program/soffice.exe');
-        $outputDir = public_path("{$username}/artiekeles");
+        $outputDir = public_path("{$username}/artiekeles/{$randomString}");
 
         if (!file_exists($outputDir)) {
             mkdir($outputDir, 0755, true); // buat folder kalau belum ada
@@ -63,11 +79,11 @@ class FileController extends Controller
         $output = file_get_contents($outputHtmlPath);
         $output = preg_replace('/<p([^>]*)align="center"([^>]*)>/i', '<p$1style="text-align:center;"$2>', $output);
 
-        $updatedOutput = preg_replace_callback('/<img\s+[^>]*src="([^"]+)"[^>]*>/i', function ($matches) use ($username) {
+        $updatedOutput = preg_replace_callback('/<img\s+[^>]*src="([^"]+)"[^>]*>/i', function ($matches) use ($username, $randomString) {
             $src = $matches[1];
 
-            if (strpos($src, "{$username}/artiekeles/") === false) {
-                $newSrc = "{$username}/artiekeles/" . $src;
+            if (strpos($src, "{$username}/artiekeles/{$randomString}") === false) {
+                $newSrc = "{$username}/artiekeles/{$randomString}" . $src;
                 return str_replace($src, $newSrc, $matches[0]);
             }
             return $matches[0];

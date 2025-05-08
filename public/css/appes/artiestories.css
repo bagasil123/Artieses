@@ -1,3 +1,88 @@
+.hidden {
+  display: none;
+}
+.image-container {
+        position: relative;
+        display: inline-block;
+    }
+
+    .cardstories {
+        display: block;
+        width: 100%;
+        height: auto;
+    }
+    .nav-button {
+        position: absolute;
+        top: 50%;
+        height: 105.4%;
+        transform: translateY(-52.5%);
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        cursor: pointer;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        z-index: 10;
+    }
+
+    .nav-button:hover {
+        background-color: rgba(0, 0, 0, 0.7);
+    }
+
+    .nav-button.prev {
+        left: 0px;
+    }
+
+    .nav-button.next {
+        right: 0px;
+    }
+
+    .nav-button.prev1 {
+        left: 0px;
+    }
+
+    .nav-button.next1 {
+        right: 32.4%;
+    }
+
+    .image-container:hover .nav-button,
+    .nav-button:hover {
+        opacity: 1;
+    }
+
+    .hidden {
+        display: none;
+    }
+.navigation-buttons {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+.file-preview {
+    margin-top: 10px;
+}
+.file-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+.file-name {
+    flex-grow: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.remove-file {
+    cursor: pointer;
+    margin-left: 10px;
+    color: red;
+    font-weight: bold;
+}
 .artiestories-card1 {
   position: fixed;
   display: flex;
@@ -278,10 +363,12 @@ h2 {
   color: white;
   background: none;
   border: none;
+  z-index: 9999;
 }
 .commentaristcre {
   flex: 1;
   max-width: 30%;
+  margin-top: 30px;
   height: 100%;
   background-color: #ffffff;
   border-radius: 8px;

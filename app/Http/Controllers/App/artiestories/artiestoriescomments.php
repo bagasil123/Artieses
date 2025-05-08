@@ -16,6 +16,7 @@ class artiestoriescomments extends Controller
         }
 
         $reqplat = $request->input('commentses');
+        $reqplat1 = $request->input('commentsesarah');
         $requscom = session('userid');
         $inputcomments = $request->input('inputcommentnya');
 
@@ -25,8 +26,8 @@ class artiestoriescomments extends Controller
             'commentses' => $inputcomments,
         ]);
 
-        return redirect()->to('/artieses#commentarist-' . $reqplat)
-                        ->with('open_commentarist', $reqplat);
+        return redirect()->to('/Artiestories?GetContent=' . $reqplat1)
+                        ->with('open_commentarist', $reqplat1);
     }
     public function storeGG1(Request $request)
     {
@@ -44,7 +45,7 @@ class artiestoriescomments extends Controller
             'commentartiestoriesid' => $hidden,
             'comment' => $inputcomments,
         ]);
-        return redirect()->to('/artieses#commentarist-' . $hidden)
+        return redirect()->to('/Artiestories?GetContent=' . $hidden)
         ->with('open_commentarist', $storyId)
         ->with('open_commentbalasan', $hidden);
     }

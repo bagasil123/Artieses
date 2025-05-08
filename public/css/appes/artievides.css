@@ -139,29 +139,53 @@ h2 {
   font-size: 12px;
 }
 .creatorvides {
-    width:50px; 
-    height:50px; 
-    margin-top: -14px;
+    width:40px; 
+    height:40px; 
     margin-left: 6px;
+    transform: translateY(0%);
     border-radius:50%;
-}
-.card-artievides {
-  flex: 0 0 auto;
-  width: 31.13%;
-  height: auto;
-  border-radius: 12px;
-  display: flex;
-  flex-direction: column;
+  }
+  .card-artievides1 {
+    width: 31.2%;
+    height: 265px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    border-radius: 12px;
+  }
+  
+  .dark-mode .card-artievides1  {
+    box-shadow: 0 0 10px rgba(202, 202, 202, 0.5);
+  }
+.cabot-artievides {
+    display: flex;
+    position: relative;
+    height: 50px  ;
+    width: 86.5%;
+    border-radius: 12px;
+    padding-top: 10px;
+    flex: 1;
 }
 .h3-artievides {
-  font-size: 25px;
-  margin-top: -62px;
-  margin-left: 80px;
+  font-size: 18px;
+  margin-bottom: 0px;
+  position: absolute;
+  width: 100%;
+  margin-left: 59px;
+  transform: translateY(-120%) !important;
 }
-.p-artievides {
+.h5-artievides {
   font-size: 12px;
-  margin-top: -12px !important;
-  margin-left: 80px;
+  position: absolute;
+  margin-bottom: 0px;
+  margin-left: 60px;
+  width: 100%;
+  transform: translateY(40%) !important;
+}
+.date-artievides {
+  font-size: 12px;
+  width: 100%;
+  margin-left: 60px;
+  position: absolute;
+  transform: translateY(15%) !important;
 }
 .wrapper {
   display: flex;
@@ -183,7 +207,6 @@ h2 {
 }
 .hover-video {
   width: 365px;
-  height: 200px;
   object-fit: cover;
   border-radius: 12px;
 }

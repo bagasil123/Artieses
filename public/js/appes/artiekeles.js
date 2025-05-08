@@ -30,13 +30,12 @@ document.addEventListener("DOMContentLoaded", function () {
     const kategoriBox = document.getElementById("pilihkategori-artiekeles");
     const kategoriBtns = document.querySelectorAll(".kategori-btn-artiekeles");
     const kseoInput = document.getElementById("kseo-artiekeles");
-
-    const closeKategoriBtn = document.getElementById("close-kategori-artiekeles");
   
     if (cardUpload && uploadFile) {
         cardUpload.addEventListener("click", function(event) {
             event.preventDefault();
             event.stopPropagation();
+            kategoriBox.classList.add("hidden");
             uploadFile.classList.toggle("show");
         });
         document.addEventListener("click", function(event) {
@@ -45,7 +44,12 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     }
-    kategoriBox.classList.add("hidden");
+    document.addEventListener("click", function(event) {
+      if (!toggleBtn.contains(event.target) && !kategoriBox.contains(event.target)) {
+          kategoriBox.classList.add("hidden");
+      }
+    });
+
 
     toggleBtn.addEventListener("click", function () {
         kategoriBox.classList.toggle("hidden");
@@ -56,7 +60,7 @@ document.addEventListener("DOMContentLoaded", function () {
             kategoriBtns.forEach(b => b.classList.remove("selected"));
             btn.classList.add("selected");
             kseoInput.value = btn.getAttribute("data-kategori-artiekeles");
-            kategoriBox.classList.add("hidden");zzzzzz
+            kategoriBox.classList.add("hidden");
             toggleBtn.textContent = `Kategori: ${btn.getAttribute("data-kategori-artiekeles")}`;
         });
     });

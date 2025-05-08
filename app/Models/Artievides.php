@@ -12,7 +12,7 @@ class Artievides extends Model
     protected $table = 'artievides'; 
     protected $primaryKey = 'artievidesid';
     public $incrementing = true;
-    protected $fillable = ['userid', 'judul', 'lseo', 'kseo', 'video','thumbnail', 'deltime'];
+    protected $fillable = ['userid', 'codevides', 'judul', 'lseo', 'kseo', 'video','thumbnail', 'deltime'];
     public $timestamps = true;
     public function usericonVides()
     {

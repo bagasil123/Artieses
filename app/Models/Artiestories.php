@@ -11,7 +11,7 @@ class Artiestories extends Model
 {
     protected $table = 'artiestories'; 
     protected $primaryKey = 'artiestoriesid';
-    protected $fillable = ['userid', 'caption', 'lseo', 'kseo', 'konten', 'deltime'];
+    protected $fillable = ['userid', 'coderies', 'caption', 'lseo', 'kseo', 'deltime'];
     public $timestamps = true;
     public function usericonStories()
     {
@@ -25,5 +25,9 @@ class Artiestories extends Model
     {
         return $this->hasMany(ComStories::class, 'artiestoriesid');
     }
+    public function images() {
+        return $this->hasMany(ArtiestoriesIMG::class, 'artiestoriesid');
+    }
+    
     
 }

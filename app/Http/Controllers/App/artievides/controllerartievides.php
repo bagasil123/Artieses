@@ -22,22 +22,36 @@ class controllerartievides extends Controller
             'thumbnail' => 'required|image|mimes:jpeg,png,jpg,svg'
         ]);
         
+        function generateUniqueCodevides($length = 20) {
+            $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            do {
+                $randomString = '';
+                for ($i = 0; $i < $length; $i++) {
+                    $randomString .= $characters[random_int(0, strlen($characters) - 1)];
+                }
+            } while (Artievides::where('codevides', $randomString)->exists());
+        
+            return $randomString;
+        }
+        $randomString = generateUniqueCodevides();
+        
         $videoFile = $request->file('video');
         $videoName = time() . '_' . $videoFile->getClientOriginalName();
-        $videoPath = public_path(session('username') . '/artievides');
+        $videoPath = public_path(session('username') . '/artievides/' . $randomString);
         if (!file_exists($videoPath)) mkdir($videoPath, 0755, true);
         $videoFile->move($videoPath, $videoName);
-        $videoPathRelatif = session('username') . '/artievides/' . $videoName;
+        $videoPathRelatif = session('username') . '/artievides/' . $randomString . '/' . $videoName;
         
         $thumbFile = $request->file('thumbnail');
         $thumbName = time() . '_' . $thumbFile->getClientOriginalName();
-        $thumbPath = public_path(session('username') . '/artithumbs');
+        $thumbPath = public_path(session('username') . '/artithumbs/' . $randomString);
         if (!file_exists($thumbPath)) mkdir($thumbPath, 0755, true);
         $thumbFile->move($thumbPath, $thumbName);
-        $thumbPathRelatif = session('username') . '/artithumbs/' . $thumbName;
-        
+        $thumbPathRelatif = session('username') . '/artithumbs/' . $randomString . '/' . $thumbName;
+
         Artievides::create([
             'userid' => session('userid'),
+            'codevides' => $randomString,
             'judul' => $judul,
             'lseo' => $lseo,
             'kseo' => $kseo,

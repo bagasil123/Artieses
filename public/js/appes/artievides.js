@@ -65,6 +65,8 @@ document.addEventListener("DOMContentLoaded", function () {
             event.preventDefault();
             event.stopPropagation();
             uploadFile.classList.toggle("show");
+            uploadFile1.classList.remove("show");
+            kategoriBox.classList.add("hidden");
         });
         document.addEventListener("click", function(event) {
             if (!cardUpload.contains(event.target) && !uploadFile.contains(event.target)) {
@@ -77,6 +79,8 @@ document.addEventListener("DOMContentLoaded", function () {
           event.preventDefault();
           event.stopPropagation();
           uploadFile1.classList.toggle("show");
+          uploadFile.classList.remove("show");
+          kategoriBox.classList.add("hidden");
       });
       document.addEventListener("click", function(event) {
           if (!cardUpload1.contains(event.target) && !uploadFile1.contains(event.target)) {
@@ -84,7 +88,11 @@ document.addEventListener("DOMContentLoaded", function () {
           }
       });
   }
-    kategoriBox.classList.add("hidden");
+  document.addEventListener("click", function(event) {
+    if (!toggleBtn.contains(event.target) && !kategoriBox.contains(event.target)) {
+        kategoriBox.classList.add("hidden");
+    }
+  });
 
     toggleBtn.addEventListener("click", function () {
         kategoriBox.classList.toggle("hidden");

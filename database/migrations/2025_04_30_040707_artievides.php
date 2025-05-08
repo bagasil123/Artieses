@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('artievides', function (Blueprint $table) {
             $table->id('artievidesid');
+            $table->string('codevides')->unique();
             $table->unsignedBigInteger('userid');
             $table->foreign('userid')->references('userid')->on('users')->onDelete('cascade');
             $table->string('judul')->nullable()->collation('utf8mb4_unicode_520_ci');

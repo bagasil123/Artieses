@@ -12,41 +12,35 @@
   @include('partses.baries')
 </head>
 <body class="dark-mode">
-  <!-- Debug route -->
-{{-- {{ route('uprcm0') }} --}}
-
   @if(session('alert'))
     <div class="feedback error">
       {{ session('alert') }}
     </div>
   @endif
   <div class="card-main">
-  {{-- Videos --}}
-    <div class="wrapper">
-      @include('appes.artievides.artievides')
+  <div class="wrapper">
+  @foreach ($mergedFeed as $item)
+    @if ($item['type'] === 'video')
+    <div class="card-artievides1">
+      @php $video = $item['data']; @endphp
+        @include('appes.artievides.artievides', ['video' => $item['data']])
     </div>
-    <div class="artievides-wrapper1">
-    @foreach($videos as $video)
-    <div class="card-artievides">
-      <a href="#" class="a-artievides">{{ $video->usericonVides->username}}</a>
+    @elseif ($item['type'] === 'story')
+    <div class="card-artiestories1">
+      @php $story = $item['data']; @endphp
+        @include('appes.artiestories.artiestories', ['story' => $item['data']])
+        @include('appes.artiestories.js.commentjs')
     </div>
-    @endforeach
-    </div>
-    
-  {{-- Stories --}}
-    <div class="wrapper">
-      @foreach($stories as $story)
-      @include('appes.artiestories.artiestories')
-      @include('appes.artiestories.js.commentjs')
-      @endforeach
-    </div>
-  {{-- Articles --}}
-    @foreach($articles as $article)
-      <div class="card-artiekeles">
-          <h3>{{ $article->judul }}</h3>
-          <p>{{ Str::limit(strip_tags($article->konten), 100) }}</p>
-      </div>
-    @endforeach
+    @elseif ($item['type'] === 'article')
+      @php $article = $item['data']; @endphp
+        <div class="card-artiekeles1">
+            <h3>{{ $item['data']->judul }}</h3>
+            <p>{{ Str::limit(strip_tags($item['data']->konten), 100) }}</p>
+        </div>
+    @endif
+@endforeach
+  </div>
+
   </div>
 </body>
   <script src="{{ asset('js/appes/togglemode.js') }}"></script>

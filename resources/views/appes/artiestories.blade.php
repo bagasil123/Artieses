@@ -2,7 +2,7 @@
 <div class="artiestories-card">
     <button type="button" id="close-artiestories" class="close">&times;</button>
     <h2>Artiestories</h2>
-    <form action="{{ route('file.upload.artiestories') }}" method="POST" enctype="multipart/form-data" target="uploadTarget">
+    <form action="{{ route('file.upload.artiestories') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="input-group">
             <label for="caption">Caption: </label>
@@ -32,18 +32,18 @@
             <label for="lseo">Label: </label>
             <input type="text" id="lseo" name="lseo" placeholder="Masukkan Label Artiestories" required>
         </div>
-
         <div class="input-group">
-            <button type="button" class="uploades" id="cardupload-artiestories">Masukan </button>
+            <button type="button" class="uploades" id="cardupload-artiestories">Masukan</button>
             <div id="uploadfile-artiestories" class="uploadfiles-artiestories hidden">
                 <div id="drop-area-artiestories" class="drop-area">
                     <img src="{{ asset('partses/drages.png') }}">
                     <p>Pilih atau Tarik dan lepas file ke sini atau klik untuk memilih</p>
-                    <input type="file" id="fileElem-artiestories" name="file" hidden required>
+                    <input type="file" id="fileElem-artiestories" name="file[]" multiple hidden>
                 </div>
+                <div id="file-preview-artiestories" class="file-preview"></div>
+                @include('appes.artiestories.js.upload')
             </div>
         </div>
-
         <button type="submit" class="uploades">Upload</button>
     </form>
 </div>

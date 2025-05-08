@@ -1,9 +1,9 @@
 
 @php 
-$storyId = $story->artiestoriesid; @endphp
+$storyCode = $story->coderies; @endphp
 <script>
         document.addEventListener('DOMContentLoaded', function () {
-            document.querySelectorAll('.rbtnry-{{ $storyId }}').forEach(function (button) {
+            document.querySelectorAll('.rbtnry-{{ $storyCode }}').forEach(function (button) {
                 button.addEventListener('mouseenter', function () {
                     const id = this.id.split('-')[1];
                     const button1 = document.getElementById('rbtnry1-' + id);
@@ -20,7 +20,7 @@ $storyId = $story->artiestoriesid; @endphp
                         }}, 0);
                 });
             });
-            document.querySelectorAll('.rbtnry2-{{ $storyId }}').forEach(function (button) {
+            document.querySelectorAll('.rbtnry2-{{ $storyCode }}').forEach(function (button) {
                 button.addEventListener('mouseenter', function () {
                     const id = this.id.split('-')[1];
                     const button2 = document.getElementById('rbtnry2-' + id);
@@ -37,31 +37,34 @@ $storyId = $story->artiestoriesid; @endphp
                         }}, 0);
                 });
             });
-            document.querySelectorAll('.cardstories-{{ $storyId }}, .cbtnry1-{{ $storyId }}').forEach(function (button) {
+            document.querySelectorAll('.cardstories-{{ $storyCode }}, .cbtnry1-{{ $storyCode }}').forEach(function (button) {
                 button.addEventListener('click', function () {
                     const id = this.id.split('-')[1];
                     const input = document.getElementById("inpcom-" + id);
                     const modal = document.getElementById("commentarist-" + id);
-                    console.log("Klik komentar story ID:", id);
+                    history.pushState({}, '', 'Artiestories?GetContent=' + id);
                     if (modal) {
                         modal.classList.remove("hidden");
-
                         const closeBtn = document.getElementById("closeCommentarist-" + id);
                         if (closeBtn) {
                             closeBtn.addEventListener("click", function () {
                                 input.value = "";
                                 console.log("Klik komentar story ID:", id);
                                 modal.classList.add("hidden");
+                                history.pushState({}, '','Artieses');
                             });
                         }
-
-                        // Klik luar modal
-                        modal.addEventListener("click", function (e) {
-                            if (e.target === modal) {
-                                modal.classList.add("hidden");
-                            }
-                        });
                     }
+                });
+            });
+            document.querySelectorAll('.closecmtrst').forEach(function (button) {
+                button.addEventListener('click', function () {
+                    const id = this.id.split('-')[1];
+                    const input = document.getElementById("inpcom-" + id);
+                    const modal = document.getElementById("commentarist-" + id);
+                    modal.classList.add("hidden");
+                    modal.classList.remove("block");
+                    history.pushState({}, '','Artieses');
                 });
             });
         });

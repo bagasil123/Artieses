@@ -1,7 +1,7 @@
-@php $storyId = $story->artiestoriesid; @endphp
+@php $storyCode = $story->coderied; @endphp
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const storyId = '{{ $storyId }}';
+    const storyId = '{{ $storyCode }}';
     const input = document.getElementById("inpcom-" + storyId);
     const clearBtn = document.getElementById("balinpcom-" + storyId);
 

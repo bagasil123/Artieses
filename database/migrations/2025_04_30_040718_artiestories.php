@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('artiestories', function (Blueprint $table) {
             $table->id('artiestoriesid');
+            $table->string('coderies')->unique();
             $table->unsignedBigInteger('userid');
             $table->foreign('userid')->references('userid')->on('users')->onDelete('cascade');
             $table->string('caption')->nullable()->collation('utf8mb4_unicode_520_ci');
             $table->string('lseo')->nullable()->collation('utf8mb4_unicode_520_ci');
             $table->string('kseo')->nullable()->collation('utf8mb4_unicode_520_ci');
-            $table->longtext('konten')->nullable()->collation('utf8mb4_unicode_520_ci');
             $table->timestamp('deltime')->nullable();
             $table->string('delmode')->nullable();
             $table->timestamps();

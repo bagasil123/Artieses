@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('artiekeles', function (Blueprint $table) {
             $table->id('artiekelesid');
+            $table->string('codekeles')->unique();
             $table->unsignedBigInteger('userid');
             $table->foreign('userid')->references('userid')->on('users')->onDelete('cascade');
             $table->string('judul')->nullable()->collation('utf8mb4_unicode_520_ci');

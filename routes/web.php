@@ -15,7 +15,7 @@ use App\Http\Controllers\App\artiestories\artiestoriescomments;
 use App\Http\Controllers\App\artiestories\artiestoriesreact;
 use App\Http\Controllers\App\artievides\controllerartievides;
 use App\Http\Controllers\App\artiestories\controllerartiestories;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 
 use App\Models\Artiestories;
@@ -30,42 +30,16 @@ Route::controller(searcheses::class)->group(function () {
 Route::post('/upload-file-artiekeles', [FileController::class, 'uploadFile'])->name('file.upload.artiekeles');
 Route::post('/upload-file-artievides', [controllerartievides::class, 'uploadFile'])->name('file.upload.artievides');
 Route::post('/upload-file-artiestories', [controllerartiestories::class, 'uploadFile'])->name('file.upload.artiestories');
-Route::get('/', function () {
-    if (!session('isLoggedIn')) {
-        $videos = Artievides::with('usericonVides')->withCount('likeVides')->orderByDesc('like_vides_count')->orderByDesc('created_at')->take(6)->get();
-        $stories = Artiestories::withCount('reactStories')->orderByDesc('react_stories_count')->with('usericonStories', 'ReactStories', 'comments.replies', 'comments.userComments', 'comments.replies.userBalcom')->latest()->take(3)->get();
-        $articles = Artiekeles::latest()->take(3)->get();
-    }
-    if (session('isLoggedIn')) {
-        $videos = Artievides::with('usericonVides')->withCount('likeVides')->orderByDesc('like_vides_count')->orderByDesc('created_at')->take(6)->get();
-        $stories = Artiestories::withCount('reactStories')->orderByDesc('react_stories_count')->with('usericonStories', 'ReactStories', 'comments.replies', 'comments.userComments', 'comments.replies.userBalcom')->latest()->take(3)->get();
-        $articles = Artiekeles::latest()->take(3)->get();
-    }
-    return view('appes.artieses', compact('videos', 'stories', 'articles'));
-});
-Route::get('/artieses', function () {
-    if (!session('isLoggedIn')) {
-        $videos = Artievides::with('usericonVides')->withCount('likeVides')->orderByDesc('like_vides_count')->orderByDesc('created_at')->take(6)->get();
-        $stories = Artiestories::withCount('reactStories')->orderByDesc('react_stories_count')->with('usericonStories', 'ReactStories', 'comments.replies', 'comments.userComments', 'comments.replies.userBalcom')->latest()->take(3)->get();
-        $articles = Artiekeles::latest()->take(3)->get();
-    }
-    if (session('isLoggedIn')) {
-        $videos = Artievides::with('usericonVides')->withCount('likeVides')->orderByDesc('like_vides_count')->orderByDesc('created_at')->take(6)->get();
-        $stories = Artiestories::withCount('reactStories')->orderByDesc('react_stories_count')->with('usericonStories', 'ReactStories', 'comments.replies', 'comments.userComments', 'comments.replies.userBalcom')->latest()->take(3)->get();
-        $articles = Artiekeles::latest()->take(3)->get();
-    }
-    return view('appes.artieses', compact('videos', 'stories', 'articles'));
-})->name('artieses');
+Route::get('/', [artieses::class, 'Homes1']);
+Route::get('/artieses', [artieses::class, 'Homes1']);
+Route::get('/Artieses', [artieses::class, 'Homes'])->name('artieses');
 Route::post('/reaksi', [artiestoriesreact::class, 'store'])->name('uprcm0');
 Route::post('/uprcm0gg', [artiestoriescomments::class, 'storeGG'])->name('uprcm0gg');
 Route::post('/uprcm1gg', [artiestoriescomments::class, 'storeGG1'])->name('ayokirim.komentar');
 Route::post('/reaksi3', [artiestoriesreact::class, 'store3'])->name('uprcm2');
 Route::post('/reaksi2', [artiestoriesreact::class, 'store2'])->name('uprcm1');
-
 Route::post('/cek-login', function () {
 })->name('cek.login');
-
-
 Route::get('/refresh-csrf', function () {
     return response()->json(['csrf' => csrf_token()]);
 });
@@ -74,6 +48,20 @@ Route::post('/set-alert-session', function (\Illuminate\Http\Request $request) {
     session()->flash('form', $request->input('form'));
     return response()->json(['status' => 'ok']);
 })->name('set.alert.session');
+
+Route::get('/profil', function () {
+    if (!session('isLoggedIn')) {
+        $videos = Artievides::with('usericonVides')->withCount('likeVides')->orderByDesc('like_vides_count')->orderByDesc('created_at')->get();
+        $stories = Artiestories::withCount('reactStories')->orderByDesc('react_stories_count')->with('usericonStories', 'ReactStories', 'comments.replies', 'comments.userComments', 'comments.replies.userBalcom')->latest()->get();
+        $articles = Artiekeles::latest()->get();
+    }
+    if (session('isLoggedIn')) {
+        $videos = Artievides::with('usericonVides')->withCount('likeVides')->orderByDesc('like_vides_count')->orderByDesc('created_at')->get();
+        $stories = Artiestories::withCount('reactStories')->orderByDesc('react_stories_count')->with('usericonStories', 'images', 'ReactStories', 'comments.replies', 'comments.userComments', 'comments.replies.userBalcom')->latest()->get();
+        $articles = Artiekeles::latest()->get();
+    }
+    return view('appes.artieses', compact('videos', 'stories', 'articles'));
+});
 
 # AUTHENTICATION #
 Route::get('/authes', function () {
@@ -102,3 +90,90 @@ Route::get('/clartiestories', [artieses::class, 'clartiestories']);
 Route::get('/artiekeles', function(){
     return view('appes.artiekeles');
 });
+
+Route::get('/artiestories', function(Request $request) {
+    $reqplat = $request->query('GetContent');
+    return redirect()->to('/Artiestories?GetContent=' . $reqplat)->with('open_commentarist', $reqplat);
+});
+Route::get('/Artiestories', function (Request $request) {
+    $reqplat = $request->query('GetContent');
+        if (!session('isLoggedIn')) {
+                $videos = Artievides::with('usericonVides')
+                    ->withCount('likeVides')
+                    ->orderByDesc('like_vides_count')
+                    ->orderByDesc('created_at')
+                    ->get();
+            
+                $stories = Artiestories::withCount('reactStories')
+                    ->orderByDesc('react_stories_count')
+                    ->with([
+                        'usericonStories',
+                        'ReactStories',
+                        'comments.replies',
+                        'comments.userComments',
+                        'comments.replies.userBalcom'
+                    ])
+                    ->latest()
+                    ->get();
+            
+                $articles = Artiekeles::latest()->get();
+            
+                // 💡 Gabungkan feed dalam urutan: 6 video → 3 story → 3 artikel → ulang
+                $mergedFeed = [];
+                $videoIndex = $storyIndex = $articleIndex = 0;
+            
+                while ($videoIndex < $videos->count() || $storyIndex < $stories->count() || $articleIndex < $articles->count()) {
+                    for ($i = 0; $i < 6 && $videoIndex < $videos->count(); $i++) {
+                        $mergedFeed[] = ['type' => 'video', 'data' => $videos[$videoIndex++]];
+                    }
+            
+                    for ($i = 0; $i < 3 && $storyIndex < $stories->count(); $i++) {
+                        $mergedFeed[] = ['type' => 'story', 'data' => $stories[$storyIndex++]];
+                    }
+            
+                    for ($i = 0; $i < 3 && $articleIndex < $articles->count(); $i++) {
+                        $mergedFeed[] = ['type' => 'article', 'data' => $articles[$articleIndex++]];
+                    }
+                }
+        }
+        if (session('isLoggedIn')) {
+                $videos = Artievides::with('usericonVides')
+                    ->withCount('likeVides')
+                    ->orderByDesc('like_vides_count')
+                    ->orderByDesc('created_at')
+                    ->get();
+            
+                $stories = Artiestories::withCount('reactStories')
+                    ->orderByDesc('react_stories_count')
+                    ->with([
+                        'usericonStories',
+                        'ReactStories',
+                        'comments.replies',
+                        'comments.userComments',
+                        'comments.replies.userBalcom'
+                    ])
+                    ->latest()
+                    ->get();
+            
+                $articles = Artiekeles::latest()->get();
+            
+                // 💡 Gabungkan feed dalam urutan: 6 video → 3 story → 3 artikel → ulang
+                $mergedFeed = [];
+                $videoIndex = $storyIndex = $articleIndex = 0;
+            
+                while ($videoIndex < $videos->count() || $storyIndex < $stories->count() || $articleIndex < $articles->count()) {
+                    for ($i = 0; $i < 6 && $videoIndex < $videos->count(); $i++) {
+                        $mergedFeed[] = ['type' => 'video', 'data' => $videos[$videoIndex++]];
+                    }
+            
+                    for ($i = 0; $i < 3 && $storyIndex < $stories->count(); $i++) {
+                        $mergedFeed[] = ['type' => 'story', 'data' => $stories[$storyIndex++]];
+                    }
+            
+                    for ($i = 0; $i < 3 && $articleIndex < $articles->count(); $i++) {
+                        $mergedFeed[] = ['type' => 'article', 'data' => $articles[$articleIndex++]];
+                    }
+                }
+        }
+        return view('appes.artieses', compact('mergedFeed'))->with('open_commentarist', $reqplat);
+})->name('artiestories');
