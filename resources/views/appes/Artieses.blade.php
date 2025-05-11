@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="{{ asset('css/appes/artiekeles.css') }}">
   <link rel="stylesheet" href="{{ asset('css/appes/artievides.css') }}">
   <link rel="stylesheet" href="{{ asset('css/appes/artiestories.css') }}">
+  <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
   <link rel="icon" href="{{ asset('partses/favicon.ico') }}">
   @include('partses.baries')
 </head>
@@ -26,21 +27,16 @@
         @include('appes.artievides.artievides', ['video' => $item['data']])
     </div>
     @elseif ($item['type'] === 'story')
-    <div class="card-artiestories1">
       @php $story = $item['data']; @endphp
         @include('appes.artiestories.artiestories', ['story' => $item['data']])
         @include('appes.artiestories.js.commentjs')
-    </div>
     @elseif ($item['type'] === 'article')
       @php $article = $item['data']; @endphp
-        <div class="card-artiekeles1">
             <h3>{{ $item['data']->judul }}</h3>
             <p>{{ Str::limit(strip_tags($item['data']->konten), 100) }}</p>
-        </div>
     @endif
 @endforeach
   </div>
-
   </div>
 </body>
   <script src="{{ asset('js/appes/togglemode.js') }}"></script>

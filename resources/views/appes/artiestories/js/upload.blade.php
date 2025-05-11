@@ -30,7 +30,7 @@
     });
 
     function showFilePreview(files) {
-        preview.innerHTML = ''; // Bersihkan preview sebelumnya
+        preview.innerHTML = '';
 
         Array.from(files).forEach((file) => {
             const div = document.createElement('div');

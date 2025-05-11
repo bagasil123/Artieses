@@ -140,19 +140,19 @@
 }
 .creatorstories {
   width: 40px;
+  margin-left: 10px;
   height: 40px;
   border-radius: 50%;
   object-fit: cover;
 }
-.card-artiestories {
-  flex: 0 0 auto;
-  width: 31.13%;
-  height: auto;
+.card-artiestories1 {
   border-radius: 12px;
-  margin-top: 50px;
-  display: flex;
-  flex-direction: column;
+  padding-top: 10px;
+  width: 31.13%;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.dark-mode .card-artiestories1  {
+  box-shadow: 0 0 10px rgba(202, 202, 202, 0.5);
 }
 h2 {
   margin-bottom: 2px;
@@ -247,6 +247,12 @@ h2 {
   width: 30px;
   height: 30px; 
 }
+.iclikescmt {
+  width: 30px;
+  height: 30px; 
+  margin-left: 6px;
+  transform: translateY(-60%);
+}
 .artiestories1 {
   margin-top: 2px;
   border-radius: 12px;
@@ -284,6 +290,11 @@ h2 {
   margin-top: 4px;
   height: 30px; 
 }
+.iclikestoriesemote3 {
+  width: 30px !important;
+  margin-top: 7px;
+  height: 30px !important; 
+}
 .srcard1 {
   position: absolute;
   display: fixed;
@@ -305,23 +316,15 @@ h2 {
   border-radius: 12px;
 }
 .srcard3 {
+  z-index:999;
   margin-left: 0px;
   margin-top: -35px !important;
+  padding-left: 9px;
   display: flex;
   position: absolute;
   flex-direction: row !important;
   height: fit-content;
-  max-width: 590px;
-  background-color: #888;
-  border-radius: 12px;
-}
-.iclikeswrap .srcard3 {
-  margin-left: -40px;
-  margin-top: -35px !important;
-  display: flex;
-  position: absolute;
-  flex-direction: row !important;
-  height: fit-content;
+  width: 42.5%;
   max-width: 590px;
   background-color: #888;
   border-radius: 12px;
@@ -396,8 +399,8 @@ h2 {
   border-bottom: 1px solid #888;
 }
 .noncomments {
+  text-align: center;
   top: 40%;
-  right: 11%;
 }
 .dispname {
   margin-top: 20px;
@@ -494,11 +497,11 @@ h2 {
 .dibales {
   display: flex;
   position: relative;
-  margin-left: 40px;
-  width: 86.5%;
+  margin-left: 48px;
+  width: 84.5%;
   border-radius: 12px;
   align-items: center;
-  padding-top: 10px;
+  padding-top: 17px;
   flex: 1;
 }
 .dibales input {
@@ -536,7 +539,7 @@ margin-left: 0px;
   position: sticky;
   border: none;
   font-size: 22px;
-  transform: translateY(12%);
+  transform: translateY(-35%);
   margin-left: -30px;
 }
 .dark-mode .dibales {
@@ -565,7 +568,22 @@ margin-left: 0px;
   height:20%; 
   background-color:black;
 }
-
+.brcmt{
+  position:fixed; 
+  top:87.1%; 
+  border-radius: 12px;
+  right:7%; 
+  height: 25px;
+  width:18%; 
+  background-color:#777;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  z-index: 99999;
+}
+.brcmt p{
+  font-size: 12px;
+  margin-top: 5px;
+  text-align: center;
+}
 .inpcom {
   position: fixed;
   top: 92%;
@@ -605,9 +623,6 @@ margin-left: 0px;
   margin-top: -20px;
   border-radius: 10px;
 }
-
-
-
 .dibales1 {
   display: flex;
   position: relative;
@@ -615,7 +630,7 @@ margin-left: 0px;
   width: 86.5%;
   border-radius: 12px;
   align-items: center;
-  padding-top: 10px;
+  padding-top: 17px;
   flex: 1;
 }
 .dibales1 input {

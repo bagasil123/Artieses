@@ -10,7 +10,7 @@ class ComStories extends Model
 {
     protected $table = 'commentartiestories'; 
     protected $primaryKey = 'commentartiestoriesid';
-    protected $fillable = ['userid', 'artiestoriesid', 'commentses'];
+    protected $fillable = ['userid', 'coderies', 'commentses'];
     public $timestamps = true;
     public function userComments()
     {

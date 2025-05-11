@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\App\artieses;
 
+use App\Helpers\AuthHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Artiekeles;
 use App\Models\Artiestories;
@@ -12,7 +13,7 @@ class artieses extends Controller
 {
     public function Search(Request $request)
     {
-        if (!session('isLoggedIn')) {
+        if (!AuthHelper::check()) {
             return redirect()->route('artieses')->with('alert', 'Harus login dulu.');
         }
 
@@ -20,7 +21,7 @@ class artieses extends Controller
     }
     public function Homes(Request $request)
     {
-        if (!session('isLoggedIn')) {
+        if (!AuthHelper::check()) {
                 $videos = Artievides::with('usericonVides')
                     ->withCount('likeVides')
                     ->orderByDesc('like_vides_count')
@@ -59,7 +60,7 @@ class artieses extends Controller
                     }
                 }
         }
-        if (session('isLoggedIn')) {
+            if (AuthHelper::check()) {
                 $videos = Artievides::with('usericonVides')
                     ->withCount('likeVides')
                     ->orderByDesc('like_vides_count')

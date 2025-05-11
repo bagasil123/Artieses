@@ -7,7 +7,6 @@ document.addEventListener('DOMContentLoaded', function () {
         const closeBtn = document.getElementById("closeCommentarist-" + storyId);
 
         if (modal) {
-            // Ubah ke visible
             modal.classList.remove("hidden");
             modal.classList.add("block");
 
@@ -20,7 +19,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
             }
 
-            // Klik luar modal
             modal.addEventListener("click", function (e) {
                 if (e.target === modal) {
                     modal.classList.remove("block");

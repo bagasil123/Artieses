@@ -1,19 +1,25 @@
-@php $storyCode = $story->coderied; @endphp
+@php $storyCode = $story->coderies; @endphp
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const storyId = '{{ $storyCode }}';
-    const input = document.getElementById("inpcom-" + storyId);
-    const clearBtn = document.getElementById("balinpcom-" + storyId);
+    const storyCode = '{{ $storyCode }}';
+    const input = document.getElementById("inpcom-" + storyCode);
+    const clearBtn = document.getElementById("balinpcom-" + storyCode);
 
     if (input && clearBtn) {
         input.addEventListener('input', function () {
-            clearBtn.style.display = this.value.length > 0 ? "block" : "none";
+            if (input.value.length > 0) {
+                clearBtn.classList.add('block')
+                clearBtn.classList.remove('hidden')
+            }
+            if (input.value.length < 0) {
+                clearBtn.classList.add('hidden')
+                clearBtn.classList.remove('block')
+            }
         });
 
         clearBtn.addEventListener('click', function () {
             input.value = "";
-            clearBtn.style.display = "none";
-            input.focus();
+            clearBtn.classList.add('hidden')
         });
     }
 });

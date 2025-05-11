@@ -9,6 +9,11 @@ use Illuminate\Support\Facades\Hash;
 
 class loges extends Controller
 {
+
+    public function check()
+    {
+        return session()->has('isLoggedIn') && session('isLoggedIn') === true;
+    }
     public function login(Request $request)
     {
         $username = $request->input('username');

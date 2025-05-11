@@ -139,22 +139,22 @@ h2 {
   font-size: 12px;
 }
 .creatorvides {
-    width:40px; 
-    height:40px; 
-    margin-left: 6px;
-    transform: translateY(0%);
-    border-radius:50%;
-  }
-  .card-artievides1 {
-    width: 31.2%;
-    height: 265px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    border-radius: 12px;
-  }
+  width:40px; 
+  height:40px; 
+  margin-left: 6px;
+  transform: translateY(0%);
+  border-radius:50%;
+}
+.card-artievides1 {
+  width: 31.2%;
+  height: 265px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  border-radius: 12px;
+}
   
-  .dark-mode .card-artievides1  {
-    box-shadow: 0 0 10px rgba(202, 202, 202, 0.5);
-  }
+.dark-mode .card-artievides1  {
+  box-shadow: 0 0 10px rgba(202, 202, 202, 0.5);
+}
 .cabot-artievides {
     display: flex;
     position: relative;

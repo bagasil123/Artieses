@@ -1,22 +1,22 @@
     @php $storyCode = $story->coderies; @endphp
     <div class="card-artiestories1" id="card-artiestories-{{ $storyCode }}">
         @include('appes.artiestories.brecreies')
-        <p class="p-artiestories">{{ $story->usericonStories->username }}</p>   @php
-    $images = $story->images->sortBy('artiestoriesimgid'); // urut berdasarkan created_at ASC
-    $totalImages = $images->count();
-@endphp
-
+        <a href="{{ route('profiles.show', ['username' => $story->usericonStories->username]) }}">
+            <p class="p-artiestories">{{ $story->usericonStories->username }}</p>
+        </a>
+        @php
+            $images = $story->images->sortBy('artiestoriesimgid'); // urut berdasarkan created_at ASC
+            $totalImages = $images->count();
+        @endphp
 <div id="image-container-{{ $storyCode }}" class="image-container">
     @foreach ($images as $index => $img)
         <img src="{{ asset($img->konten) }}"
             class="cardstories cardstories-{{ $storyCode }} {{ $index !== 0 ? 'hidden' : '' }}"
             id="cbtnry1-{{ $storyCode }}-{{ $index }}">
     @endforeach
-
     <button id="previmg-{{ $storyCode }}" class="nav-button prev">◀</button>
     <button id="nextimg-{{ $storyCode }}" class="nav-button next">▶</button>
 </div>
-
 <script>
     let currentIndex{{ $storyCode }} = 0;
 
@@ -102,7 +102,6 @@
     });
     });
 </script>
-
         @include('appes.artiestories.reacted')
         <div class="artiestories1" style="margin-left:10px; margin-top:10px;">
         @include('appes.artiestories.reacted1')

@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\App\artiekeles;
 
+use App\Helpers\AuthHelper;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Artiekeles;
@@ -9,7 +10,7 @@ class FileController extends Controller
 {
     public function uploadFile(Request $request)
     {
-        if (!session('isLoggedIn')) {
+        if (!AuthHelper::check()) {
             return redirect()->route('artieses')->with('alert', 'Harus login dulu.');
         }
         function generateUniqueCodekeles($length = 20) {

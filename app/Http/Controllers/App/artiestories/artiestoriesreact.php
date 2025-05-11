@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\App\artiestories;
 
+use App\Helpers\AuthHelper;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Rcm1Story;
@@ -13,7 +14,7 @@ class artiestoriesreact extends Controller
     
     public function store(Request $request)
     {
-        if (!session('isLoggedIn')) {
+        if (!AuthHelper::check()) {
             return response()->json([
                 'logged_in' => false,
                 'redirect' => route('authes'),
@@ -50,7 +51,7 @@ class artiestoriesreact extends Controller
     }
     public function store2(Request $request)
     {
-        if (!session('isLoggedIn')) {
+        if (!AuthHelper::check()) {
             return response()->json([
                 'logged_in' => false,
                 'redirect' => route('authes'),
@@ -88,7 +89,7 @@ class artiestoriesreact extends Controller
     }
     public function store3(Request $request)
     {
-        if (!session('isLoggedIn')) {
+        if (!AuthHelper::check()) {
             return response()->json([
                 'logged_in' => false,
                 'redirect' => route('authes'),

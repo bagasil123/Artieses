@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\App\artiestories;
 
+use App\Helpers\AuthHelper;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Artiestories;
@@ -12,7 +13,7 @@ class controllerartiestories extends Controller
 {
     public function uploadFile(Request $request)
     {
-        if (!session('isLoggedIn')) {
+        if (!AuthHelper::check()) {
             return redirect()->route('artieses')->with('alert', 'Harus login dulu.');
         }
         function generateUniqueCodestories($length = 20) {

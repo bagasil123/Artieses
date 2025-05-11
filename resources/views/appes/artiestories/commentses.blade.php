@@ -1,15 +1,15 @@
 @if ($story->comments->isEmpty())
     <p class="noncomments">Belum ada komentar</p>
 @else
-<div class="wrappercom1">
+    <div class="wrappercom1" id="wrappercom1">
     @foreach ($story->comments as $i => $comment)
-        <div class="cardcom001">
             @php
                 $username = $comment->userComments->username ?? 'defaultuser';
                 $improfil = $comment->userComments->improfil ?? 'default.png';
                 $path = $username . '/profil/' . $improfil;
                 $ext = pathinfo($improfil, PATHINFO_EXTENSION);
             @endphp
+        <div class="cardcom001 cardcom001-{{ $comment->coderies }}">
             @if(in_array(strtolower($ext), ['gif', 'png', 'jpg', 'jpeg', 'webp']))
                 <img src="{{ asset($path) }}" class="creatorstories">
             @endif
@@ -20,7 +20,7 @@
                 <p class="comment001">{{ $comment->commentses }}</p>
             </div>
         </div>
-        <div class="wrappercom2">
+        <div class="wrappercom2 wrappercom2-{{ $comment->coderies }}">
         @include('appes.artiestories.rcm')
         @include('appes.artiestories.cek1')
         </div>

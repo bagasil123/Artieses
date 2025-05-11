@@ -3,25 +3,20 @@
 namespace App\Http\Controllers\App\profil;
 
 use App\Http\Controllers\Controller;
-use App\Models\Artiekeles;
-use App\Models\Artiestories;
-use App\Models\Artievides;
-use Illuminate\Http\Request;
+use App\Models\Users;
 
 class profilcontroller extends Controller
 {
-    public function Profileses(Request $request)
+    public function show($username)
     {
-        if (!session('isLoggedIn')) {
-            $videos = Artievides::with('usericonVides')->withCount('likeVides')->latest()->get();;
-            $stories = Artiestories::withCount('reactStories')->orderByDesc('react_stories_count')->with('usericonStories', 'ReactStories', 'comments.replies', 'comments.userComments', 'comments.replies.userBalcom')->latest()->take(3)->get();
-            $articles = Artiekeles::latest()->get();
-        }
-        if (session('isLoggedIn')) {
-            $videos = Artievides::with('usericonVides')->withCount('likeVides')->latest()->get();;
-            $stories = Artiestories::withCount('reactStories')->orderByDesc('react_stories_count')->with('usericonStories', 'ReactStories', 'comments.replies', 'comments.userComments', 'comments.replies.userBalcom')->latest()->take(3)->get();
-            $articles = Artiekeles::latest()->get();
-        }
-        return view('appes.Artieprofil', compact('videos', 'stories', 'articles'));
+        $user = Users::where('username', $username)->firstOrFail();
+
+        $videscontent = $user->videos()->latest()->get();
+        $storiescontent = $user->stories()->latest()->get();
+        $artiekelescontent = $user->artiekeles()->latest()->get();
+        $subscriber = $user->subscriber()->latest()->get();
+        $subscribing = $user->subscribing()->latest()->get();
+
+        return view('appes.Artieprofil', compact('user', 'videscontent', 'storiescontent', 'artiekelescontent', 'subscriber', 'subscribing'));
     }
 }

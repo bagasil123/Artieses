@@ -49,7 +49,6 @@ $storyCode = $story->coderies; @endphp
                         if (closeBtn) {
                             closeBtn.addEventListener("click", function () {
                                 input.value = "";
-                                console.log("Klik komentar story ID:", id);
                                 modal.classList.add("hidden");
                                 history.pushState({}, '','Artieses');
                             });

@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id('commentartiestoriesid');
             $table->unsignedBigInteger('userid');
             $table->foreign('userid')->references('userid')->on('users')->onDelete('cascade');
-            $table->unsignedBigInteger('artiestoriesid');
-            $table->foreign('artiestoriesid')->references('artiestoriesid')->on('artiestories')->onDelete('cascade');
+            $table->string('coderies');
+            $table->foreign('coderies')->references('coderies')->on('artiestories')->onDelete('cascade');
             $table->longtext('commentses')->collation('utf8mb4_unicode_520_ci');
             $table->timestamps();
         });

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\App\artievides;
 
+use App\Helpers\AuthHelper;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Artievides;
@@ -11,7 +12,7 @@ class controllerartievides extends Controller
     public function uploadFile(Request $request)
     {
     
-        if (!session('isLoggedIn')) {
+        if (!AuthHelper::check()) {
             return redirect()->route('artieses')->with('alert', 'Harus login dulu.');
         }
         $judul = $request->input('judul');

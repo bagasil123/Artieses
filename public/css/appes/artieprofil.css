@@ -1,0 +1,63 @@
+.card-name {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    padding: 2rem;
+    border-bottom: 1px solid #ddd;
+    background-color: #fff;
+    flex-wrap: wrap;
+}
+.subs {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    background-color: #fff;
+    flex-wrap: wrap;
+}
+.top-subs {
+    display: flex;
+    margin-top: -60px;
+    align-items: center;
+    gap: 2rem;
+    background-color: #fff;
+    flex-wrap: wrap;
+}
+.top-subs span{
+    font-size: 30px;
+}
+
+.dark-mode .card-name, .dark-mode .subs, .dark-mode .top-subs {
+    background-color: #181818;
+}
+.dark-mode p {
+ color: #fff;
+}
+
+.card-name img {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid #ccc;
+}
+.card-name div.text-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.card-name .bio {
+    margin-top: 1rem;
+    font-size: 16px;
+    color: #444;
+    max-width: 400px;
+}
+
+.creatorprofile {
+  width: 40px;
+  margin-left: 25%;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  transform: translateY(-12%);
+}

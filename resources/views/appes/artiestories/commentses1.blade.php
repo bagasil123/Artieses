@@ -3,28 +3,48 @@
     $idbalcom = $firstReply->balcomstoriesid ?? null;
     $commentlagi = $comment->commentartiestoriesid;
     $storyCode = $story->coderies;
+
+    $check = $comment->rcm1->pluck('reaksi')->unique();
+            
+    $getreactsuka = $check->where('reaksi', 'suka')->first();
+    $getreactsenang = $check->where('reaksi', 'senang')->first();
+    $getreactsedih = $check->where('reaksi', 'sedih')->first();
+    $getreactmarah = $check->where('reaksi', 'marah')->first();
+    $getreactketawa = $check->where('reaksi', 'ketawa')->first();
+            
+    $reactions = [
+        'suka' => $getreactsuka,
+        'marah' => $getreactmarah,
+        'sedih' => $getreactsedih,
+        'ketawa' => $getreactketawa,
+        'senang' => $getreactsenang,
+    ];
+    $rcmId = $comment->commentartiestoriesid;
 @endphp
         @if ($comment->replies->isEmpty())
         <div class="balaskan001 ">
-            <p class="balaskan002 balaskansaja-{{ $commentlagi }} " id="balaskansaja-{{ $commentlagi }}">balas</p>
-            <p class="urungkan001 urungkansaja-{{ $commentlagi }} hidden" >urungkan</p>
+            <p class="balaskan002 balaskansaja-{{ $commentlagi }} " id="balaskansaja-{{ $commentlagi }}">Balas</p>
+            <p class="urungkan001 urungkansaja-{{ $commentlagi }} hidden" >Urungkan</p>
         </div>
         <div class="dibales lagi-{{ $commentlagi }} hidden">
-            <form action="{{ route('ayokirim.komentar')}}" method="POST">
-                @csrf
-            <input type="text" class="inpbalassaja-{{ $commentlagi }}" name="inpbalassaja" id="inpbalassaja-{{ $commentlagi }}" placeholder="Kirim komentar..." required />
-            <input type="hidden" value="{{ $commentlagi }}" name="inpbalassajahidden">
-            <input type="hidden" value="{{ $storyCode }}" name="arahan">
+            <input type="text" class="inpbalassaja-{{ $commentlagi }}" id="inpbalassaja-{{ $commentlagi }}" placeholder="Kirim komentar..." required />
+            <input type="hidden" value="{{ $commentlagi }}">
             <button type="button" class="close-dibales close-dibales-{{ $commentlagi }}">&times;</button>
             <button type="submit" class="btnimg-sendcom btnimg-sendcom-{{ $commentlagi }}">
-            <img class="iclikestory" loading="lazy" width="10px"
-                data-light="{{ asset('partses/sendcomlm.png') }}"
-                data-dark="{{ asset('partses/sendcomdm.png') }}">
+                <img class="iclikescmt" src="{{ asset('partses/sendcomdm.png') }}">
             </button>
-            </form>
         </div>
-        
         @include('appes.artiestories.js.balascommentarnya')
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                Pusher.logToConsole = true;
+                const pusher = new Pusher("{{ config('broadcasting.connections.pusher.key') }}", {
+                    cluster: "{{ config('broadcasting.connections.pusher.options.cluster') }}",
+                    forceTLS: true
+                });
+                
+            });
+        </script>
         @else 
             <p class="comment0010 {{ session('open_commentbalasan') == $commentlagi ? 'hidden' : 'block' }}" id="seerpl1-{{ $idbalcom }}">Lihat({{ count($comment->replies) }}) </p>
             <p class="comment00101 {{ session('open_commentbalasan') == $commentlagi ? 'block' : 'hidden' }}" id="seerpl0-{{ $idbalcom }}" style="margin-left: 141px;">Tutup({{ count($comment->replies) }}) </p>
@@ -49,20 +69,14 @@
                     @include('appes.artiestories.cek2')
                 @endforeach
                 @include('appes.artiestories.js.balcomjs')
-                
-        <div class="dibales1 lagi-{{ $commentlagi }}">
-            <form action="{{ route('ayokirim.komentar')}}" method="POST">
-                @csrf
-            <input type="text" class="inpbalassaja-{{ $commentlagi }}" name="inpbalassaja" id="inpbalassaja-{{ $commentlagi }}" placeholder="Kirim komentar..." required />
-            <input type="hidden" value="{{ $commentlagi }}" name="inpbalassajahidden">
-            <input type="hidden" value="{{ $storyCode }}" name="arahan">
-            <button type="button" class="close-dibales close-dibales-{{ $commentlagi }}">&times;</button>
-            <button type="submit" class="btnimg-sendcom btnimg-sendcom-{{ $commentlagi }}">
-            <img class="iclikestory" loading="lazy" width="10px"
-                data-light="{{ asset('partses/sendcomlm.png') }}"
-                data-dark="{{ asset('partses/sendcomdm.png') }}">
-            </button>
-            </form>
-        </div>
+                <div class="dibales1 lagi-{{ $commentlagi }}">
+                    <input type="text" class="inpbalassaja-{{ $commentlagi }}" id="inpbalassaja-{{ $commentlagi }}" placeholder="Kirim komentar..." required />
+                    <input type="hidden" value="{{ $commentlagi }}">
+                    <button type="button" class="close-dibales close-dibales-{{ $commentlagi }}">&times;</button>
+                    <button type="submit" class="btnimg-sendcom btnimg-sendcom-{{ $commentlagi }}">
+                    <img class="iclikescmt" loading="lazy"
+                        src="{{ asset('partses/sendcomdm.png') }}">
+                    </button>
+                </div>
             </div>
     @endif
