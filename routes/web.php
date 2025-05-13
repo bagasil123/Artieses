@@ -28,9 +28,12 @@ use Illuminate\Support\Facades\Route;
 Route::get('/chat', function () {
     return view('chat');
 });
-
 Route::post('/enter-typing', [artiestoriescomments::class, 'storeGG']);
 Route::post('/broadcast-typing', [artiestoriescomments::class, 'broadcast']);
+Route::post('/enter-typing1', [artiestoriescomments::class, 'storeGG1']);
+Route::post('/broadcast-typing1', [artiestoriescomments::class, 'broadcast1']);
+Route::post('/enter-typing2', [artiestoriescomments::class, 'storeGG2']);
+Route::post('/broadcast-typing2', [artiestoriescomments::class, 'broadcast2']);
 
 
 

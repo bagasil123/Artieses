@@ -1,4 +1,4 @@
-@php
+        @php
             $now = \Carbon\Carbon::now();
             $waktunya1 = $reply->created_at;
             $diffInMinutes002 = $waktunya1->diffInMinutes($now);

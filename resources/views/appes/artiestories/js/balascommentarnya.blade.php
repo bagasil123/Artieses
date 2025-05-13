@@ -19,7 +19,6 @@ document.addEventListener('DOMContentLoaded', function () {
             inpbalassaja.value = "";
         });
     });
-
     document.querySelectorAll('.urungkansaja-{{ $rcmId }}').forEach(function (button) {
         button.addEventListener('click', function () {
             const balaskanlagi = document.querySelector('.lagi-{{ $rcmId }}');

@@ -32,7 +32,21 @@
     <div class="text-section">
       <div class="top-subs">
         <span class="nameprofiles">{{ $user->username }}</span>
-          <button class="btnsubs btnsubs{{ $user->userid }}" id="{{ $user->userid }}"> Subscribe</button>
+          @if($user->username == session('username'))
+          @else
+              @php
+                  $isSubscribed = \App\Models\Subs::where('subscriber', session('username'))
+                                  ->where('subscribing', $user->username)
+                                  ->first();
+              @endphp
+
+              @if($isSubscribed)
+                  <button class="btnsubs btnsubs{{ $user->userid }}" id="{{ $user->userid }}">Subscribe</button>
+              @else
+                  <button class="btnsubs btnsubs{{ $user->userid }}" id="{{ $user->userid }}">Unsubscribe</button>
+              @endif
+          @endif
+
           <script>
             document.addEventListener('DOMContentLoaded', function () {
                 const subscribeButtons = document.querySelectorAll('.btnsubs');

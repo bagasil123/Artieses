@@ -15,11 +15,13 @@ class BroadcastTyping implements ShouldBroadcast
 
     public $username;
     public $reqplat;
+    public $message;
 
-    public function __construct($username, $reqplat)
+    public function __construct($username, $reqplat, $message)
     {
         $this->username = $username;
         $this->reqplat = $reqplat;
+        $this->message = $message;
     }
 
     public function broadcastOn(): array
@@ -39,6 +41,7 @@ class BroadcastTyping implements ShouldBroadcast
         return [
             'username' => $this->username,
             'reqplat' => $this->reqplat,
+            'message' => $this->message,
         ];
     }
 

@@ -22,13 +22,8 @@ class subscontroller extends Controller
         $validated = $request->validate([
             'subscribing' => 'required|integer|exists:users,userid',
         ]);
-
         $subscriberId = session('userid');
-
-        $existingSubscription = Subs::where('subscriber', $subscriberId)
-            ->where('subscribing', $validated['subscribing'])
-            ->first();
-
+        $existingSubscription = Subs::where('subscriber', $subscriberId)->where('subscribing', $validated['subscribing'])->first();
         if ($existingSubscription) {
             $existingSubscription->delete();
             $message = "Berhasil unsubscribe";
@@ -40,7 +35,6 @@ class subscontroller extends Controller
             ]);
             $message = "Berhasil subscribe";
         }
-
         return response()->json([
             'logged_in' => true,
             'success' => true,
