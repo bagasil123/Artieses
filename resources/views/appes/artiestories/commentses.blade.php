@@ -6,7 +6,6 @@
     <p class="noncomments" id="noncomments-{{ $storyCode }}">Belum ada komentar</p>
 @else
     @foreach ($story->comments as $i => $comment)
-       
         @include('appes.artiestories.commentses1')
     @endforeach
 @endif

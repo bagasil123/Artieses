@@ -6,12 +6,12 @@ use App\Helpers\AuthHelper;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Artievides;
+use Illuminate\Support\Facades\Storage;
 
 class controllerartievides extends Controller
 {
     public function uploadFile(Request $request)
     {
-    
         if (!AuthHelper::check()) {
             return redirect()->route('artieses')->with('alert', 'Harus login dulu.');
         }
@@ -22,7 +22,6 @@ class controllerartievides extends Controller
             'video' => 'required|file|mimes:mp4,avi,mov,wmv,mkv,flv,mpeg,3gp',
             'thumbnail' => 'required|image|mimes:jpeg,png,jpg,svg'
         ]);
-        
         function generateUniqueCodevides($length = 20) {
             $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
             do {
@@ -35,21 +34,18 @@ class controllerartievides extends Controller
             return $randomString;
         }
         $randomString = generateUniqueCodevides();
-        
         $videoFile = $request->file('video');
         $videoName = time() . '_' . $videoFile->getClientOriginalName();
-        $videoPath = public_path(session('username') . '/artievides/' . $randomString);
-        if (!file_exists($videoPath)) mkdir($videoPath, 0755, true);
-        $videoFile->move($videoPath, $videoName);
+        $videoPath = session('username') . '/artievides/' . $randomString;
+        Storage::disk('public')->putFileAs($videoPath, $videoFile, $videoName);
         $videoPathRelatif = session('username') . '/artievides/' . $randomString . '/' . $videoName;
-        
         $thumbFile = $request->file('thumbnail');
         $thumbName = time() . '_' . $thumbFile->getClientOriginalName();
-        $thumbPath = public_path(session('username') . '/artithumbs/' . $randomString);
+        $thumbPath = session('username') . '/artiethumb/' . $randomString;
         if (!file_exists($thumbPath)) mkdir($thumbPath, 0755, true);
-        $thumbFile->move($thumbPath, $thumbName);
-        $thumbPathRelatif = session('username') . '/artithumbs/' . $randomString . '/' . $thumbName;
+        Storage::disk('public')->putFileAs($thumbPath, $thumbFile, $thumbName);
 
+        $thumbPathRelatif = session('username') . '/artiethumb/' . $randomString . '/' . $thumbName;
         Artievides::create([
             'userid' => session('userid'),
             'codevides' => $randomString,

@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Users;
-use App\Models\LikeArtieVides;
 
 
 class Artievides extends Model
@@ -18,9 +17,16 @@ class Artievides extends Model
     {
         return $this->belongsTo(Users::class, 'userid', 'userid');
     }
+    public function subscribervides()
+    {
+        return $this->hasMany(Subs::class, 'subscriber');
+    }
     public function likeVides()
     {
-        return $this->hasMany(LikeArtieVides::class, 'artievidesid', 'artievidesid');
+        return $this->hasMany(likevides::class, 'codevides', 'codevides');
     }
-
+    public function banyakviewyahemangiyah()
+    {
+        return $this->hasMany(ViewVideskahjagoluklobisangambilini::class, 'codevides', 'codevides');
+    }
 }

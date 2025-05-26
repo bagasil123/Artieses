@@ -25,10 +25,13 @@ class Artiestories extends Model
     {
         return $this->hasMany(ComStories::class, 'coderies', 'coderies');
     }
+    public function commentscount()
+    {
+        return $this->hasMany(ComStories::class, 'coderies', 'artiestoriesid');
+    }
     public function images() {
         return $this->hasMany(ArtiestoriesIMG::class, 'artiestoriesid');
     }
-    
     public function user()
     {
         return $this->belongsTo(Users::class, 'userid', 'userid');

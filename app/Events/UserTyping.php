@@ -20,7 +20,7 @@ class UserTyping implements ShouldBroadcast
 
     public $broadcastQueue = false;
 
-    public function __construct($username, $message = null, $improfil, $coderies, $timeAgo, $comstoriesid)
+    public function __construct($username, $message, $improfil, $coderies, $timeAgo, $comstoriesid)
     {
         $this->username = $username;
         $this->message = $message;

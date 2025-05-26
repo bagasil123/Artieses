@@ -10,7 +10,10 @@ body {
     background-color: #181818;
     color: #fff;
   }
-  
+  .noscroll {
+    overflow: hidden;
+  }
+
   body:not(.dark-mode)::-webkit-scrollbar {
     width: 8px;
   }

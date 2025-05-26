@@ -35,15 +35,12 @@
           @if($user->username == session('username'))
           @else
               @php
-                  $isSubscribed = \App\Models\Subs::where('subscriber', session('username'))
-                                  ->where('subscribing', $user->username)
-                                  ->first();
+                  $isSubscribed = \App\Models\Subs::where('subscriber', session('userid'))->where('subscribing', $user->userid)->first();
               @endphp
-
               @if($isSubscribed)
-                  <button class="btnsubs btnsubs{{ $user->userid }}" id="{{ $user->userid }}">Subscribe</button>
-              @else
                   <button class="btnsubs btnsubs{{ $user->userid }}" id="{{ $user->userid }}">Unsubscribe</button>
+              @else
+                  <button class="btnsubs btnsubs{{ $user->userid }}" id="{{ $user->userid }}">Subscribe</button>
               @endif
           @endif
 

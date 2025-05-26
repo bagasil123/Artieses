@@ -148,6 +148,7 @@ h2 {
 .card-artievides1 {
   width: 31.2%;
   height: 265px;
+  padding-bottom: 15px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   border-radius: 12px;
 }
@@ -176,7 +177,7 @@ h2 {
   font-size: 12px;
   position: absolute;
   margin-bottom: 0px;
-  margin-left: 60px;
+  margin-left: 13px;
   width: 100%;
   transform: translateY(40%) !important;
 }

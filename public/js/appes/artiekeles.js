@@ -30,7 +30,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const kategoriBox = document.getElementById("pilihkategori-artiekeles");
     const kategoriBtns = document.querySelectorAll(".kategori-btn-artiekeles");
     const kseoInput = document.getElementById("kseo-artiekeles");
-  
     if (cardUpload && uploadFile) {
         cardUpload.addEventListener("click", function(event) {
             event.preventDefault();
@@ -49,12 +48,9 @@ document.addEventListener("DOMContentLoaded", function () {
           kategoriBox.classList.add("hidden");
       }
     });
-
-
     toggleBtn.addEventListener("click", function () {
         kategoriBox.classList.toggle("hidden");
     });
-
     kategoriBtns.forEach(btn => {
         btn.addEventListener("click", function () {
             kategoriBtns.forEach(b => b.classList.remove("selected"));

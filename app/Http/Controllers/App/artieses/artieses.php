@@ -11,14 +11,6 @@ use Illuminate\Http\Request;
 
 class artieses extends Controller
 {
-    public function Search(Request $request)
-    {
-        if (!AuthHelper::check()) {
-            return redirect()->route('artieses')->with('alert', 'Harus login dulu.');
-        }
-
-        return view('appes.searches', compact('searches'));
-    }
     public function Homes(Request $request)
     {
         if (!AuthHelper::check()) {
@@ -28,7 +20,7 @@ class artieses extends Controller
                     ->orderByDesc('created_at')
                     ->get();
             
-                $stories = Artiestories::withCount('reactStories')
+                $stories = Artiestories::withCount('reactStories', 'comments')
                     ->orderByDesc('react_stories_count')
                     ->with([
                         'usericonStories',
@@ -67,7 +59,7 @@ class artieses extends Controller
                     ->orderByDesc('created_at')
                     ->get();
             
-                $stories = Artiestories::withCount('reactStories')
+                $stories = Artiestories::withCount('reactStories', 'comments')
                     ->orderByDesc('react_stories_count')
                     ->with([
                         'usericonStories',

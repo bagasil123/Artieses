@@ -4,16 +4,31 @@
 <div id="commentarist-{{ $storyCode }}" class="commentarist commentarist-{{ $storyCode }} {{ isset($open_commentarist) && $open_commentarist == $storyCode ? 'block' : 'hidden' }} {{ isset($open_commentarist) == $storyCode ? 'block' : 'hidden' }}" data-story="{{ $storyCode }}">
     <div class="commentaristcardimg">
         @foreach ($images as $index => $img)
-            <img src="{{ asset($img->konten) }}"
-                class="crimg cardstories-{{ $storyCode }} {{ $index !== 0 ? 'hidden' : '' }}"
-                id="cbtnry001-{{ $storyCode }}-{{ $index }}">
+                @php
+                    $isImage = in_array(pathinfo($img->konten, PATHINFO_EXTENSION), ['jpg', 'jpeg', 'png', 'gif']);
+                    $isVideo = in_array(pathinfo($img->konten, PATHINFO_EXTENSION), ['mp4', 'webm', 'ogg']);
+                @endphp
+                @if ($isImage)
+                    <img src="{{ url('/Artiestoriesimg/' . basename($img->konten) . '?GetContent=' . $story->coderies) }}"
+                        class="crimg cardstories-{{ $storyCode }} {{ $index !== 0 ? 'hidden' : '' }}"
+                        id="cbtnry001-{{ $storyCode }}-{{ $index }}" >
+                @elseif ($isVideo)
+                    <video controls
+                        class="crimg cardstories-{{ $storyCode }} {{ $index !== 0 ? 'hidden' : '' }}"
+                        id="cbtnry001-{{ $storyCode }}-{{ $index }}" tabindex="-1">
+                        <source src="{{ url('/Artiestoriesvideo/' . basename($img->konten) . '?GetContent=' . $story->coderies) }}" type="video/mp4">
+                        Browsermu tidak mendukung video.
+                    </video>
+                @endif
         @endforeach
         <button id="previmg-{{ $storyCode }}-comment" class="nav-button prev1">◀</button>
         <button id="nextimg-{{ $storyCode }}-comment" class="nav-button next1">▶</button>
         </div>
     <div class="commentaristcre">
         @include('appes.artiestories.brecreies')
-        <p class="p-artiestories">{{ $story->usericonStories->username }}</p>   
+        <a href="{{ route('profiles.show', ['username' => $story->usericonStories->username]) }}">
+            <p class="p-artiestories">{{ $story->usericonStories->username }}</p>   
+        </a>
         <p class="captionStories">{{ $story->caption }}</p>
         @include('appes.artiestories.cek')
         @include('appes.artiestories.reacted')
@@ -35,612 +50,914 @@
     <div class="brcmt hidden" id="divbrcmt-{{ $storyCode }}">
         <p id="brcmt-{{ $storyCode }}"></p>
     </div>
-        <div class="chat chat-{{ $storyCode }}">
-            <input type="text" class="inpcom inpcom-{{ $storyCode }}" id="inpcom-{{ $storyCode }}" placeholder="Kirim komentar..." required/>
-            <input type="hidden" value="{{ $storyCode }}" id="commentses-{{ $storyCode }}">
-            <input type="hidden" value="{{ $storyCode }}" id="commentses1-{{ $storyCode }}">
-            <button type="button" class="balinpcom balinpcom-{{ $storyCode }} hidden" id="balinpcom-{{ $storyCode }}">&times;</button>
-            <button type="submit" class="sendcom sendcom-{{ $storyCode }}" id="sendcom-{{ $storyCode }}">
-                <img class="iclikestory" loading="lazy" src="{{ asset('partses/sendcomdm.png') }}">
-            </button>
-        </div>      
-        <script>
-            document.querySelectorAll('.inpcom-{{ $storyCode }}').forEach(inputEl => {
-                const storyCode = inputEl.id.replace('inpcom-', '');
-                const clearBtn = document.getElementById(`balinpcom-{{ $storyCode }}`)
-                if (clearBtn) {
-                    inputEl.addEventListener('input', function () {
-                        if (inputEl.value.length > 0) {
-                            clearBtn.classList.remove('hidden');
-                            clearBtn.classList.add('block');
-                        } else {
-                            clearBtn.classList.add('hidden');
-                            clearBtn.classList.remove('block');
-                        }
-                    });
-                    clearBtn.addEventListener('click', function () {
-                        inputEl.value = "";
-                        clearBtn.classList.add('hidden');
-                    });
-                    let canSend = true;
-                    inputEl.addEventListener('keydown', function (event) {
-                        if (event.key === 'Enter' && canSend) {
-                            event.preventDefault();
-                            const message = inputEl.value.trim();
-                            const commentses = document.getElementById('commentses-{{ $storyCode }}');
-                            const coderies = commentses.value.trim();
-                            if (message.length > 0) {
-                                canSend = false; 
-                                fetch('/enter-typing', {
-                                    method: 'POST',
-                                    headers: {
-                                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                                        'Content-Type': 'application/json',
-                                    },
-                                    body: JSON.stringify({ message, coderies })
-                                })
-                                .then(res => res.json())
-                                .then(data => {
-                                    inputEl.value = '';
-                                    clearBtn.classList.add('hidden');
-                                })
-                                .finally(() => {
-                                    setTimeout(() => {
-                                        canSend = true;
-                                    }, 3000);
-                                });
-                            }
-                        }
-                    });
-                    let typingTimeout;
-                    let lastBroadcast = 0;
-                    inputEl.addEventListener('input', function () {
-                        const now = Date.now();
-                        if (now - lastBroadcast < 1000) return; 
-                        lastBroadcast = now;
-                        const message = inputEl.value.trim();
-                        const commentses = document.getElementById('commentses-{{ $storyCode }}');
-                        const comentses = commentses.value.trim();
-                        fetch('/broadcast-typing', {
-                            method: 'POST',
-                            headers: {
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({ message, comentses })
-                        })
-                        .then(res => res.json())
-                        .then(data => {
-                        });
-                    });
+    <div class="chat chat-{{ $storyCode }}">
+        <img src="{{ asset('partses/import.png') }}" class="iclikestoryimp" id="importbtn-{{ $storyCode }}">
+        <input type="text" class="inpcom inpcom-{{ $storyCode }}" id="inpcom-{{ $storyCode }}" placeholder="Kirim komentar..." required/>
+        <input type="file" accept="image/*" id="filepicker-{{ $storyCode }}" class="hidden" />
+        <input type="hidden" value="{{ $storyCode }}" id="commentses-{{ $storyCode }}">
+        <button type="button" class="balinpcom balinpcom-{{ $storyCode }} hidden" id="balinpcom-{{ $storyCode }}">&times;</button>
+        <button type="submit" class="sendcom sendcom-{{ $storyCode }}" id="sendcom-{{ $storyCode }}">
+            <img class="iclikestory" loading="lazy" src="{{ asset('partses/sendcomdm.png') }}">
+        </button>
+    </div>      
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const storyCode = '{{ $storyCode }}';
+            const input = document.getElementById('inpcom-' + storyCode);
+            const fileInput = document.getElementById('filepicker-' + storyCode);
+            const importBtn = document.getElementById('importbtn-' + storyCode);
+            importBtn.addEventListener('click', () => {
+                fileInput.click();
+            });
+            fileInput.addEventListener('change', function () {
+                const file = this.files[0];
+                if (file && file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function (event) {
+                        showImagePreview(event.target.result, storyCode);
+                    };
+                    reader.readAsDataURL(file);
                 }
             });
-                if (typeof window.pusher === 'undefined') {
-                    Pusher.logToConsole = true;
-                    window.pusher = new Pusher("{{ config('broadcasting.connections.pusher.key') }}", {
-                        cluster: "{{ config('broadcasting.connections.pusher.options.cluster') }}",
-                        forceTLS: true
-                    });
-                }
-                if (typeof window.channel === 'undefined') {
-                    window.channel = window.pusher.subscribe('typing-channel');
-                }
-                if (typeof window.channel1 === 'undefined') {
-                    window.channel1 = window.pusher.subscribe('broadcast-channel');
-                }
-                if (!window.channelBound1) {
-                    window.channel.bind('user.typing', function (data) {
-                    if (data.message && data.message !== "") {
-                        const targetWrapper = document.querySelector(`.commentarist[data-story="${data.coderies}"]`);
-                        check1 = targetWrapper.getAttribute('data-story');
-                        if (data.coderies === check1) {
-                            const container = document.getElementById(`wrappercom1-${check1}`);
-                            const commentwrapcom001 = document.createElement('div');
-                            const apusnoncmt = document.getElementById(`noncomments-${data.coderies}`)
-                            if (apusnoncmt){
-                                apusnoncmt.remove();
-                            }
-                            commentwrapcom001.id = `commentwrapcom-${data.comstoriesid}`;
-                            const card = document.createElement('div');
-                            card.className = 'cardcom001';
-                            const img = document.createElement('img');
-                            img.src = `${data.username}/profil/${data.improfil}`;
-                            img.className = 'creatorstories';
-                            const dispcard = document.createElement('div');
-                            dispcard.className = 'dispcard';
-                            const ddispcanam = document.createElement('div');
-                            ddispcanam.className = 'ddispcanam';
-                            const pName = document.createElement('p');
-                            pName.className = 'dispname';
-                            pName.innerText = data.username;
-                            ddispcanam.appendChild(pName);
-                            const pComment = document.createElement('p');
-                            const wrappercom2 = document.createElement('div');
-                            wrappercom2.className = `wrappercom2 wrappercom2-${data.coderies}`;
-                            const reacted3 = document.createElement('div');
-                            reacted3.className = `srcard3 srcard3-${data.comstoriesid} hidden`;
-                            reacted3.id = `srcard3-${data.comstoriesid}`;
-                            const reacted31 = document.createElement('a');
-                            reacted31.href = `javascript:void(0)`;
-                            const reacted32 = document.createElement('a');
-                            reacted32.href = `javascript:void(0)`;
-                            const reacted33 = document.createElement('a');
-                            reacted33.href = `javascript:void(0)`;
-                            const reacted34 = document.createElement('a');
-                            reacted34.href = `javascript:void(0)`;
-                            const reacted35 = document.createElement('a');
-                            reacted35.href = `javascript:void(0)`;
-                            const img31 = document.createElement('img');
-                            img31.src = '{{ asset('partses/reaksi/suka.png') }}';
-                            img31.className = `iclikestoriesemote3 reaksi-btn2 reaksi-btn2-${data.comstoriesid}`;
-                            img31.setAttribute('data-reaksi2', 'suka');
-                            img31.setAttribute('data-artiestoriesid2', `${data.comstoriesid}`);
-                            const img32 = document.createElement('img');
-                            img32.src = '{{ asset('partses/reaksi/senang.png') }}';
-                            img32.className = `iclikestoriesemote3 reaksi-btn2 reaksi-btn2-${data.comstoriesid}`;
-                            img32.setAttribute('data-reaksi2', 'senang');
-                            img32.setAttribute('data-artiestoriesid2', `${data.comstoriesid}`);
-                            const img33 = document.createElement('img');
-                            img33.src = '{{ asset('partses/reaksi/ketawa.png') }}';
-                            img33.className = `iclikestoriesemote3 reaksi-btn2 reaksi-btn2-${data.comstoriesid}`;
-                            img33.setAttribute('data-reaksi2', 'ketawa');
-                            img33.setAttribute('data-artiestoriesid2', `${data.comstoriesid}`);
-                            const img34 = document.createElement('img');
-                            img34.src = '{{ asset('partses/reaksi/sedih.png') }}';
-                            img34.className = `iclikestoriesemote3 reaksi-btn2 reaksi-btn2-${data.comstoriesid}`;
-                            img34.setAttribute('data-reaksi2', 'sedih');
-                            img34.setAttribute('data-artiestoriesid2', `${data.comstoriesid}`);
-                            const img35 = document.createElement('img');
-                            img35.src = '{{ asset('partses/reaksi/marah.png') }}';
-                            img35.className = `iclikestoriesemote3 reaksi-btn2 reaksi-btn2-${data.comstoriesid}`;
-                            img35.setAttribute('data-reaksi2', 'marah');
-                            img35.setAttribute('data-artiestoriesid2', `${data.comstoriesid}`);
-                            const iclikeswrap = document.createElement('div')
-                            iclikeswrap.className = `iclikeswrap rbtnry3-${data.comstoriesid}`;
-                            iclikeswrap.id = `rbtnry3-${data.comstoriesid}`;
-                            const suka = document.createElement('p');
-                            suka.className = `inint rbtnry3-${data.comstoriesid}`;
-                            suka.id = `rbtnry3-${data.comstoriesid}`;
-                            suka.innerText = 'suka';
-                            const created = document.createElement('p');
-                            created.className = 'captionStories gg1';
-                            created.innerText = `${data.timeAgo}`;
-                            const balaskan001 = document.createElement('div');
-                            balaskan001.className = `balaskan001`;
-                            balaskan001.id = `balaskan001-${data.comstoriesid}`;
-                            const balaskan = document.createElement('p');
-                            balaskan.className = `balaskan002 balaskansaja-${data.comstoriesid}`;
-                            balaskan.id = `balaskansaja-${data.comstoriesid}`;
-                            balaskan.innerText = 'Balas';
-                            const urungkansaja = document.createElement('p');
-                            urungkansaja.className = `urungkan001 urungkansaja-${data.comstoriesid} hidden`;
-                            urungkansaja.id = `urungkansaja-${data.comstoriesid}`;
-                            urungkansaja.innerText = 'Urungkan';
-                            pComment.className = 'comment001';
-                            pComment.innerText = data.message;
-                            const dibaleslagi = document.createElement('div');
-                            dibaleslagi.className = `dibales lagi-${data.comstoriesid} hidden`;
-                            dibaleslagi.id = `lagi-${data.comstoriesid}`;
-                            const inpbalassaja = document.createElement('input');
-                            inpbalassaja.type = `text`;
-                            inpbalassaja.className = `inpbalassaja-${data.comstoriesid}`;
-                            inpbalassaja.id = `inpbalassaja-${data.comstoriesid}`;
-                            inpbalassaja.setAttribute('placeholder', 'Kirim komentar...');
-                            inpbalassaja.required = true;
-                            const inpbalassajahidden = document.createElement('input');
-                            inpbalassajahidden.type = `hidden`;
-                            inpbalassajahidden.value = data.comstoriesid;
-                            inpbalassajahidden.id = `inpbalassajahidden-${data.comstoriesid}`;
-                            const closeDibales = document.createElement('button');
-                            closeDibales.type = `button`;
-                            closeDibales.className = `close-dibales close-dibales-${data.comstoriesid}`;
-                            closeDibales.innerHTML = '&times;';
-                            const submitDibales = document.createElement('button');
-                            submitDibales.type = `submit`;
-                            submitDibales.className = `btnimg-sendcom btnimg-sendcom-${data.comstoriesid}`;
-                            const dibalesIMG = document.createElement('img');
-                            dibalesIMG.className = `iclikescmt`;
-                            dibalesIMG.src = `{{ asset('partses/sendcomdm.png') }}`;
-                            const scriptReact = document.createElement('script');
-                            const script = document.createElement('script');
-                            const brort = document.createElement('div');
-                            brort.className = `brcmt2 hidden`;
-                            brort.id = `divbrcmt2-${data.comstoriesid}`;
-                            const brortp = document.createElement('p');
-                            brortp.id = `brcmt2-${data.comstoriesid}`;
-                            container.appendChild(commentwrapcom001);
-                            commentwrapcom001.append(card, wrappercom2, balaskan001, dibaleslagi);
-                            card.append(img, dispcard);
-                            dispcard.append(ddispcanam, pComment);
-                            wrappercom2.append(reacted3, suka, scriptReact, created);
-                            reacted3.append(reacted31, reacted32, reacted33, reacted34, reacted35);
-                            reacted31.appendChild(img31);
-                            reacted32.appendChild(img32);
-                            reacted33.appendChild(img33);
-                            reacted34.appendChild(img34);
-                            reacted35.appendChild(img35);
-                            balaskan001.append(balaskan, urungkansaja);
-                            dibaleslagi.append(brort, inpbalassaja, closeDibales, inpbalassajahidden, submitDibales, script);
-                            brort.appendChild(brortp);
-                            submitDibales.appendChild(dibalesIMG);
-                            scriptReact.textContent = `
-                                document.querySelectorAll('.rbtnry3-${data.comstoriesid}').forEach(function (button) {
-                                    button.addEventListener('mouseenter', function () {
-                                        const button3 = document.getElementById('rbtnry3-${data.comstoriesid}');
-                                        const srcard3 = document.getElementById('srcard3-${data.comstoriesid}');
-                                        srcard3.classList.remove('hidden');
-                                    });
-                                    button.addEventListener('mouseleave', function () {
-                                        const button3 = document.getElementById('rbtnry3-${data.comstoriesid}');
-                                        const srcard3 = document.getElementById('srcard3-${data.comstoriesid}');
-                                        setTimeout(() => {
-                                            if (!srcard3.matches(':hover')) {
-                                                srcard3.classList.add('hidden');
-                                            }}, 0);
-                                    });
-                                });
-                            `;
-                            script.textContent = `
-                                document.querySelectorAll('.balaskansaja-${data.comstoriesid}').forEach(function (button) {
-                                    button.addEventListener('click', function () {
-                                        const balaskanlagi = document.querySelector('.lagi-${data.comstoriesid}');
-                                        const balaskansaja = document.querySelector('.balaskansaja-${data.comstoriesid}');
-                                        const urungkansaja = document.querySelector('.urungkansaja-${data.comstoriesid}');
-                                        balaskanlagi.classList.remove('hidden');
-                                        balaskansaja.classList.add('hidden');
-                                        urungkansaja.classList.remove('hidden');
-                                    });
-                                });
-                                document.querySelectorAll('.close-dibales-${data.comstoriesid}').forEach(function (button) {
-                                    button.addEventListener('click', function () {
-                                        const inpbalassaja = document.querySelector('.inpbalassaja-${data.comstoriesid}');
-                                        inpbalassaja.value = "";
-                                    });
-                                });
-                                document.querySelectorAll('.urungkansaja-${data.comstoriesid}').forEach(function (button) {
-                                    button.addEventListener('click', function () {
-                                        const balaskanlagi = document.querySelector('.lagi-${data.comstoriesid}');
-                                        const balaskansaja = document.querySelector('.balaskansaja-${data.comstoriesid}');
-                                        const urungkansaja = document.querySelector('.urungkansaja-${data.comstoriesid}');
-                                        const inpbalassaja = document.querySelector('.inpbalassaja-${data.comstoriesid}');
-                                        inpbalassaja.value = "";
-                                        balaskanlagi.classList.add('hidden');
-                                        balaskansaja.classList.remove('hidden');
-                                        urungkansaja.classList.add('hidden');
-                                    });
-                                });
-                            `;
-                    }}});
-                    window.channelBound1 = true;
-                };
-                window.channel1.bind('broadcast.typing', function (data) {
-                if (data.reqplat && data.reqplat.length > 0) {
-                    if (data.reqplat == '{{ $storyCode }}') {
-                        const cardmengetik = document.getElementById('divbrcmt-{{ $storyCode }}');
-                        const teksmengetik = document.getElementById('brcmt-{{ $storyCode }}');
-                        cardmengetik.classList.remove('hidden');
-                        teksmengetik.innerText = `${data.username} sedang mengetik...`;
-                        clearTimeout(window.typingTimeout);
-                        window.typingTimeout = setTimeout(() => {
-                            teksmengetik.innerText = '';
-                            cardmengetik.classList.add('hidden');
-                        }, 2000);
-                    }}
-                });
-        </script>
-        <script>
-            document.addEventListener('click', function (e) {
-                if (e.target.classList.contains('reaksi-btn2')) {
-                    const reaksi2 = e.target.getAttribute('data-reaksi2');
-                    const storyId2 = e.target.getAttribute('data-artiestoriesid2');
-
-                    if (reaksi2 && storyId2) {
-                        fetch("{{ route('uprcm1') }}", {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Accept': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                            },
-                            body: JSON.stringify({
-                                reaksi: reaksi2,
-                                commentartiestoriesid: storyId2
-                            })
-                        })
-                        .then(res => res.json())
-                        .then(data => {
-                            if (!data.logged_in) {
-                                sessionStorage.setItem('alert', data.alert);
-                                sessionStorage.setItem('form', data.form);
-                                window.location.href = data.redirect;
-                                return;
-                            }
-                            if (data.csrf) {
-                                document.querySelector('meta[name="csrf-token"]').setAttribute('content', data.csrf);
-                            }
-                        })
+            input.addEventListener('paste', function (e) {
+                const items = (e.clipboardData || e.originalEvent.clipboardData).items;
+                for (let i = 0; i < items.length; i++) {
+                    if (items[i].type.indexOf("image") === 0) {
+                        const file = items[i].getAsFile();
+                        const reader = new FileReader();
+                        reader.onload = function (event) {
+                            showImagePreview(event.target.result, storyCode);
+                        };
+                        reader.readAsDataURL(file);
                     }
                 }
             });
-        </script>
-        
-        <script>
-            if (typeof window.currentUserId1 === 'undefined') {
-                window.currentUserId1 = {{ session('userid') }};
-            }
-        </script>
-        <script>
-            document.addEventListener('keydown', function (e) {
-                const target = e.target;
-                if (target && target.matches('[class^="inpbalassaja-"]')) {
-                    if (e.key === 'Enter') {
-                        e.preventDefault();
-                        const inputClass = [...target.classList].find(cls => cls.startsWith('inpbalassaja-'));
-                        const idSuffix = inputClass.substring('inpbalassaja-'.length);
-
-                        const commentses = document.getElementById('inpbalassajahidden-' + idSuffix);
-                        const clearBtn = document.getElementById('close-dibales-' + idSuffix);
-
-                        const message = target.value.trim();
-                        const comentses = commentses.value.trim();
-
-                        fetch('/enter-typing1', {
-                            method: 'POST',
-                            headers: {
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({ message, comentses })
-                        })
-                        .then(res => res.json())
-                        .then(data => {
-                            target.value = '';
-                            if (clearBtn) clearBtn.classList.add('hidden');
-                        });
-                    }
+        });
+        function showImagePreview(imageSrc, storyCode) {
+            const oldPreview = document.querySelector('.image-preview-' + storyCode);
+            if (oldPreview) oldPreview.remove();
+            const preview = document.createElement('div');
+            preview.className = 'image-preview image-preview-' + storyCode;
+            preview.style.marginTop = '10px';
+            preview.id = 'image-preview-' + storyCode;
+            preview.style.textAlign = 'center';
+            const img = document.createElement('img');
+            img.src = imageSrc;
+            img.style.height = '80px';
+            img.style.borderRadius = '8px';
+            img.style.boxShadow = '0 0 5px rgba(0,0,0,0.2)';
+            const delimg = document.createElement('button');
+            delimg.className = 'bcloimcom blcloimcom' + storyCode;
+            delimg.id = 'bcloimcom' + storyCode;
+            delimg.innerHTML = `&times;`;
+            delimg.style.cursor = 'pointer';
+            delimg.addEventListener('click', () => preview.remove());
+            preview.appendChild(img);
+            preview.appendChild(delimg);
+            const input = document.getElementById('inpcom-' + storyCode);
+            input.value = "";
+            const clearBtn = document.getElementById(`balinpcom-${storyCode}`);
+            clearBtn.classList.add('hidden');
+            const sendBtn = document.getElementById('sendcom-' + storyCode);
+            sendBtn.parentNode.insertBefore(preview, sendBtn);
+        }
+    </script><!-- chat awal preview send file -->
+    <script>
+        document.querySelectorAll('[id^="inpcom-"]').forEach(inputEl => {
+            const storyCode = inputEl.id.replace('inpcom-', '');
+            const clearBtn = document.getElementById(`balinpcom-${storyCode}`);
+            const sendBtn = document.getElementById(`sendcom-${storyCode}`);
+            const commentses = document.getElementById(`commentses-${storyCode}`);
+            let canSend = true;
+            window.typingTimeout2 = null;
+            window.canFetchTyping2 = true;
+            window.typingTimeout5 = null;
+            window.canFetchTyping5 = true;
+            if (!commentses) return;
+            inputEl.addEventListener('input', function () {
+                if (inputEl.value.length > 0) {
+                    clearBtn?.classList.remove('hidden');
+                    clearBtn?.classList.add('block');
+                } else {
+                    clearBtn?.classList.add('hidden');
+                    clearBtn?.classList.remove('block');
                 }
-            });
-        </script>
-        <script>
-                if (typeof window.pusher1 === 'undefined') {
-                    window.pusher1 = new Pusher("{{ config('broadcasting.connections.pusher.key') }}", {
-                        cluster: "{{ config('broadcasting.connections.pusher.options.cluster') }}",
-                        forceTLS: true
-                    });
-                }
-                if (typeof window.channel3 === 'undefined') {
-                    window.channel3 = window.pusher1.subscribe('typing-channel1');
-                }
-                if (!window.channelBound) {
-                window.channel3.bind('user.typing1', function (data) {
-                    if (data.message && data.message !== "") {
-                        const balaskan001 = document.getElementById(`balaskan001-${data.comstoriesid}`);
-                        if (document.getElementById(`balaskan001-${data.comstoriesid}`)) {
-                            balaskan001.remove();
-                        }
-                        const dibalesin009 = document.getElementById(`lagi-${data.comstoriesid}`);
-                        const commentwrapcom = document.getElementById(`commentwrapcom-${data.comstoriesid}`);
-                        const view = document.createElement('p');
-                        view.id = `seerpl1-${data.comstoriesid}`;
-                        const view1 = document.createElement('p');
-                        view1.id = `seerpl0-${data.comstoriesid}`;
-                        view.innerHTML = `Lihat(${data.jumlah})`;
-                        view1.innerHTML = `Tutup(${data.jumlah})`;
-                        const replies = document.createElement('div');
-                        if (data.userid === currentUserId1) {
-                            view.className = `comment0010 hidden`;
-                            view1.className = `comment00101`;
-                            replies.className = `replies replies-${data.comstoriesid}`;
-                            replies.id = `seerpl2-${data.comstoriesid}`;
-                        } else {
-                            view.className = `comment0010`;
-                            view1.className = `comment00101 hidden`;
-                            replies.className = `replies replies-${data.comstoriesid} hidden`;
-                            replies.id = `seerpl2-${data.comstoriesid}`;
-                        }
-                        const reply = document.createElement('div')
-                        reply.className = `reply reply-${data.comstoriesid}`;
-                        const wrappercom3 = document.createElement('div');
-                        wrappercom3.className = `wrappercom3 wrappercom3-${data.comstoriesid}`;
-                        const imgbalcom = document.createElement('img');
-                        imgbalcom.src = `${data.username}/profil/${data.improfil}`;
-                        imgbalcom.className = `creatorstories`;
-                        const dispcard2 = document.createElement('div');
-                        dispcard2.className = `dispcard`;
-                        const usernamebalcom = document.createElement('p');
-                        usernamebalcom.innerText = data.username;
-                        const balcomment = document.createElement('p');
-                        balcomment.innerText = data.message;
-                        const reactbalcom = document.createElement('p');
-                        reactbalcom.className = `comment0011 rbtnry5-${data.balcomid}`;
-                        reactbalcom.id = `rbtnry5-${data.balcomid}`;
-                        reactbalcom.innerText = `suka`;
-                        const reacted4 = document.createElement('div');
-                        reacted4.className = `srcard3 srcard5-${data.balcomid} hidden`;
-                        reacted4.id = `srcard5-${data.balcomid}`;
-                        const reacted41 = document.createElement('a');
-                        reacted41.href = `javascript:void(0)`;
-                        const reacted42 = document.createElement('a');
-                        reacted42.href = `javascript:void(0)`;
-                        const reacted43 = document.createElement('a');
-                        reacted43.href = `javascript:void(0)`;
-                        const reacted44 = document.createElement('a');
-                        reacted44.href = `javascript:void(0)`;
-                        const reacted45 = document.createElement('a');
-                        reacted45.href = `javascript:void(0)`;
-                        const scriptReacted1 = document.createElement('script');
-                        scriptReacted1.textContent = `
-                            document.querySelectorAll('.rbtnry5-${data.balcomid}').forEach(function (button) {
-                                button.addEventListener('mouseenter', function () {
-                                    const button4 = document.getElementById('rbtnry5-${data.balcomid}');
-                                    const srcard4 = document.getElementById('srcard5-${data.balcomid}');
-                                    srcard4.classList.remove('hidden');
-                                });
-                                button.addEventListener('mouseleave', function () {
-                                    const button4 = document.getElementById('rbtnry5-${data.balcomid}');
-                                    const srcard4 = document.getElementById('srcard5-${data.balcomid}');
-                                    setTimeout(() => {
-                                        if (!srcard4.matches(':hover')) {
-                                            srcard4.classList.add('hidden');
-                                        }
-                                    }, 0);
-                                });
-                            });
-                        `;
-                        const img41 = document.createElement('img');
-                        img41.src = '{{ asset('partses/reaksi/suka.png') }}';
-                        img41.className = `iclikestoriesemote3 reaksi-btn3 reaksi-btn3-${data.balcomid}`;
-                        img41.setAttribute('data-reaksi2', 'suka');
-                        img41.setAttribute('data-artiestoriesid2', `${data.balcomid}`);
-                        const img42 = document.createElement('img');
-                        img42.src = '{{ asset('partses/reaksi/senang.png') }}';
-                        img42.className = `iclikestoriesemote3 reaksi-btn3 reaksi-btn3-${data.balcomid}`;
-                        img42.setAttribute('data-reaksi2', 'senang');
-                        img42.setAttribute('data-artiestoriesid2', `${data.balcomid}`);
-                        const img43 = document.createElement('img');
-                        img43.src = '{{ asset('partses/reaksi/ketawa.png') }}';
-                        img43.className = `iclikestoriesemote3 reaksi-btn3 reaksi-btn3-${data.balcomid}`;
-                        img43.setAttribute('data-reaksi2', 'ketawa');
-                        img43.setAttribute('data-artiestoriesid2', `${data.balcomid}`);
-                        const img44 = document.createElement('img');
-                        img44.src = '{{ asset('partses/reaksi/sedih.png') }}';
-                        img44.className = `iclikestoriesemote3 reaksi-btn3 reaksi-btn3-${data.balcomid}`;
-                        img44.setAttribute('data-reaksi2', 'sedih');
-                        img44.setAttribute('data-artiestoriesid2', `${data.balcomid}`);
-                        const img45 = document.createElement('img');
-                        img45.src = '{{ asset('partses/reaksi/marah.png') }}';
-                        img45.className = `iclikestoriesemote3 reaksi-btn3 reaksi-btn3-${data.balcomid}`;
-                        img45.setAttribute('data-reaksi2', 'marah');
-                        img45.setAttribute('data-artiestoriesid2', `${data.balcomid}`);
-                        const createdat = document.createElement('p');
-                        createdat.className = 'captionStories gg3';
-                        createdat.innerText = `${data.timeAgo}`;
-                        const bukatutup = document.createElement('script');
-                        bukatutup.textContent = `
-                            document.querySelectorAll('[id^="seerpl1-${data.comstoriesid}"]').forEach(function (btn) {
-                                btn.addEventListener('click', function () {
-                                    const target = document.getElementById('seerpl2-${data.comstoriesid}');
-                                    const target1 = document.getElementById('seerpl0-${data.comstoriesid}');
-                                    const target0 = document.getElementById('seerpl1-${data.comstoriesid}');
-                                    if (target) {
-                                        target.classList.remove('hidden');
-                                        target0.classList.add('hidden');
-                                        target1.classList.remove('hidden');
-                                    }
-                                });
-                            });
-                            document.querySelectorAll('[id^="seerpl0-${data.comstoriesid}"]').forEach(function (btn) {
-                                btn.addEventListener('click', function () {
-                                    const target = document.getElementById('seerpl2-${data.comstoriesid}');
-                                    const target1 = document.getElementById('seerpl0-${data.comstoriesid}');
-                                    const target0 = document.getElementById('seerpl1-${data.comstoriesid}');
-                                    if (target) {
-                                        target.classList.add('hidden');
-                                        target0.classList.remove('hidden');
-                                        target1.classList.add('hidden');
-                                    }
-                                });
-                            });
-                        `;
-                        const seerpl0 = document.getElementById(`seerpl0-${data.comstoriesid}`);
-                        const seerpl1 = document.getElementById(`seerpl1-${data.comstoriesid}`);
-
-                        if (seerpl0 && seerpl1) {
-                            if (seerpl0.classList.contains('hidden')) {
-                                seerpl1.innerHTML = `Lihat(${data.jumlah})`;
-                            }
-                            if (seerpl1.classList.contains('hidden')) {
-                                seerpl0.innerHTML = `Tutup(${data.jumlah})`;
-                            }
-                        } else {
-                            commentwrapcom.append(view);
-                            commentwrapcom.append(view1);
-                        }
-
-                        if (!document.getElementById(`seerpl2-${data.comstoriesid}`)) {
-                            commentwrapcom.appendChild(replies);
-                            replies.append(reply, wrappercom3, bukatutup, dibalesin009);
-                            reply.append(imgbalcom, dispcard2);
-                            dispcard2.append(usernamebalcom, balcomment);
-                            wrappercom3.append(reacted4, reactbalcom, scriptReacted1, createdat)
-                            reacted4.append(reacted41, reacted42, reacted43, reacted44, reacted45);
-                            reacted41.appendChild(img41);
-                            reacted42.appendChild(img42);
-                            reacted43.appendChild(img43);
-                            reacted44.appendChild(img44);
-                            reacted45.appendChild(img45);
-                        }
-                        else {
-                            const gethead = document.getElementById(`seerpl2-${data.comstoriesid}`)
-                            gethead.append(reply, wrappercom3, bukatutup, dibalesin009);
-                            reply.append(imgbalcom, dispcard2);
-                            dispcard2.append(usernamebalcom, balcomment);
-                            wrappercom3.append(reacted4, reactbalcom, scriptReacted1, createdat)
-                            reacted4.append(reacted41, reacted42, reacted43, reacted44, reacted45);
-                            reacted41.appendChild(img41);
-                            reacted42.appendChild(img42);
-                            reacted43.appendChild(img43);
-                            reacted44.appendChild(img44);
-                            reacted45.appendChild(img45);
-                        }
-                    }
-                });
-                    window.channelBound = true;
-                };
-        </script>
-        <script>
-            document.addEventListener('input', function (e) {
-                const target = e.target;
-
-                if (target && target.matches('[class^="inpbalassaja-"]')) {
-                    const inputClass = [...target.classList].find(cls => cls.startsWith('inpbalassaja-'));
-                    const idSuffix = inputClass.substring('inpbalassaja-'.length);
-                    const commentses = document.getElementById('inpbalassajahidden-' + idSuffix);
-                    if (!commentses) return;
-
-                    const comentses = target.value.trim();
-                    const message = commentses.value.trim();
-
-                    fetch('/broadcast-typing1', {
+                const message = inputEl.value.trim();
+                const comentses = commentses.value.trim();
+                if (window.canFetchTyping5) {
+                    window.canFetchTyping5 = false;
+                    fetch('/broadcast-typing', {
                         method: 'POST',
                         headers: {
                             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
                             'Content-Type': 'application/json',
                         },
-                        body: JSON.stringify({ comentses, message })
+                        body: JSON.stringify({ message, comentses })
                     })
                     .then(res => res.json())
                     .then(data => {
+                        if (!data.logged_in) {
+                            sessionStorage.setItem('alert', data.alert);
+                            sessionStorage.setItem('form', data.form);
+                            window.location.href = data.redirect;
+                        }
                     });
+                    clearTimeout(window.typingTimeout5);
+                    window.typingTimeout5 = setTimeout(() => {
+                        window.canFetchTyping5 = true;
+                    }, 1000);
                 }
             });
-
-
+            clearBtn?.addEventListener('click', function () {
+                inputEl.value = "";
+                clearBtn.classList.add('hidden');
+            });
+            function sendComment() {
+                const message = inputEl.value.trim();
+                const coderies = commentses.value.trim();
+                const fileInput = document.getElementById(`filepicker-${storyCode}`);
+                if (message.length === 0 && canSend && fileInput.files.length > 0) {
+                    canSend = false;
+                    if (window.canFetchTyping2) {
+                        window.canFetchTyping2 = false;
+                        const formData = new FormData();
+                        formData.append('coderies', coderies);
+                        formData.append('fileInput', fileInput.files[0]);
+                        fetch('/enter-typing', {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                            },
+                            body: formData
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            fileInput.value = '';
+                            const delprev = document.getElementById('image-preview-' + storyCode);
+                            delprev.remove();
+                            clearBtn?.classList.add('hidden');
+                            if (!data.logged_in) {
+                                sessionStorage.setItem('alert', data.alert);
+                                sessionStorage.setItem('form', data.form);
+                                window.location.href = data.redirect;
+                            }
+                        })
+                        .finally(() => {
+                            setTimeout(() => {
+                                canSend = true;
+                            }, 30);
+                        });
+                        clearTimeout(window.typingTimeout2);
+                        window.typingTimeout2 = setTimeout(() => {
+                            window.canFetchTyping2 = true;
+                        }, 1000);
+                    }
+                }
+                if (message.length > 0 && canSend && fileInput.files.length === 0) {
+                    canSend = false;
+                    if (window.canFetchTyping2) {
+                        window.canFetchTyping2 = false;
+                        fetch('/enter-typing', {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ message, coderies })
+                        })
+                        .then(res => res.json())
+                        .then(data => {
+                            inputEl.value = '';
+                            clearBtn?.classList.add('hidden');
+                            if (!data.logged_in) {
+                                sessionStorage.setItem('alert', data.alert);
+                                sessionStorage.setItem('form', data.form);
+                                window.location.href = data.redirect;
+                            }
+                        })
+                        .finally(() => {
+                            setTimeout(() => {
+                                canSend = true;
+                            }, 30);
+                        });
+                        clearTimeout(window.typingTimeout2);
+                        window.typingTimeout2 = setTimeout(() => {
+                            window.canFetchTyping2 = true;
+                        }, 1000);
+                    }
+                }
+            }
+            inputEl.addEventListener('keydown', function (event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    sendComment();
+                }
+            });
+            sendBtn?.addEventListener('click', function (event) {
+                event.preventDefault();
+                sendComment();
+            });
+        });
+    </script><!-- fetch broadcasting dan chat awal comment -->
+    <script>
+        if (typeof window.pusher === 'undefined') {
+            Pusher.logToConsole = true;
+            window.pusher = new Pusher("{{ config('broadcasting.connections.pusher.key') }}", {
+                cluster: "{{ config('broadcasting.connections.pusher.options.cluster') }}",
+                forceTLS: true
+            });
+        }
+        if (typeof window.channel === 'undefined') {
+            window.channel = window.pusher.subscribe('typing-channel');
+        }
+        if (typeof window.channel1 === 'undefined') {
+            window.channel1 = window.pusher.subscribe('broadcast-channel');
+        }
+        if (!window.channelBound1) {
+            window.channel.bind('user.typing', function (data) {
+            if (data.message && data.message !== "") {
+                const targetWrapper = document.querySelector(`.commentarist[data-story="${data.coderies}"]`);
+                check1 = targetWrapper.getAttribute('data-story');
+                if (data.coderies === check1) {
+                    const container = document.getElementById(`wrappercom1-${check1}`);
+                    const commentwrapcom001 = document.createElement('div');
+                    const apusnoncmt = document.getElementById(`noncomments-${data.coderies}`)
+                    if (apusnoncmt){
+                        apusnoncmt.remove();
+                    }
+                    const aharen = document.createElement('a')
+                    aharen.href = `/profiles/${data.username}`;
+                    const aharen1 = document.createElement('a')
+                    aharen1.href = `/profiles/${data.username}`;
+                    commentwrapcom001.id = `commentwrapcom-${data.comstoriesid}`;
+                    const card = document.createElement('div');
+                    card.className = 'cardcom001';
+                    const img = document.createElement('img');
+                    img.src = `${data.username}/profil/${data.improfil}`;
+                    img.className = 'creatorstories';
+                    const dispcard = document.createElement('div');
+                    dispcard.className = 'dispcard';
+                    const ddispcanam = document.createElement('div');
+                    ddispcanam.className = 'ddispcanam';
+                    const pName = document.createElement('p');
+                    pName.className = 'dispname';
+                    pName.innerText = data.username;
+                    ddispcanam.appendChild(aharen1);
+                    aharen1.appendChild(pName);
+                    const pComment = document.createElement('p');
+                    const wrappercom2 = document.createElement('div');
+                    wrappercom2.className = `wrappercom2 wrappercom2-${data.coderies}`;
+                    const reacted3 = document.createElement('div');
+                    reacted3.className = `srcard3 srcard3-${data.comstoriesid} hidden`;
+                    reacted3.id = `srcard3-${data.comstoriesid}`;
+                    const reacted31 = document.createElement('a');
+                    reacted31.href = `javascript:void(0)`;
+                    const reacted32 = document.createElement('a');
+                    reacted32.href = `javascript:void(0)`;
+                    const reacted33 = document.createElement('a');
+                    reacted33.href = `javascript:void(0)`;
+                    const reacted34 = document.createElement('a');
+                    reacted34.href = `javascript:void(0)`;
+                    const reacted35 = document.createElement('a');
+                    reacted35.href = `javascript:void(0)`;
+                    const img31 = document.createElement('img');
+                    img31.src = '{{ asset('partses/reaksi/suka.png') }}';
+                    img31.className = `iclikestoriesemote3 reaksi-btn2 reaksi-btn2-${data.comstoriesid}`;
+                    img31.setAttribute('data-reaksi2', 'suka');
+                    img31.setAttribute('data-artiestoriesid2', `${data.comstoriesid}`);
+                    const img32 = document.createElement('img');
+                    img32.src = '{{ asset('partses/reaksi/senang.png') }}';
+                    img32.className = `iclikestoriesemote3 reaksi-btn2 reaksi-btn2-${data.comstoriesid}`;
+                    img32.setAttribute('data-reaksi2', 'senang');
+                    img32.setAttribute('data-artiestoriesid2', `${data.comstoriesid}`);
+                    const img33 = document.createElement('img');
+                    img33.src = '{{ asset('partses/reaksi/ketawa.png') }}';
+                    img33.className = `iclikestoriesemote3 reaksi-btn2 reaksi-btn2-${data.comstoriesid}`;
+                    img33.setAttribute('data-reaksi2', 'ketawa');
+                    img33.setAttribute('data-artiestoriesid2', `${data.comstoriesid}`);
+                    const img34 = document.createElement('img');
+                    img34.src = '{{ asset('partses/reaksi/sedih.png') }}';
+                    img34.className = `iclikestoriesemote3 reaksi-btn2 reaksi-btn2-${data.comstoriesid}`;
+                    img34.setAttribute('data-reaksi2', 'sedih');
+                    img34.setAttribute('data-artiestoriesid2', `${data.comstoriesid}`);
+                    const img35 = document.createElement('img');
+                    img35.src = '{{ asset('partses/reaksi/marah.png') }}';
+                    img35.className = `iclikestoriesemote3 reaksi-btn2 reaksi-btn2-${data.comstoriesid}`;
+                    img35.setAttribute('data-reaksi2', 'marah');
+                    img35.setAttribute('data-artiestoriesid2', `${data.comstoriesid}`);
+                    const iclikeswrap = document.createElement('div')
+                    iclikeswrap.className = `iclikeswrap rbtnry3-${data.comstoriesid}`;
+                    iclikeswrap.id = `rbtnry3-${data.comstoriesid}`;
+                    const suka = document.createElement('p');
+                    suka.className = `inint rbtnry3-${data.comstoriesid}`;
+                    suka.id = `rbtnry3-${data.comstoriesid}`;
+                    suka.innerText = 'suka';
+                    const created = document.createElement('p');
+                    created.className = 'captionStories gg1';
+                    created.innerText = `${data.timeAgo}`;
+                    const balaskan001 = document.createElement('div');
+                    balaskan001.className = `balaskan001`;
+                    balaskan001.id = `balaskan001-${data.comstoriesid}`;
+                    const balaskan = document.createElement('p');
+                    balaskan.className = `balaskan002 balaskansaja-${data.comstoriesid}`;
+                    balaskan.id = `balaskansaja-${data.comstoriesid}`;
+                    balaskan.innerText = 'Balas';
+                    const urungkansaja = document.createElement('p');
+                    urungkansaja.className = `urungkan001 urungkansaja-${data.comstoriesid} hidden`;
+                    urungkansaja.id = `urungkansaja-${data.comstoriesid}`;
+                    urungkansaja.innerText = 'Urungkan';
+                    pComment.className = 'comment001';
+                    if (data.message.includes('<img src="' + window.location.origin + '/Artiestoriescom/Comment=')) {
+                        pComment.innerHTML = data.message;
+                    } else {
+                        pComment.innerText = data.message;
+                    }
+                    const dibaleslagi = document.createElement('div');
+                    dibaleslagi.className = `dibales lagi-${data.comstoriesid} hidden`;
+                    dibaleslagi.id = `lagi-${data.comstoriesid}`;
+                    const inpbalassaja = document.createElement('input');
+                    inpbalassaja.type = `text`;
+                    inpbalassaja.className = `inpbalassaja-${data.comstoriesid}`;
+                    inpbalassaja.id = `inpbalassaja-${data.comstoriesid}`;
+                    inpbalassaja.setAttribute('placeholder', 'Kirim komentar...');
+                    inpbalassaja.required = true;
+                    const inpbalassajahidden = document.createElement('input');
+                    inpbalassajahidden.type = `hidden`;
+                    inpbalassajahidden.value = data.comstoriesid;
+                    inpbalassajahidden.id = `inpbalassajahidden-${data.comstoriesid}`;
+                    const closeDibales = document.createElement('button');
+                    closeDibales.type = `button`;
+                    closeDibales.className = `close-dibales close-dibales-${data.comstoriesid}`;
+                    closeDibales.innerHTML = '&times;';
+                    const submitDibales = document.createElement('button');
+                    submitDibales.type = `submit`;
+                    submitDibales.className = `btnimg-sendcom btnimg-sendcom-${data.comstoriesid}`;
+                    submitDibales.id = `btnimg-sendcom-${data.comstoriesid}`;
+                    const dibalesIMG = document.createElement('img');
+                    dibalesIMG.className = `iclikescmt`;
+                    dibalesIMG.src = `{{ asset('partses/sendcomdm.png') }}`;
+                    const scriptReact = document.createElement('script');
+                    const brort = document.createElement('div');
+                    brort.className = `brcmt2 hidden`;
+                    brort.id = `divbrcmt2-${data.comstoriesid}`;
+                    const brortp = document.createElement('p');
+                    brortp.id = `brcmt2-${data.comstoriesid}`;
+                    container.appendChild(commentwrapcom001);
+                    commentwrapcom001.append(card, wrappercom2, balaskan001, dibaleslagi);
+                    card.append(aharen, dispcard);
+                    aharen.appendChild(img);
+                    dispcard.append(ddispcanam, pComment);
+                    wrappercom2.append(reacted3, suka, scriptReact, created);
+                    reacted3.append(reacted31, reacted32, reacted33, reacted34, reacted35);
+                    reacted31.appendChild(img31);
+                    reacted32.appendChild(img32);
+                    reacted33.appendChild(img33);
+                    reacted34.appendChild(img34);
+                    reacted35.appendChild(img35);
+                    balaskan001.append(balaskan, urungkansaja);
+                    dibaleslagi.append(brort, inpbalassaja, closeDibales, inpbalassajahidden, submitDibales);
+                    brort.appendChild(brortp);
+                    submitDibales.appendChild(dibalesIMG);
+                    scriptReact.textContent = `
+                        document.querySelectorAll('.rbtnry3-${data.comstoriesid}').forEach(function (button) {
+                            button.addEventListener('mouseenter', function () {
+                                const button3 = document.getElementById('rbtnry3-${data.comstoriesid}');
+                                const srcard3 = document.getElementById('srcard3-${data.comstoriesid}');
+                                srcard3.classList.remove('hidden');
+                            });
+                            button.addEventListener('mouseleave', function () {
+                                const button3 = document.getElementById('rbtnry3-${data.comstoriesid}');
+                                const srcard3 = document.getElementById('srcard3-${data.comstoriesid}');
+                                setTimeout(() => {
+                                    if (!srcard3.matches(':hover')) {
+                                        srcard3.classList.add('hidden');
+                                    }}, 0);
+                            });
+                        });
+                    `;
+            }}});
+            window.channelBound1 = true;
+        };
+        window.channel1.bind('broadcast.typing', function (data) {
+            if (data.reqplat && data.reqplat.length > 0) {
+            if (data.reqplat == '{{ $storyCode }}') {
+                const cardmengetik = document.getElementById('divbrcmt-{{ $storyCode }}');
+                const teksmengetik = document.getElementById('brcmt-{{ $storyCode }}');
+                cardmengetik.classList.remove('hidden');
+                teksmengetik.innerText = `${data.username} sedang mengetik...`;
+                clearTimeout(window.typingTimeout);
+                window.typingTimeout = setTimeout(() => {
+                    teksmengetik.innerText = '';
+                    cardmengetik.classList.add('hidden');
+                }, 2000);
+            }}
+        });
+    </script><!-- pusher main commentar -->
+    <script>
+        document.addEventListener('click', function (e) {
+            if (e.target.classList.contains('reaksi-btn2')) {
+                const reaksi2 = e.target.getAttribute('data-reaksi2');
+                const storyId2 = e.target.getAttribute('data-artiestoriesid2');
+                if (reaksi2 && storyId2) {
+                    fetch("{{ route('uprcm1') }}", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        },
+                        body: JSON.stringify({
+                            reaksi: reaksi2,
+                            commentartiestoriesid: storyId2
+                        })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (!data.logged_in) {
+                            sessionStorage.setItem('alert', data.alert);
+                            sessionStorage.setItem('form', data.form);
+                            window.location.href = data.redirect;
+                            return;
+                        }
+                        if (data.csrf) {
+                            document.querySelector('meta[name="csrf-token"]').setAttribute('content', data.csrf);
+                        }
+                    })
+                }
+            }
+        });
+    </script><!-- fetch reacted base content -->
+    <script>
+        if (typeof window.currentUserId1 === 'undefined') {
+            window.currentUserId1 = {{ session('userid') }};
+        }
+    </script><!-- check user is logged? -->
+    <script>
             if (typeof window.pusher1 === 'undefined') {
                 window.pusher1 = new Pusher("{{ config('broadcasting.connections.pusher.key') }}", {
                     cluster: "{{ config('broadcasting.connections.pusher.options.cluster') }}",
                     forceTLS: true
                 });
             }
-            if (typeof window.channel4 === 'undefined') {
-                window.channel4 = window.pusher1.subscribe('broadcast-channel1');
+            if (typeof window.channel3 === 'undefined') {
+                window.channel3 = window.pusher1.subscribe('typing-channel1');
             }
-            window.channel4.bind('broadcast.typing1', function (data) {
-                if (data.reqplat && data.reqplat.length > 0) {
-                    const cardmengetik = document.getElementById(`divbrcmt2-${data.reqplat}`);
-                    const teksmengetik = document.getElementById(`brcmt2-${data.reqplat}`);
-                    cardmengetik.classList.remove('hidden');
-                    teksmengetik.innerText = `${data.username} sedang mengetik...`;
-                    clearTimeout(window.typingTimeouts?.[data.reqplat]);
-                    window.typingTimeouts = window.typingTimeouts || {};
-                    window.typingTimeouts[data.reqplat] = setTimeout(() => {
-                        teksmengetik.innerText = '';
-                        cardmengetik.classList.add('hidden');
-                    }, 2000);
+            window.typingTimeout3 = null;
+            window.canFetchTyping3 = true;
+                window.channel3.bind('user.typing1', function (data) {
+                    if (data.message && data.message !== "") {
+                        if (window.canFetchTyping3) {
+                            window.canFetchTyping3 = false;
+                            const balaskan001 = document.getElementById(`balaskan001-${data.comstoriesid}`);
+                            const dibalesin009 = document.getElementById(`lagi-${data.comstoriesid}`);
+                            const commentwrapcom = document.getElementById(`commentwrapcom-${data.comstoriesid}`);
+                            const view = document.createElement('p');
+                            view.id = `seerpl1-${data.comstoriesid}`;
+                            const view1 = document.createElement('p');
+                            view1.id = `seerpl0-${data.comstoriesid}`;
+                            view.innerHTML = `Lihat(${data.jumlah})`;
+                            view1.innerHTML = `Tutup(${data.jumlah})`;
+                            const replies = document.createElement('div');
+                            if (data.userid === currentUserId1) {
+                                view.className = `comment0010 hidden`;
+                                view1.className = `comment00101`;
+                                replies.className = `replies replies-${data.comstoriesid}`;
+                                replies.id = `seerpl2-${data.comstoriesid}`;
+                            } else {
+                                view.className = `comment0010`;
+                                view1.className = `comment00101 hidden`;
+                                replies.className = `replies replies-${data.comstoriesid} hidden`;
+                                replies.id = `seerpl2-${data.comstoriesid}`;
+                                if (document.getElementById(`balaskan001-${data.comstoriesid}`)) {
+                                    if (!balaskan001.classList.contains('hidden')) {
+                                        view.className = `comment0010 hidden`;
+                                        view1.className = `comment00101`;
+                                        replies.className = `replies replies-${data.comstoriesid}`;
+                                        replies.id = `seerpl2-${data.comstoriesid}`;
+                                    }
+                                }
+                            }
+                            if (document.getElementById(`balaskan001-${data.comstoriesid}`)) {
+                                balaskan001.remove();
+                            }
+                            const reply = document.createElement('div')
+                            reply.className = `reply reply-${data.comstoriesid}`;
+                            const wrappercom3 = document.createElement('div');
+                            wrappercom3.className = `wrappercom3 wrappercom3-${data.comstoriesid}`;
+                            const imgbalcom = document.createElement('img');
+                            imgbalcom.src = `${data.username}/profil/${data.improfil}`;
+                            imgbalcom.className = `creatorstories`;
+                            const dispcard2 = document.createElement('div');
+                            dispcard2.className = `dispcard`;
+                            const usernamebalcom = document.createElement('p');
+                            usernamebalcom.innerText = data.username;
+                            const balcomment = document.createElement('p');
+                            balcomment.innerText = data.message;
+                            if (data.message.includes('<img src="' + window.location.origin + '/Artiestoriescom/Comment=')) {
+                                balcomment.innerHTML = data.message;
+                            } else {
+                                balcomment.innerText = data.message;
+                            }
+                            const reactbalcom = document.createElement('p');
+                            reactbalcom.className = `comment0011 rbtnry5-${data.balcomid}`;
+                            reactbalcom.id = `rbtnry5-${data.balcomid}`;
+                            reactbalcom.innerText = `suka`;
+                            const reacted4 = document.createElement('div');
+                            reacted4.className = `srcard3 srcard5-${data.balcomid} hidden`;
+                            reacted4.id = `srcard5-${data.balcomid}`;
+                            const reacted41 = document.createElement('a');
+                            reacted41.href = `javascript:void(0)`;
+                            const reacted42 = document.createElement('a');
+                            reacted42.href = `javascript:void(0)`;
+                            const reacted43 = document.createElement('a');
+                            reacted43.href = `javascript:void(0)`;
+                            const reacted44 = document.createElement('a');
+                            reacted44.href = `javascript:void(0)`;
+                            const reacted45 = document.createElement('a');
+                            reacted45.href = `javascript:void(0)`;
+                            const scriptReacted1 = document.createElement('script');
+                            scriptReacted1.textContent = `
+                                document.querySelectorAll('.rbtnry5-${data.balcomid}').forEach(function (button) {
+                                    button.addEventListener('mouseenter', function () {
+                                        const button4 = document.getElementById('rbtnry5-${data.balcomid}');
+                                        const srcard4 = document.getElementById('srcard5-${data.balcomid}');
+                                        srcard4.classList.remove('hidden');
+                                    });
+                                    button.addEventListener('mouseleave', function () {
+                                        const button4 = document.getElementById('rbtnry5-${data.balcomid}');
+                                        const srcard4 = document.getElementById('srcard5-${data.balcomid}');
+                                        setTimeout(() => {
+                                            if (!srcard4.matches(':hover')) {
+                                                srcard4.classList.add('hidden');
+                                            }
+                                        }, 0);
+                                    });
+                                });
+                            `;
+                            const img41 = document.createElement('img');
+                            img41.src = '{{ asset('partses/reaksi/suka.png') }}';
+                            img41.className = `iclikestoriesemote3 reaksi-btn3 reaksi-btn3-${data.balcomid}`;
+                            img41.setAttribute('data-reaksi2', 'suka');
+                            img41.setAttribute('data-artiestoriesid2', `${data.balcomid}`);
+                            const img42 = document.createElement('img');
+                            img42.src = '{{ asset('partses/reaksi/senang.png') }}';
+                            img42.className = `iclikestoriesemote3 reaksi-btn3 reaksi-btn3-${data.balcomid}`;
+                            img42.setAttribute('data-reaksi2', 'senang');
+                            img42.setAttribute('data-artiestoriesid2', `${data.balcomid}`);
+                            const img43 = document.createElement('img');
+                            img43.src = '{{ asset('partses/reaksi/ketawa.png') }}';
+                            img43.className = `iclikestoriesemote3 reaksi-btn3 reaksi-btn3-${data.balcomid}`;
+                            img43.setAttribute('data-reaksi2', 'ketawa');
+                            img43.setAttribute('data-artiestoriesid2', `${data.balcomid}`);
+                            const img44 = document.createElement('img');
+                            img44.src = '{{ asset('partses/reaksi/sedih.png') }}';
+                            img44.className = `iclikestoriesemote3 reaksi-btn3 reaksi-btn3-${data.balcomid}`;
+                            img44.setAttribute('data-reaksi2', 'sedih');
+                            img44.setAttribute('data-artiestoriesid2', `${data.balcomid}`);
+                            const img45 = document.createElement('img');
+                            img45.src = '{{ asset('partses/reaksi/marah.png') }}';
+                            img45.className = `iclikestoriesemote3 reaksi-btn3 reaksi-btn3-${data.balcomid}`;
+                            img45.setAttribute('data-reaksi2', 'marah');
+                            img45.setAttribute('data-artiestoriesid2', `${data.balcomid}`);
+                            const createdat = document.createElement('p');
+                            createdat.className = 'captionStories gg3';
+                            createdat.innerText = `${data.timeAgo}`;
+                            const bukatutup = document.createElement('script');
+                            bukatutup.textContent = `
+                                document.querySelectorAll('[id^="seerpl1-${data.comstoriesid}"]').forEach(function (btn) {
+                                    btn.addEventListener('click', function () {
+                                        const target = document.getElementById('seerpl2-${data.comstoriesid}');
+                                        const target1 = document.getElementById('seerpl0-${data.comstoriesid}');
+                                        const target0 = document.getElementById('seerpl1-${data.comstoriesid}');
+                                        const target2 = document.getElementById('lagi-${data.comstoriesid}');
+                                        if (target) {
+                                            target.classList.remove('hidden');
+                                            target0.classList.add('hidden');
+                                            target1.classList.remove('hidden');
+                                            target2.classList.remove('hidden');
+                                        }
+                                    });
+                                });
+                                document.querySelectorAll('[id^="seerpl0-${data.comstoriesid}"]').forEach(function (btn) {
+                                    btn.addEventListener('click', function () {
+                                        const target = document.getElementById('seerpl2-${data.comstoriesid}');
+                                        const target1 = document.getElementById('seerpl0-${data.comstoriesid}');
+                                        const target0 = document.getElementById('seerpl1-${data.comstoriesid}');
+                                        const target2 = document.getElementById('lagi-${data.comstoriesid}');
+                                        if (target) {
+                                            target.classList.add('hidden');
+                                            target0.classList.remove('hidden');
+                                            target1.classList.add('hidden');
+                                            target2.classList.add('hidden');
+                                        }
+                                    });
+                                });
+                            `;
+                            const seerpl0 = document.getElementById(`seerpl0-${data.comstoriesid}`);
+                            const seerpl1 = document.getElementById(`seerpl1-${data.comstoriesid}`);
+                            const aharen = document.createElement('a')
+                            aharen.href = `/profiles/${data.username}`;
+                            const aharen1 = document.createElement('a')
+                            aharen1.href = `/profiles/${data.username}`;
+                            if (seerpl0 && seerpl1) {
+                                if (seerpl0.classList.contains('hidden')) {
+                                    seerpl1.innerHTML = `Lihat(${data.jumlah})`;
+                                }
+                                if (seerpl1.classList.contains('hidden')) {
+                                    seerpl0.innerHTML = `Tutup(${data.jumlah})`;
+                                }
+                            } else {
+                                commentwrapcom.append(view);
+                                commentwrapcom.append(view1);
+                            }
+                            if (!document.getElementById(`seerpl2-${data.comstoriesid}`)) {
+                                commentwrapcom.appendChild(replies);
+                                replies.append(reply, wrappercom3, bukatutup, dibalesin009);
+                                reply.append(aharen, dispcard2);
+                                aharen.appendChild(imgbalcom);
+                                dispcard2.append(aharen1, balcomment);
+                                aharen1.appendChild(usernamebalcom);
+                                wrappercom3.append(reacted4, reactbalcom, scriptReacted1, createdat)
+                                reacted4.append(reacted41, reacted42, reacted43, reacted44, reacted45);
+                                reacted41.appendChild(img41);
+                                reacted42.appendChild(img42);
+                                reacted43.appendChild(img43);
+                                reacted44.appendChild(img44);
+                                reacted45.appendChild(img45);
+                            }
+                            else {
+                                const gethead = document.getElementById(`seerpl2-${data.comstoriesid}`)
+                                gethead.append(reply, wrappercom3, bukatutup, dibalesin009);
+                                reply.append(aharen, dispcard2);
+                                aharen.appendChild(imgbalcom);
+                                dispcard2.append(aharen1, balcomment);
+                                aharen1.appendChild(usernamebalcom)
+                                wrappercom3.append(reacted4, reactbalcom, scriptReacted1, createdat)
+                                reacted4.append(reacted41, reacted42, reacted43, reacted44, reacted45);
+                                reacted41.appendChild(img41);
+                                reacted42.appendChild(img42);
+                                reacted43.appendChild(img43);
+                                reacted44.appendChild(img44);
+                                reacted45.appendChild(img45);
+                                
+                            }
+                        }
+                        clearTimeout(window.typingTimeout3);
+                        window.typingTimeout3 = setTimeout(() => {
+                            window.canFetchTyping3 = true;
+                        }, 1000);
+                    }
+                })
+    </script><!-- Real time chat balas comment -->
+    <script>
+        if (typeof window.pusher1 === 'undefined') {
+            window.pusher1 = new Pusher("{{ config('broadcasting.connections.pusher.key') }}", {
+                cluster: "{{ config('broadcasting.connections.pusher.options.cluster') }}",
+                forceTLS: true
+            });
+        }
+        if (typeof window.channel4 === 'undefined') {
+            window.channel4 = window.pusher1.subscribe('broadcast-channel1');
+        }
+        window.channel4.bind('broadcast.typing1', function (data) {
+            if (data.reqplat && data.reqplat.length > 0) {
+                const cardmengetik = document.getElementById(`divbrcmt2-${data.reqplat}`);
+                const teksmengetik = document.getElementById(`brcmt2-${data.reqplat}`);
+                cardmengetik.classList.remove('hidden');
+                teksmengetik.innerText = `${data.username} sedang mengetik...`;
+                clearTimeout(window.typingTimeouts?.[data.reqplat]);
+                window.typingTimeouts = window.typingTimeouts || {};
+                window.typingTimeouts[data.reqplat] = setTimeout(() => {
+                    teksmengetik.innerText = '';
+                    cardmengetik.classList.add('hidden');
+                }, 4000);
+            }
+        });
+    </script><!-- pusher sucbsribe broadcasting chat balas comment -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const openCommentarist = @json(isset($open_commentarist) ? $open_commentarist : null);
+
+            if (openCommentarist) {
+                const modal = document.getElementById("commentarist-" + openCommentarist);
+                if (modal) {
+                    document.body.classList.add('noscroll');
+                }
+            }
+        });
+    </script><!-- script no scroll body -->
+    <script>
+        document.querySelectorAll('[id^="inpbalassaja-"]').forEach(inputOL => {
+            const targetid = inputOL.id.replace('inpbalassaja-', '');
+            const clearBtn1 = document.getElementById(`close-dibales-${targetid}`);
+            const sendBtn1 = document.getElementById(`btnimg-sendcom-${targetid}`);
+            const commentses1 = document.getElementById(`inpbalassajahidden-${targetid}`);
+            let canSend1 = true;
+            window.typingTimeout1 = null;
+            window.canFetchTyping1 = true;
+            window.typingTimeout = null;
+            window.canFetchTyping = true;
+            inputOL.addEventListener('input', function () {
+                if (inputOL.value.length > 0) {
+                    clearBtn1?.classList.remove('hidden');
+                    clearBtn1?.classList.add('block');
+                } else {
+                    clearBtn1?.classList.add('hidden');
+                    clearBtn1?.classList.remove('block');
+                }
+                const message1 = inputOL.value.trim();
+                const comentses1 = commentses1.value.trim();
+                if (window.canFetchTyping) {
+                    window.canFetchTyping = false;
+                    fetch('/broadcast-typing1', {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ message1, comentses1 })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (!data.logged_in) {
+                            sessionStorage.setItem('alert', data.alert);
+                            sessionStorage.setItem('form', data.form);
+                            window.location.href = data.redirect;
+                        }
+                    });
+                    clearTimeout(window.typingTimeout5);
+                    window.typingTimeout5 = setTimeout(() => {
+                        window.canFetchTyping5 = true;
+                    }, 1000);
                 }
             });
-        </script>
-        @include('appes.artiestories.js.commentjs')
+            clearBtn1?.addEventListener('click', function () {
+                inputOL.value = "";
+                clearBtn1.classList.add('hidden');
+            });
+            function sendComment1() {
+                const message1 = inputOL.value.trim();
+                const coderies1 = commentses1.value.trim();
+                const fileInput1 = document.getElementById(`filepicker1-${targetid}`);
+                if (message1.length === 0 && canSend1 && fileInput1.files.length > 0) {
+                    canSend1 = false;
+                    if (window.canFetchTyping1) {
+                        window.canFetchTyping1 = false;
+                        const formData = new FormData();
+                        formData.append('coderies', coderies1);
+                        formData.append('fileInput1', fileInput1.files[0]);
+                        fetch('/enter-typing1', {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                            },
+                            body: formData
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            fileInput1.value = '';
+                            const delprev1 = document.getElementById('image-preview1-' + targetid);
+                            delprev1.remove();
+                            clearBtn1?.classList.add('hidden');
+                            if (!data.logged_in) {
+                                sessionStorage.setItem('alert', data.alert);
+                                sessionStorage.setItem('form', data.form);
+                                window.location.href = data.redirect;
+                            }
+                        })
+                        .finally(() => {
+                            setTimeout(() => {
+                                canSend1 = true;
+                            }, 30);
+                        });
+                        clearTimeout(window.typingTimeout1);
+                        window.typingTimeout1 = setTimeout(() => {
+                            window.canFetchTyping1 = true;
+                        }, 1000);
+                    }
+                }
+                if (message1.length > 0 && canSend && fileInput1.files.length === 0) {
+                    canSend1 = false;
+                    if (window.canFetchTyping1) {
+                        window.canFetchTyping1 = false;
+                        fetch('/enter-typing1', {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ message1, coderies1 })
+                        })
+                        .then(res => res.json())
+                        .then(data => {
+                            inputOL.value = '';
+                            clearBtn1?.classList.add('hidden');
+                            if (!data.logged_in) {
+                                sessionStorage.setItem('alert', data.alert);
+                                sessionStorage.setItem('form', data.form);
+                                window.location.href = data.redirect;
+                            }
+                        })
+                        .finally(() => {
+                            setTimeout(() => {
+                                canSend1 = true;
+                            }, 30);
+                        });
+                        clearTimeout(window.typingTimeout1);
+                        window.typingTimeout1 = setTimeout(() => {
+                            window.canFetchTyping1 = true;
+                        }, 1000);
+                    }
+                }
+            }
+            inputOL.addEventListener('keydown', function (event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    sendComment1();
+                }
+            });
+            sendBtn1?.addEventListener('click', function (event) {
+                event.preventDefault();
+                sendComment1();
+            });
+        });
+    </script><!-- fetch broadcasting dan chat balas comment -->
+    <script>
+        document.addEventListener('click', function (z) {
+            const target = z.target;
+            if (target && target.classList.value.includes('balaskansaja-')) {
+                const classes = [...target.classList];
+                const className = classes.find(cls => cls.startsWith('balaskansaja-'));
+                const rcmId = className?.split('balaskansaja-')[1];
+                if (rcmId) {
+                    const caption = document.querySelector(`.captionStoriess`);
+                    if (caption) {
+                        caption.classList.add('gg11');
+                        caption.classList.remove('gg12');
+                    }
+                    document.querySelector(`.lagi-${rcmId}`)?.classList.remove('hidden');
+                    document.querySelector(`.balaskansaja-${rcmId}`)?.classList.add('hidden');
+                    document.querySelector(`.urungkansaja-${rcmId}`)?.classList.remove('hidden');
+                    
+                }
+            }
+            if (target && target.classList.value.includes('urungkansaja-')) {
+                const classes = [...target.classList];
+                const className = classes.find(cls => cls.startsWith('urungkansaja-'));
+                const rcmId = className?.split('urungkansaja-')[1];
+                if (rcmId) {
+                    const caption = document.querySelector(`.captionStoriess`);
+                    if (caption) {
+                        caption.classList.add('gg12');
+                        caption.classList.remove('gg11');
+                    }
+                    document.querySelector(`.lagi-${rcmId}`)?.classList.add('hidden');
+                    document.querySelector(`.balaskansaja-${rcmId}`)?.classList.remove('hidden');
+                    document.querySelector(`.urungkansaja-${rcmId}`)?.classList.add('hidden');
+                    const input = document.querySelector(`.inpbalassaja-${rcmId}`);
+                    if (input) input.value = "";
+                }
+            }
+            if (target && target.classList.value.includes('close-dibales-')) {
+                const classes = [...target.classList];
+                const className = classes.find(cls => cls.startsWith('close-dibales-'));
+                const rcmId = className?.split('close-dibales-')[1];
+                if (rcmId) {
+                    const input = document.querySelector(`.inpbalassaja-${rcmId}`);
+                    if (input) input.value = "";
+                }
+            }
+        });
+    </script><!-- script open close chat balas comment(when have atleast 1 chat balas comment ) -->
+    <script>
+        document.addEventListener('click', function (v) {
+            const target = v.target;
+            if (target && target.id.startsWith('seerpl1-')) {
+                const idSuffix = target.id.substring('seerpl1-'.length);
+                const seerpl2 = document.getElementById('seerpl2-' + idSuffix);
+                const seerpl0 = document.getElementById('seerpl0-' + idSuffix);
+                const seerpl1 = document.getElementById('seerpl1-' + idSuffix);
+                if (seerpl2 && seerpl0 && seerpl1) {
+                    seerpl2.classList.remove('hidden');
+                    seerpl1.classList.add('hidden');
+                    seerpl0.classList.remove('hidden');
+                }
+            }
+            if (target && target.id.startsWith('seerpl0-')) {
+                const idSuffix = target.id.substring('seerpl0-'.length);
+                const seerpl2 = document.getElementById('seerpl2-' + idSuffix);
+                const seerpl0 = document.getElementById('seerpl0-' + idSuffix);
+                const seerpl1 = document.getElementById('seerpl1-' + idSuffix);
+
+                if (seerpl2 && seerpl0 && seerpl1) {
+                    seerpl2.classList.add('hidden');
+                    seerpl1.classList.remove('hidden');
+                    seerpl0.classList.add('hidden');
+                }
+            }
+        });
+    </script><!-- script open close chat balas comment(early chat balas comment) -->
+    @include('appes.artiestories.js.commentjs')
     <button class="closecmtrst closecmtrst-{{ $storyCode }}" id="closeCommentarist-{{ $storyCode }}">&times;</button>
     @include('appes.artiestories.js.commentarist001')
 </div>

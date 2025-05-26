@@ -11,13 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('commentartievides', function (Blueprint $table) {
-            $table->id('commentartievidesid');
-            $table->unsignedBigInteger('userid');
-            $table->foreign('userid')->references('userid')->on('users')->onDelete('cascade');
+        Schema::create('banyakviewyah?emangiyah?', function (Blueprint $table) {
+            $table->id('banyakviewyah?emangiyah?');
             $table->string('codevides');
             $table->foreign('codevides')->references('codevides')->on('artievides')->onDelete('cascade');
-            $table->longtext('commentses')->collation('utf8mb4_unicode_520_ci');
+            $table->string('banyakviewyah?emangiyah?wkwk');
             $table->timestamps();
         });
     }
@@ -27,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('commentartievides');
+        Schema::dropIfExists('banyakviewyah?emangiyah?');
     }
 };

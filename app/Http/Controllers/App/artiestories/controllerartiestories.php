@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Artiestories;
 use App\Models\ArtiestoriesIMG;
+use Illuminate\Support\Facades\Storage;
 use getID3;
 
 class controllerartiestories extends Controller
@@ -24,7 +25,6 @@ class controllerartiestories extends Controller
                     $randomString .= $characters[random_int(0, strlen($characters) - 1)];
                 }
             } while (Artiestories::where('coderies', $randomString)->exists());
-        
             return $randomString;
         }
         $randomString = generateUniqueCodestories();
@@ -35,24 +35,17 @@ class controllerartiestories extends Controller
             'file.*' => 'required|mimes:mp4,mov,avi,jpeg,jpg,png,gif',
         ]);
         $files = $request->file('file');
-        $baseFolder = session('username') . '/artiestories/' . $randomString;
-        $destinationPath = public_path($baseFolder);
-        if (!file_exists($destinationPath)) {
-            mkdir($destinationPath, 0755, true);
-        }
         if (!$files || count($files) === 0) {
-            dd($request->all(), $request->file('file'));
             return redirect()->route('artieses')->with(['alert' => 'Tidak ada item yang diunggah!']);
-        }$post = Artiestories::create([
+        }
+        $post = Artiestories::create([
             'userid' => session('userid'),
             'coderies' => $randomString,
             'caption' => $judul,
             'lseo' => $lseo,
             'kseo' => $kseo,
         ]);
-        
         $getID3 = new getID3;
-        
         foreach ($files as $file) {
             $info = $getID3->analyze($file->getPathname());
             $duration = $info['playtime_seconds'] ?? 0;
@@ -60,19 +53,18 @@ class controllerartiestories extends Controller
                 return back()->withErrors(['alert' => 'Durasi video tidak boleh lebih dari 60 detik!']);
             }
         }
+        $storagePath = session('username') . '/artiestories/' . $randomString;
         foreach ($files as $index => $file) {
             $extension = $file->getClientOriginalExtension();
-            $newFilename = session('username') . '_' . date('Ymd_His') . '_' . $index . '.' . $extension;
-            
-            $file->move($destinationPath, $newFilename);
-            $filepath = $baseFolder . '/' . $newFilename;
-        
+            $filename = session('username') . '_' . date('Ymd_His') . '_' . $index . '.' . $extension;
+            Storage::disk('public')->putFileAs($storagePath, $file, $filename);
+            $filepath = 'storage/' . $storagePath . '/' . $filename;
             ArtiestoriesIMG::create([
                 'artiestoriesid' => $post->artiestoriesid,
                 'konten' => $filepath,
             ]);
         }
-        
         return redirect()->route('artieses')->with(['alert' => 'Artiestories mu sudah di publish!']);
     }
+
 }

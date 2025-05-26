@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id('likeartievidesid');
             $table->unsignedBigInteger('userid')->unique();
             $table->foreign('userid')->references('userid')->on('users')->onDelete('cascade');
-            $table->unsignedBigInteger('artievidesid');
-            $table->foreign('artievidesid')->references('artievidesid')->on('artievides')->onDelete('cascade');
+            $table->string('codevides');
+            $table->foreign('codevides')->references('codevides')->on('artievides')->onDelete('cascade');
             $table->timestamps();
         });
     }

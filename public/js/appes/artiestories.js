@@ -1,4 +1,3 @@
-
 document.addEventListener("DOMContentLoaded", function () {
     const cardUpload = document.getElementById("cardupload-artiestories");
     const uploadFile = document.getElementById("uploadfile-artiestories");

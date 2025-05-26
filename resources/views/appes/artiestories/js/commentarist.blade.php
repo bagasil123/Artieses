@@ -38,19 +38,25 @@ $storyCode = $story->coderies; @endphp
                 });
             });
             document.querySelectorAll('.cardstories-{{ $storyCode }}, .cbtnry1-{{ $storyCode }}').forEach(function (button) {
+            if (button.tagName.toLowerCase() === 'video') return;
                 button.addEventListener('click', function () {
                     const id = this.id.split('-')[1];
                     const input = document.getElementById("inpcom-" + id);
                     const modal = document.getElementById("commentarist-" + id);
                     history.pushState({}, '', 'Artiestories?GetContent=' + id);
+                    document.querySelectorAll('video').forEach(function(video) {
+                        video.pause();
+                    });
                     if (modal) {
                         modal.classList.remove("hidden");
                         const closeBtn = document.getElementById("closeCommentarist-" + id);
+                        document.body.classList.add('noscroll');
                         if (closeBtn) {
                             closeBtn.addEventListener("click", function () {
                                 input.value = "";
                                 modal.classList.add("hidden");
                                 history.pushState({}, '','Artieses');
+                                document.body.classList.remove('noscroll');
                             });
                         }
                     }
@@ -61,10 +67,40 @@ $storyCode = $story->coderies; @endphp
                     const id = this.id.split('-')[1];
                     const input = document.getElementById("inpcom-" + id);
                     const modal = document.getElementById("commentarist-" + id);
+                    document.body.classList.remove('noscroll');
                     modal.classList.add("hidden");
                     modal.classList.remove("block");
                     history.pushState({}, '','Artieses');
                 });
             });
+            window.addEventListener('popstate', function () {
+                const params = new URLSearchParams(window.location.search);
+                const id = params.get('GetContent');
+
+                if (id) {
+                    const modal = document.getElementById("commentarist-" + id);
+                    const input = document.getElementById("inpcom-" + id);
+                    if (modal) {
+                        modal.classList.remove("hidden");
+                        document.body.classList.add('noscroll');
+
+                        const closeBtn = document.getElementById("closeCommentarist-" + id);
+                        if (closeBtn) {
+                            closeBtn.addEventListener("click", function () {
+                                input.value = "";
+                                modal.classList.add("hidden");
+                                history.pushState({}, '', 'Artieses');
+                                document.body.classList.remove('noscroll');
+                            });
+                        }
+                    }
+                } else {
+                    document.querySelectorAll('.commentarist').forEach(modal => {
+                        modal.classList.add("hidden");
+                    });
+                    document.body.classList.remove('noscroll');
+                }
+            });
+
         });
         </script>

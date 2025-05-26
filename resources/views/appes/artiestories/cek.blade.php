@@ -1,6 +1,7 @@
         @php
             $now = \Carbon\Carbon::now();
             $waktu = $story->created_at;
+            $coderies = $story->coderies;
             $diffInMinutes1 = $waktu->diffInMinutes($now);
             $diffInHours1 = $waktu->diffInHours($now);
             $diffInDays1 = $waktu->diffInDays($now);
@@ -30,4 +31,4 @@
                 $timeAgo = $diffInYears . ' tahun yang lalu';
             }
         @endphp
-        <p class="captionStories">{{ $timeAgo }}</p>
+        <p class="captionStories" id="captionStories-{{ $coderies }}">{{ $timeAgo }}</p>

@@ -1,0 +1,254 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+}
+body.dark-mode {
+    background-color: #181818;
+    color: #fff;
+}
+.cardvideomain {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: center;
+    margin-top: 5.5%;
+    flex-wrap: wrap;
+}
+.video-page-container {
+    flex-direction: column;
+    flex: 1 1 60%;
+    align-items: center;
+}
+.main-video {
+    max-width: 96%;
+    height: 500px;
+    margin-left: 20px;
+    background: #000;
+    border-radius: 8px;
+}
+.recomvides {
+    flex: 1 1 20%;
+    margin-right: 15px;
+    padding: 10px;
+    border-radius: 8px;
+}
+.dark-mode .recomvides {
+    background: none;
+}
+.main-video video {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+.creatorvides {
+    width:55px; 
+    height:55px; 
+    margin-left: 6px;
+    border-radius:50%;
+}
+.pbv {
+    width: 20px;
+    position: relative;
+    bottom: 40px;
+    left: 30px;
+    opacity: 0.6;
+    z-index: 5;
+}
+.next {
+    width: 20px;
+    position: relative;
+    bottom: 40px;
+    opacity: 0.6;
+    left: 60px;
+    z-index: 5;
+}
+.vol {
+    position: relative;
+    opacity: 0.6;
+    left: 90px;
+    bottom: 37.5px;
+    width: 23px;
+    z-index: 5;
+}
+.volume-container {
+    position: relative;
+    display: inline-block;
+}
+
+.volume-bar {
+    position: absolute;
+    left: 50%;
+    bottom: 120%;
+    transform: translateX(102%);
+    width: 100px;
+    appearance: none;
+    background: #ccc;
+    cursor: pointer;
+}
+
+.hidden {
+    display: none;
+}
+
+.zin {
+    position: relative;
+    opacity: 0.6;
+    left: 760px;
+    bottom: 37.5px;
+    width: 23px;
+    z-index: 5;
+}
+.video-timer {
+    position: absolute;
+    left: 182px;
+    bottom: 52px;
+    background: none;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 15px;
+}
+.fade-transition {
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+.fade-hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+.custom-progress-bar {
+    height: 100%; 
+    position: absolute;
+    width: 0%; 
+    bottom: 0;
+    border-radius: 12px;
+    background: rgb(66, 127, 241);
+}
+.custom-progress-container {
+    position: relative;
+    height: 10px;
+    left: 12px; 
+    width: 97%;
+    z-index: 3;
+    background: rgba(255, 255, 255, 0.6);
+    bottom: 80px; 
+    border-radius: 12px;
+    cursor: pointer;
+}
+.video-catch {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+}
+.custom-progress-bar-quick {
+    height: 100%; 
+    width: 0%; 
+    bottom:0;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.9);
+}
+.custom-tooltip {
+    position: absolute;
+    background-color: #333;
+    color: #fff;
+    padding: 2px 6px;
+    font-size: 12px;
+    border-radius: 4px;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    pointer-events: none;
+    top: -25px;
+    z-index: 10;
+}
+.hover-bar {
+    position: absolute;
+    bottom: -3.5px;
+    height: 15px;
+    width: 15px;
+    background-color: rgb(66, 127, 241);
+    box-shadow: 0 0 4px rgb(255, 255, 255, 1);
+    transform: translateX(-50%);
+    pointer-events: none;
+    border-radius: 50%;
+    z-index: 5;
+}
+.video-info {
+    display: flex;
+    max-width: 960px;
+    margin-left: 14px;
+}
+.video-title {
+    font-size: 27px;
+    font-weight: bold;
+    margin-left: 25px;
+    margin-top: 8px;
+    margin-bottom: 5px;
+}
+.video-meta {
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 5px;
+    margin-left: 10px;
+    transform: translateY(0%);
+}
+.video-meta p {
+    font-size: 12px;
+    font-weight: normal;
+    transform: translateY(-10%) !important;
+}
+.video-meta a {
+    text-decoration: none;
+    color: inherit;
+}
+.sidebar {
+    display: none;
+}
+.iclivides {
+    height: 30px;
+    width:30px;
+}
+.btnsubs1 {
+    height: 30px;
+    width: 150px;
+    border: none;
+    background: none;
+    text-align: center;
+    background-color: #666;
+    margin-left: 44%;
+    margin-top: 9px;
+    color: white;
+    border-radius: 12px;
+}
+.btldl {
+    width: 12%;
+    height: 40px;
+    margin-top: 3px;
+    margin-left: 30px;
+    background-color: #888;
+    
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 25px;
+    border-radius: 17px;
+}
+.btnlivides,
+.btnlivides1 {
+    height: 30px;
+    width: 30px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    padding: 0;
+}
+.description {
+    padding: 0 20px;
+    width: 95.5%;
+    border-radius: 12px;
+    background-color: #888;
+    margin-left: 25px;
+}

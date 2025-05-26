@@ -22,8 +22,8 @@
   <div class="wrapper">
   @foreach ($mergedFeed as $item)
     @if ($item['type'] === 'video')
-    <div class="card-artievides1">
       @php $video = $item['data']; @endphp
+    <div class="card-artievides1 card-artievides1{{ $video->codevides }}" id="card-artievides1{{ $video->codevides }}">
         @include('appes.artievides.artievides', ['video' => $item['data']])
     </div>
     @elseif ($item['type'] === 'story')
@@ -41,4 +41,18 @@
 </body>
   <script src="{{ asset('js/appes/togglemode.js') }}"></script>
   <script src="{{ asset('js/appes/artievides1.js') }}"></script>
+  <script>
+    const originalLog = console.log;
+    console.log = function (...args) {
+      if (args.some(arg => typeof arg === 'string' && arg.includes('Pusher')) ||
+          args.some(arg => typeof arg === 'string' && arg.includes('broadcast.typing1')) || 
+          args.some(arg => typeof arg === 'string' && arg.includes('user.typing1')) ||
+          args.some(arg => typeof arg === 'string' && arg.includes('Pusher1')) ||
+          args.some(arg => typeof arg === 'string' && arg.includes('broadcast.typing')) ||
+          args.some(arg => typeof arg === 'string' && arg.includes('user.typing'))) {
+          return;
+      }
+      originalLog.apply(console, args);
+    };        
+  </script>
 </html>

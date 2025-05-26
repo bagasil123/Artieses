@@ -44,6 +44,5 @@ class BroadcastTyping implements ShouldBroadcast
             'message' => $this->message,
         ];
     }
-
 }
 

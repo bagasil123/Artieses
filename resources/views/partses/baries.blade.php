@@ -1,7 +1,9 @@
 <link rel="stylesheet" href="{{ asset('css/partses/topbares.css') }}">
 <link rel="stylesheet" href="{{ asset('css/partses/sidebares.css') }}">
 <header class="top-navbar">
-    <img src="{{ asset('partses/icouth.png') }}" alt="artieses, artiekeles" class="brandes"/>
+    <a href="{{ url('/') }}">
+        <img src="{{ asset('partses/icouth.png') }}" alt="artieses, artiekeles" class="brandes"/>
+    </a>
     <div class="search-wrapper">
         <form action="{{ route('appes.searches') }}" method="POST" class="search-form">
             @csrf
@@ -10,7 +12,6 @@
         </form>
     </div>
     <a href="javascript:void(0);" id="profile-icon">
-        
     @if(session('isLoggedIn'))
         @php
             $path = implode('/', [session('username'), 'profil', session('improfil')]);
@@ -62,7 +63,8 @@
         </button>
 </header>
 <body>
-<nav class="sidebar">
+@if (!(request()->is('Artievides') && request()->has('GetContent')))
+<nav class="sidebar ">
     <a href="{{ url('/') }}" class="nav-item">
         <img class="icon-img" loading="lazy"
             data-light="{{ asset('partses/hlm.png') }}"
@@ -119,6 +121,7 @@
         </a>
     @endif
 </nav>
+@endif
 </body>
 <script src="{{ asset('js/appes/artieses.js') }}"></script>
 <script src="{{ asset('js/partses/topbares.js') }}"></script>

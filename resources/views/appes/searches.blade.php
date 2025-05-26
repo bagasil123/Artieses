@@ -16,9 +16,22 @@
           {{ session('alert') }}
       </div>
   @endif
-  <div class="main-content">
-    @yield('content')
-  </div>
+  <h2>Hasil Pencarian: "{{ $query }}"</h2>
+
+@if($results->isEmpty())
+    <p>Tidak ditemukan.</p>
+@else
+    <ul>
+        @foreach ($results as $item)
+            <li>
+                <strong>{{ $item->caption }}</strong><br>
+                KSEO: {{ $item->kseo }}<br>
+                LSEO: {{ $item->lseo }}
+            </li>
+        @endforeach
+    </ul>
+@endif
+
 </body>
   <script src="{{ asset('js/appes/togglemode.js') }}"></script>
 </html>
