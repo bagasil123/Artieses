@@ -51,7 +51,7 @@
     }
 @endphp
 <div id="commentwrapcom-{{ $comment->commentartiestoriesid }}">
-    <div class="cardcom001 cardcom001-{{ $comment->coderies }}">
+    <div class="cardcom001 cardcom001-{{ $commentlagi }}">
         @if(in_array(strtolower($ext), ['gif', 'png', 'jpg', 'jpeg', 'webp']))
             <a href="{{ route('profiles.show', ['username' => $comment->userComments->username]) }}">
                 <img src="{{ asset($path) }}" class="creatorstories">
@@ -70,12 +70,12 @@
             @endif
         </div>
     </div>
-    <div class="wrappercom2 wrappercom2-{{ $comment->coderies }}">
+    <div class="wrappercom2 wrappercom2-{{ $commentlagi }}" id="wrappercom2-{{ $commentlagi }}">
         @if ($comment->replies->isEmpty())
             <div class="balaskan001" id="balaskan001-{{ $commentlagi }}">
                 @include('appes.artiestories.rcm')
                 <p class="balaskan002 balaskansaja-{{ $commentlagi }} " id="balaskansaja-{{ $commentlagi }}">Balas</p>
-                <p class="urungkan001 urungkansaja-{{ $commentlagi }} hidden" >Urungkan</p>
+                <p class="urungkan001 urungkansaja-{{ $commentlagi }} hidden" id="urungkansaja-{{ $commentlagi }}">Urungkan</p>
                 <p class="captionStoriess gg12">{{ $timeAgo }}</p>
             </div>
             <div class="dibales lagi-{{ $commentlagi }} hidden" id="lagi-{{ $commentlagi }}">
@@ -94,8 +94,8 @@
         @else 
             <div class="balaskan001" id="balaskan001-{{ $commentlagi }}">
                 @include('appes.artiestories.rcm')
-                <p class="comment0010" id="seerpl1-{{ $commentlagi }}">Lihat({{ count($comment->replies) }})</p>
-                <p class="comment00101 hidden" id="seerpl0-{{ $commentlagi }}">Tutup({{ count($comment->replies) }}) </p>
+                <p class="balaskan002" id="seerpl11-{{ $commentlagi }}">Lihat({{ count($comment->replies) }})</p>
+                <p class="urungkan001 hidden" id="seerpl01-{{ $commentlagi }}">Tutup({{ count($comment->replies) }}) </p>
                 <p class="captionStoriess gg12">{{ $timeAgo }}</p>
             </div>
             <div class="replies replies-{{ $commentlagi }} hidden" id="seerpl2-{{ $commentlagi }}">
@@ -114,12 +114,12 @@
                         @endif
                         <div class="dispcard">
                             <a href="{{ route('profiles.show', ['username' => $reply->userBalcom->username]) }}">
-                                <p>{{ $reply->userBalcom->username }}</p>
+                                <p class="dispname">{{ $reply->userBalcom->username }}</p>
                             </a>
                             @if(Str::startsWith($reply->comment, $prefix))
-                                <p>{!! $reply->comment !!}</p>
+                                <p class="comment001">{!! $reply->comment !!}</p>
                             @else
-                                <p>{{ $reply->comment }}</p>
+                                <p class="comment001">{{ $reply->comment }}</p>
                             @endif
                         </div>
                     </div>
@@ -128,15 +128,15 @@
                         @include('appes.artiestories.cek2')
                     </div>
                 @endforeach
-                <div class="dibales1 lagi-{{ $commentlagi }}" id="lagi-{{ $commentlagi }}">
+                <div class="dibales lagi-{{ $commentlagi }}" id="lagi-{{ $commentlagi }}">
                     <div class="brcmt2 hidden" id="divbrcmt2-{{ $commentlagi }}">
                         <p id="brcmt2-{{ $commentlagi }}"></p>
                     </div>
                     <img src="{{ asset('partses/import.png') }}" class="iclikestoryimp1" id="importbtn1-{{ $commentlagi }}">
                     <input type="file" accept="image/*" id="filepicker1-{{ $commentlagi }}" class="hidden" />
-                    <input type="text" class="inpbalassaja-{{ $commentlagi }}" id="inpbalassaja-{{ $commentlagi }}" placeholder="Kirim komentar..." required />
+                    <input type="text" class="inpbalassaja inpbalassaja-{{ $commentlagi }}" id="inpbalassaja-{{ $commentlagi }}" placeholder="Kirim komentar..." required />
                     <input type="hidden" value="{{ $commentlagi }}" id="inpbalassajahidden-{{ $commentlagi }}">
-                    <button type="button" class="close-dibales close-dibales-{{ $commentlagi }}" id="close-dibales-{{ $commentlagi }}">&times;</button>
+                    <button type="button" class="close-dibales close-dibales-{{ $commentlagi }} hidden" id="close-dibales-{{ $commentlagi }}">&times;</button>
                     <button type="submit" class="btnimg-sendcom btnimg-sendcom-{{ $commentlagi }}" id="btnimg-sendcom-{{ $commentlagi }}">
                         <img class="iclikescmt1" id="iclikescmtbalcom-{{ $commentlagi }}" src="{{ asset('partses/sendcomdm.png') }}">
                     </button>
@@ -145,65 +145,3 @@
         @endif
     </div>
 </div>
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const storyCode1 = '{{ $commentlagi }}';
-        const input1 = document.getElementById('inpbalassaja-' + storyCode1);
-        const fileInput1 = document.getElementById('filepicker1-' + storyCode1);
-        const importBtn1 = document.getElementById('importbtn1-' + storyCode1);
-        importBtn1.addEventListener('click', () => {
-            fileInput1.click();
-        });
-        fileInput1.addEventListener('change', function () {
-            const file1 = this.files[0];
-            if (file1 && file1.type.startsWith('image/')) {
-                const reader1 = new FileReader();
-                reader1.onload = function (event) {
-                    showImagePreview1(event.target.result, storyCode1);
-                };
-                reader1.readAsDataURL(file1);
-            }
-        });
-        input1.addEventListener('paste', function (e) {
-            const items = (e.clipboardData || e.originalEvent.clipboardData).items;
-            for (let i = 0; i < items.length; i++) {
-                if (items[i].type.indexOf("image") === 0) {
-                    const file = items[i].getAsFile();
-                    const reader1 = new FileReader();
-                    reader1.onload = function (event) {
-                        showImagePreview1(event.target.result, storyCode1);
-                    };
-                    reader1.readAsDataURL(file1);
-                }
-            }
-        });
-    });
-    function showImagePreview1(imageSrc, storyCode1) {
-        const oldPreview = document.querySelector('.image-preview1-' + storyCode1);
-        if (oldPreview) oldPreview.remove();
-        const preview = document.createElement('div');
-        preview.className = 'image-preview1 image-preview1-' + storyCode1;
-        preview.style.marginTop = '10px';
-        preview.id = 'image-preview1-' + storyCode1;
-        preview.style.textAlign = 'center';
-        const img = document.createElement('img');
-        img.src = imageSrc;
-        img.style.height = '80px';
-        img.style.borderRadius = '8px';
-        img.style.boxShadow = '0 0 5px rgba(0,0,0,0.2)';
-        const delimg = document.createElement('button');
-        delimg.className = 'bcloimcom1 blcloimcom' + storyCode1;
-        delimg.id = 'bcloimcom' + storyCode1;
-        delimg.innerHTML = `&times;`;
-        delimg.style.cursor = 'pointer';
-        delimg.addEventListener('click', () => preview.remove());
-        preview.appendChild(img);
-        preview.appendChild(delimg);
-        const input1 = document.getElementById('inpbalassaja-' + storyCode1);
-        input1.value = "";
-        const clearBtn1 = document.getElementById(`close-dibales-${storyCode1}`);
-        clearBtn1.classList.add('hidden');
-        const sendBtn = document.getElementById('lagi-' + storyCode1);
-        sendBtn.parentNode.insertBefore(preview, sendBtn);
-    }
-</script>

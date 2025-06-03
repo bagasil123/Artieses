@@ -13,6 +13,7 @@ class UserTyping implements ShouldBroadcast
 
     public $username;
     public $message;
+    public $filename;
     public $coderies;
     public $improfil;
     public $timeAgo;
@@ -20,10 +21,11 @@ class UserTyping implements ShouldBroadcast
 
     public $broadcastQueue = false;
 
-    public function __construct($username, $message, $improfil, $coderies, $timeAgo, $comstoriesid)
+    public function __construct($username, $message , $filename, $improfil, $coderies, $timeAgo, $comstoriesid)
     {
         $this->username = $username;
         $this->message = $message;
+        $this->filename = $filename;
         $this->coderies = $coderies;
         $this->improfil = $improfil;
         $this->timeAgo = $timeAgo;
@@ -43,6 +45,7 @@ class UserTyping implements ShouldBroadcast
         return [
             'username' => $this->username,
             'message' => $this->message,
+            'filename' => $this->filename,
             'coderies' => $this->coderies,
             'improfil' => $this->improfil,
             'timeAgo' => $this->timeAgo,

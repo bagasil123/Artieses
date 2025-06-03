@@ -30,4 +30,4 @@
                 $timeAgo = $diffInYears1 . ' tahun yang lalu';
             }
         @endphp
-        <p class="captionStories gg2">{{ $timeAgo }}</p>
+        <p class="captionStoriess gg2">{{ $timeAgo }}</p>

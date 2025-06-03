@@ -34,7 +34,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const form = sessionStorage.getItem('form');
 
     if (alert) {
-        // Kirim ke server agar bisa diproses sebagai session Laravel
         fetch("{{ route('set.alert.session') }}", {
             method: 'POST',
             headers: {
@@ -46,16 +45,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 form: form
             })
         }).then(() => {
-            // Hapus dari sessionStorage setelah dikirim
             sessionStorage.removeItem('alert');
             sessionStorage.removeItem('form');
-
-            // Reload untuk menampilkan dari Blade
             window.location.reload();
         });
     }
 });
 </script>
-
-
 </html>

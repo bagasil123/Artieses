@@ -6,7 +6,6 @@ use App\Events\BroadcastTyping;
 use App\Events\BroadcastTyping1;
 use App\Events\UserTyping;
 use App\Events\UserTyping1;
-use App\Events\UserTyping2;
 use App\Helpers\AuthHelper;
 use App\Http\Controllers\Controller;
 use App\Models\BalcomStories;
@@ -64,13 +63,14 @@ class artiestoriescomments extends Controller
             $requscom = session('userid');
             $username = session('username');
             $inputcomments = '';
+            $filename = null;
             if (!$request->input('message') && $request->hasFile('fileInput')) {
                 $file = $request->file('fileInput');
                 $storagePath = session('username') . '/artiestoriescomments/';
                 $path1 = 'storage/' . $storagePath;
-                $existingImages = glob($path1 . '/imgcomment*.png');
+                $existingImages = glob($path1 . '/imgcomment0*.png');
                 $count = count($existingImages) + 1;
-                $filename = "imgcomment{$count}.png";
+                $filename = "imgcomment0-{$coderies}-{$username}{$count}.png";
                 $path = 'storage/' . $storagePath . '/' . $filename;
                 if (!file_exists($path)) {
                     mkdir($path, 0755, true);
@@ -116,32 +116,39 @@ class artiestoriescomments extends Controller
             } else {
                 $timeAgo = $diffInYears . ' tahun yang lalu';
             }
-            broadcast(new UserTyping($username, $message, $improfil, $coderies, $timeAgo, $comstoriesid));
-            return response()->json(['status' => $coderies ]);
+            broadcast(new UserTyping($username, $message, $filename,$improfil, $coderies, $timeAgo, $comstoriesid));
+            return response()->json([
+                'status' => $coderies,
+                'filename' => $filename,
+                'message' => $inputcomments
+            ]);
         }
     }
     public function storeGG1(Request $request)
     {
         if (session()->has('username')) {
-            $reqplat = $request->input('coderies1');
             $requscom = session('userid');
             $username = session('username');
             $inputcomments = '';
+            $filename = null;
             if (!$request->input('message1') && $request->hasFile('fileInput1')) {
+                $reqplat = $request->input('storyCode1');
+                $code = $request->input('code');
                 $file = $request->file('fileInput1');
                 $storagePath = session('username') . '/artiestoriescomments/';
                 $path1 = 'storage/' . $storagePath;
                 $existingImages = glob($path1 . '/imgcomment*.png');
                 $count = count($existingImages) + 1;
-                $filename = "imgcomment{$count}.png";
+                $filename = "imgcomment1{$count}-{$code}-{$username}.png";
                 $path = 'storage/' . $storagePath . '/' . $filename;
                 if (!file_exists($path)) {
                     mkdir($path, 0755, true);
                 }
                 Storage::disk('public')->putFileAs($storagePath, $file, $filename);
-                $inputcomments = '<img src="' . url('/Artiestoriescom/' . $filename . '?GetContent=' . $reqplat) . '" class="imgcom">';
+                $inputcomments = '<img src="' . url('/Artiestoriescom/' . $filename . '?GetContent=' . $code) . '" class="imgcom">';
             }
             if (!$request->hasFile('fileInput1')) {
+                $reqplat = $request->input('storyCode1');
                 $inputcomments = $request->input('message1');
             }
             $comstories = BalcomStories::create([
@@ -149,7 +156,7 @@ class artiestoriescomments extends Controller
                 'commentartiestoriesid' => $reqplat,
                 'comment' => $inputcomments,
             ]);
-            $message = $request->input('message1');
+            $message = $inputcomments;
             $improfil = session('improfil');
             $created_at = $comstories->created_at;
             $comstoriesid = $comstories->balcomstoriesid;
@@ -181,8 +188,8 @@ class artiestoriescomments extends Controller
             }
             $userid = session('userid');
             $jumlah = BalcomStories::where('commentartiestoriesid', $reqplat)->count();
-            broadcast(new UserTyping2($userid, $username, $message, $reqplat, $improfil, $timeAgo, $comstoriesid, $jumlah));
-            return response()->json(['username' => $username, 'userid' => $userid, 'message' => $message, 'commentartiestoriesid' => $reqplat, 'improfil' => $improfil, 'created_at' => $timeAgo, 'balcomstoriesid' => $comstoriesid,'jumlah' => $jumlah]);
+            broadcast(new UserTyping1($userid, $username, $message, $comstoriesid, $improfil, $timeAgo, $filename, $jumlah, $reqplat));
+            return response()->json(['username' => $username, 'userid' => $userid, 'message' => $inputcomments, 'commentartiestoriesid' => $reqplat, 'improfil' => $improfil, 'created_at' => $timeAgo, 'balcomstoriesid' => $comstoriesid,'jumlah' => $jumlah]);
         }
     }
 }

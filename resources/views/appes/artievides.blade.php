@@ -30,7 +30,6 @@
             <label for="lseo">Deskripsi: </label>
             <input type="text" id="lseo" name="lseo" placeholder="Masukkan Deskripsi Artievides" required>
         </div>
-
         <div class="input-group">
             <button type="button" class="uploades" id="cardupload-artievides">Pilih Video</button>
             <div id="uploadfile-artievides" class="uploadfiles-artievides hidden">
@@ -51,7 +50,6 @@
                 </div>
             </div>
         </div>
-
         <button type="submit" class="uploades">Upload</button>
     </form>
 </div>

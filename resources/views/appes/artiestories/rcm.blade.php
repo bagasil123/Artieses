@@ -18,7 +18,7 @@
         @endphp
             @if($check->isEmpty()) 
                 @include('appes.artiestories.reacted3')
-                <p class="inint rbtnry3-{{ $rcmId }}"id="rbtnry3-{{ $rcmId }}">suka</p>
+                <p class="inint rbtnry3-{{ $rcmId }}" id="rbtnry3-{{ $rcmId }}">suka</p>
                 @include('appes.artiestories.js.commentarist1')
             @else
                 <div class="iclikeswrap rbtnry4-{{ $rcmId }}" id="rbtnry4-{{ $rcmId }}">

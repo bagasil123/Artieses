@@ -44,7 +44,6 @@ class controllerartievides extends Controller
         $thumbPath = session('username') . '/artiethumb/' . $randomString;
         if (!file_exists($thumbPath)) mkdir($thumbPath, 0755, true);
         Storage::disk('public')->putFileAs($thumbPath, $thumbFile, $thumbName);
-
         $thumbPathRelatif = session('username') . '/artiethumb/' . $randomString . '/' . $thumbName;
         Artievides::create([
             'userid' => session('userid'),
