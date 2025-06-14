@@ -30,7 +30,8 @@ class registeres extends Controller
         }
         session([
             'regis' => true,
-            'username' => $username,
+            'username' => $username,    
+            'bio' => 'Hai aku pengguna baru',
             'nameuse' => $nameuse,
             'email' => $email,
             'password' => $password,

@@ -35,11 +35,17 @@ class controllerartievides extends Controller
         }
         $randomString = generateUniqueCodevides();
         $videoFile = $request->file('video');
+        if ($videoFile == null) {
+            return redirect()->route('artieses')->with(['alert' => 'Thumbnail harus berupa mp4,avi,mov,wmv,mkv,flv,mpeg,3gp!']);
+        }
         $videoName = time() . '_' . $videoFile->getClientOriginalName();
         $videoPath = session('username') . '/artievides/' . $randomString;
         Storage::disk('public')->putFileAs($videoPath, $videoFile, $videoName);
         $videoPathRelatif = session('username') . '/artievides/' . $randomString . '/' . $videoName;
         $thumbFile = $request->file('thumbnail');
+        if ($thumbFile == null) {
+            return redirect()->route('artieses')->with(['alert' => 'Thumbnail harus berupa jpeg,png,jpg,svg!']);
+        }
         $thumbName = time() . '_' . $thumbFile->getClientOriginalName();
         $thumbPath = session('username') . '/artiethumb/' . $randomString;
         if (!file_exists($thumbPath)) mkdir($thumbPath, 0755, true);

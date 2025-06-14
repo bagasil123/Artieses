@@ -23,6 +23,7 @@ use App\Models\Artiestories;
 use App\Models\Artievides;
 use App\Models\Artiekeles;
 use App\Models\ComStories;
+use App\Models\Users;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 # SPECIALIST EVENT ROUTE
@@ -37,7 +38,7 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 # APP #
     Route::post('/searcheses', [searcheses::class, 'Search'])->name('histories');
-    Route::post('/searches', [searcheses::class, 'result'])->name('appes.searches');
+    Route::post('/searches', [searcheses::class, 'Search'])->name('appes.searches');
     Route::post('/upload-file-artiekeles', [FileController::class, 'uploadFile'])->name('file.upload.artiekeles');
     Route::post('/upload-file-artievides', [controllerartievides::class, 'uploadFile'])->name('file.upload.artievides');
     Route::post('/upload-file-artiestories', [controllerartiestories::class, 'uploadFile'])->name('file.upload.artiestories');
@@ -204,16 +205,29 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
         ], true, null, true, true);
     })->where('filename', '.*\.(jpg|jpeg|png|svg|gif)$');
     Route::get('/Artiestoriescom/{filename}', function ($filename, Request $request) {
-        $reqplat = $request->query('GetContent');
-        $konten = ComStories::where('coderies', $reqplat)->firstOrFail();
+        
+        preg_match('/-(\d+)\.png$/', $filename, $matches);
+        $userId = $matches[1] ?? null;
+        
+        if (!$userId) {
+            abort(404, 'User ID tidak ditemukan dari filename');
+        }
+        $user = Users::find($userId);
+        if (!$user) {
+            abort(404, 'User tidak ditemukan');
+        }
 
-        $user = $konten->userComments->username;
-        $path = storage_path('app/public/' . $user . '/artiestoriescomments/' . $filename);
+        $username = $user->username;
+        $path = storage_path('app/public/' . $username . '/artiestoriescomments/' . $filename);
 
+        Log::info('Debug Path', [
+            'Username dari filename' => $username,
+            'Path dicari' => $path,
+            'File exists' => file_exists($path),
+        ]);
         if (!file_exists($path)) {
             abort(404);
         }
-
         return response()->file($path);
     })->where('filename', '.*\.(jpg|jpeg|png|svg|gif)$');
 ##

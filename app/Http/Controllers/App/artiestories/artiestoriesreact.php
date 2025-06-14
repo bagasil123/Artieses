@@ -11,7 +11,6 @@ use App\Models\ReactStories;
 
 class artiestoriesreact extends Controller
 {
-    
     public function store(Request $request)
     {
         if (!AuthHelper::check()) {
@@ -26,7 +25,6 @@ class artiestoriesreact extends Controller
             'reaksi' => 'required|string',
             'artiestoriesid' => 'required|integer|exists:artiestories,artiestoriesid',
         ]);
-
         $existingReaction = ReactStories::where('userid', session('userid'))->where('artiestoriesid', $validated['artiestoriesid'])->first();
         if ($existingReaction) {
             $existingReaction->reaksi = $validated['reaksi'];
@@ -63,7 +61,6 @@ class artiestoriesreact extends Controller
             'reaksi' => 'required|string',
             'commentartiestoriesid' => 'required|integer|exists:commentartiestories,commentartiestoriesid',
         ]);
-
         $existingReaction = Rcm1Story::where('userid', session('userid'))->where('commentartiestoriesid', $validated['commentartiestoriesid'])->first();
         if ($existingReaction) {
             $existingReaction->reaksi = $validated['reaksi'];

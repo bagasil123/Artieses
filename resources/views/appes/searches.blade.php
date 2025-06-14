@@ -10,28 +10,41 @@
   <link rel="icon" href="{{ asset('partses/favicon.ico') }}">
   @include('partses.baries')
 </head>
-<body>
-  @if(session('alert'))
-      <div class="feedback error">
-          {{ session('alert') }}
-      </div>
-  @endif
-  <h2>Hasil Pencarian: "{{ $query }}"</h2>
+<body class="dark-mode">
+    @if(session('alert'))
+        <div class="feedback error">
+            {{ session('alert') }}
+        </div>
+    @endif
 
-@if($results->isEmpty())
-    <p>Tidak ditemukan.</p>
-@else
-    <ul>
-        @foreach ($results as $item)
-            <li>
-                <strong>{{ $item->caption }}</strong><br>
-                KSEO: {{ $item->kseo }}<br>
-                LSEO: {{ $item->lseo }}
-            </li>
-        @endforeach
-    </ul>
-@endif
-
+    <div class="card-main">
+        <div class="wrapper">
+            @if($results->isEmpty())
+                <p>Konten yang Anda cari tidak ditemukan.</p>
+            @else
+                {{-- Loop ini sekarang hampir identik dengan halaman index Anda --}}
+                @foreach ($results as $item)
+                    @if ($item['type'] === 'video')
+                        @php $video = $item['data']; @endphp
+                        <div class="card-artievides1 card-artievides1{{ $video->codevides }}" id="card-artievides1{{ $video->codevides }}">
+                            @include('appes.artievides.artievides', ['video' => $video])
+                        </div>
+                    @elseif ($item['type'] === 'story')
+                        @php $story = $item['data']; @endphp
+                        @include('appes.artiestories.artiestories', ['story' => $story])
+                        @include('appes.artiestories.js.commentjs')
+                    @elseif ($item['type'] === 'article')
+                        @php $article = $item['data']; @endphp
+                        {{-- Anda bisa membuat partial view untuk artikel agar lebih rapi --}}
+                        <div class="card-article"> {{-- Contoh wrapper --}}
+                            <h3>{{ $article->judul }}</h3>
+                            <p>{{ Str::limit(strip_tags($article->konten), 100) }}</p>
+                        </div>
+                    @endif
+                @endforeach
+            @endif
+        </div>
+    </div>
 </body>
   <script src="{{ asset('js/appes/togglemode.js') }}"></script>
 </html>

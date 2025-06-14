@@ -70,7 +70,7 @@ class artiestoriescomments extends Controller
                 $path1 = 'storage/' . $storagePath;
                 $existingImages = glob($path1 . '/imgcomment0*.png');
                 $count = count($existingImages) + 1;
-                $filename = "imgcomment0-{$coderies}-{$username}{$count}.png";
+                $filename = "imgcomment0{$count}-{$coderies}-{$requscom}.png";
                 $path = 'storage/' . $storagePath . '/' . $filename;
                 if (!file_exists($path)) {
                     mkdir($path, 0755, true);
@@ -139,7 +139,7 @@ class artiestoriescomments extends Controller
                 $path1 = 'storage/' . $storagePath;
                 $existingImages = glob($path1 . '/imgcomment*.png');
                 $count = count($existingImages) + 1;
-                $filename = "imgcomment1{$count}-{$code}-{$username}.png";
+                $filename = "imgcomment1{$count}-{$code}-{$requscom}.png";
                 $path = 'storage/' . $storagePath . '/' . $filename;
                 if (!file_exists($path)) {
                     mkdir($path, 0755, true);

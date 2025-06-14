@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Captcha;
 
 use App\Http\Controllers\Controller;
@@ -24,6 +23,7 @@ class captchaesR2 extends Controller
                 File::copy($source, $destination);
                 Users::create([
                     'username' => session('username'),
+                    'bio' => session('bio'),
                     'nameuse' => session('nameuse'),
                     'email' => session('email'),
                     'password' => bcrypt(session('password')),
