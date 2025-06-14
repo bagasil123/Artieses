@@ -205,10 +205,8 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
         ], true, null, true, true);
     })->where('filename', '.*\.(jpg|jpeg|png|svg|gif)$');
     Route::get('/Artiestoriescom/{filename}', function ($filename, Request $request) {
-        
         preg_match('/-(\d+)\.png$/', $filename, $matches);
         $userId = $matches[1] ?? null;
-        
         if (!$userId) {
             abort(404, 'User ID tidak ditemukan dari filename');
         }
@@ -216,15 +214,8 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
         if (!$user) {
             abort(404, 'User tidak ditemukan');
         }
-
         $username = $user->username;
         $path = storage_path('app/public/' . $username . '/artiestoriescomments/' . $filename);
-
-        Log::info('Debug Path', [
-            'Username dari filename' => $username,
-            'Path dicari' => $path,
-            'File exists' => file_exists($path),
-        ]);
         if (!file_exists($path)) {
             abort(404);
         }
