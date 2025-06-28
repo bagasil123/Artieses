@@ -16,16 +16,14 @@
             ];
             $rcmId = $comment->commentartiestoriesid; 
         @endphp
-            @if($check->isEmpty()) 
-                @include('appes.artiestories.reacted3')
-                <p class="inint rbtnry3-{{ $rcmId }}" id="rbtnry3-{{ $rcmId }}">suka</p>
-                @include('appes.artiestories.js.commentarist1')
-            @else
-                <div class="iclikeswrap rbtnry4-{{ $rcmId }}" id="rbtnry4-{{ $rcmId }}">
-                @foreach($check as $reaksi)
-                    @include('appes.artiestories.reacted4')
-                    <img src="{{ asset('partses/reaksi/' . $reaksi . '.png') }}" style="margin-left:7px; margin-right:4px;"  width="25px" height="25px">
-                    @include('appes.artiestories.js.commentarist2')
-                @endforeach
-                </div>
+        @if($check->isEmpty()) 
+            @include('appes.artiestories.reacted3')
+            <p class="inint rbtnry3-{{ $rcmId }}" id="rbtnry3-{{ $rcmId }}">Suka</p>
+        @else
+            <div class="iclikeswrap rbtnry4-{{ $rcmId }}" id="rbtnry4-{{ $rcmId }}">
+            @foreach($check as $reaksi)
+                @include('appes.artiestories.reacted4')
+                <img src="{{ asset('partses/reaksi/' . $reaksi . '.png') }}" style="margin-left:7px; margin-right:4px;"  width="25px" height="25px">
+            @endforeach
+            </div>
         @endif

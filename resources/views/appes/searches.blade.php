@@ -18,6 +18,9 @@
     @endif
 
     <div class="card-main">
+        <br>
+        <h2>Hasil Pencarian untuk: "{{ $query }}"</h2>
+        <br>
         <div class="wrapper">
             @if($results->isEmpty())
                 <p>Konten yang Anda cari tidak ditemukan.</p>

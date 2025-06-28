@@ -1,44 +1,9 @@
 <a href="/Artievides?GetContent={{ $video->codevides }}" class="">
-  <div class="video-container">
-    <video width="100%" muted class="hover-video" poster="{{ url('/Artiethumb/' . basename($video->thumbnail) . '?GetContent=' . $video->codevides) }}">
+  <div class="video-container video-container-{{ $video->codevides }}">
+    <video width="100%" muted class="hover-video" id="hover-video-{{$video->codevides}}" poster="{{ url('/Artiethumb/' . basename($video->thumbnail) . '?GetContent=' . $video->codevides) }}">
       <source src="{{ url('/Artievides/' . basename($video->video) . '?GetContent=' . $video->codevides) }}" type="video/mp4">
     </video>
-    <script>
-      document.addEventListener('DOMContentLoaded', function () {
-          const videos = document.querySelectorAll('.hover-video');
-          videos.forEach(video => {
-              video.addEventListener('mouseenter', () => {
-                  const playPromise = video.play();
-                  if (playPromise !== undefined) {
-                      playPromise.catch(error => {
-                      });
-                  }
-              });
-              video.addEventListener('mouseleave', () => {
-                  video.pause();
-                  video.currentTime = 0;
-              });
-              const container = video.closest('.video-container');
-              if (container) {
-                  const timer = container.querySelector('.video-timer');
-                  if (timer) {
-                      const formatTime = (seconds) => {
-                          const min = Math.floor(seconds / 60).toString().padStart(2, '0');
-                          const sec = Math.floor(seconds % 60).toString().padStart(2, '0');
-                          return `${min}:${sec}`;
-                      };
-                      video.addEventListener('loadedmetadata', () => {
-                          timer.textContent = `00:00 / ${formatTime(video.duration)}`;
-                      });
-                      video.addEventListener('timeupdate', () => {
-                          timer.textContent = `${formatTime(video.currentTime)} / ${formatTime(video.duration)}`;
-                      });
-                  }
-              }
-          });
-      });
-    </script>
-    <div class="video-timer">00:00 / 00:00</div>
+    <div class="video-timer" id="video-timer-{{$video->codevides}}">00:00 / 00:00</div>
   </div><br>
   <div class="cabot-artievides">
     @php

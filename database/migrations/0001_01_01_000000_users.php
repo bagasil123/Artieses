@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->text('improfil')->nullable();
+            $table->timestamp('editusername')->nullable();
             $table->timestamps();
         });
     }

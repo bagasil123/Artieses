@@ -8,7 +8,6 @@
             $diffInWeeks1 = $waktu->diffInWeeks($now);
             $diffInMonths1 = $waktu->diffInMonths($now);
             $diffInYears1 = $waktu->diffInYears($now);
-
             
             $diffInMinutes = (int) $diffInMinutes1;
             $diffInHours = (int) $diffInHours1;

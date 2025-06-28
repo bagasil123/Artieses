@@ -45,6 +45,7 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
     Route::get('/', [artieses::class, 'Homes1']);
     Route::get('/artieses', [artieses::class, 'Homes1']);
     Route::get('/Artieses', [artieses::class, 'Homes'])->name('artieses');
+    Route::get('/load-feed', [artieses::class, 'loadFeed']);
     Route::post('/reaksi', [artiestoriesreact::class, 'store'])->name('uprcm0');
     Route::post('/uprcm0gg', [artiestoriescomments::class, 'storeGG'])->name('uprcm0gg');
     Route::post('/uprcm1gg', [artiestoriescomments::class, 'storeGG1'])->name('ayokirim.komentar');
@@ -61,7 +62,6 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
         session()->flash('form', $request->input('form'));
         return response()->json(['status' => 'ok']);
     })->name('set.alert.session');
-    Route::get('/profiles/{username}', [profilcontroller::class, 'show'])->name('profiles.show');
 ##
 
 # AUTHENTICATION #
@@ -87,6 +87,37 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
     Route::get('/clartiekeles', [artieses::class, 'clartiekeles']);
     Route::get('/clartievides', [artieses::class, 'clartievides']);
     Route::get('/clartiestories', [artieses::class, 'clartiestories']);
+##
+
+# ARTIEPROFILES #
+    Route::get('/profiles/{user}/{filename}', function ($user, $filename, Request $request) {
+        $reqplat = $request->query('GetContent');
+        $possiblePaths = [
+            storage_path('app/public/' . $user . '/artievides/' . $reqplat . '/' . $filename),
+            storage_path('app/public/' . $user . '/artiethumb/' . $reqplat . '/' . $filename),
+            storage_path('app/public/' . $user . '/artiestories/' . $reqplat . '/' . $filename),
+            storage_path('app/public/' . $user . '/artiekeles/' . $reqplat . '/' . $filename),
+        ];
+        $foundPath = null;
+        foreach ($possiblePaths as $path) {
+            if (file_exists($path)) {
+                $foundPath = $path;
+                break;
+            }
+        }
+        if (!$foundPath) {
+            abort(404, 'File not found in any specified locations.');
+        }
+        return new BinaryFileResponse($foundPath, 200, [
+            'Content-Type' => mime_content_type($foundPath),
+            'Accept-Ranges' => 'bytes',
+        ], true, null, true, true);
+    })->where('filename', '.*\.(mp4|webm|ogg|jpg|jpeg|png|svg|gif)$');
+    Route::get('/profiles/{username}', [profilcontroller::class, 'show'])->name('profiles.show');
+    Route::get('/profiles/{username}/Artiestories', [ProfilController::class, 'show']);
+    Route::post('/update-username/{username}', [ProfilController::class, 'updateUsername'])->name('username.update');
+    Route::post('/updatenameuse/{username}', [ProfilController::class, 'updatenameuse'])->name('nameuse.update');
+    Route::post('/updatebio/{username}', [ProfilController::class, 'updateBio'])->name('bio.update');
 ##
 
 # ARTIEKELES #

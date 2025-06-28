@@ -104,4 +104,3 @@
         <p class="captionStories">{{ $story->caption }}</p>
         @include('appes.artiestories.cek')
       </div>
-      @include('appes.artiestories.js.commentarist')

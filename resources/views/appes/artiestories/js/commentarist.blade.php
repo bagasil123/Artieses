@@ -1,106 +1,132 @@
-
-@php 
-$storyCode = $story->coderies; @endphp
 <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            document.querySelectorAll('.rbtnry-{{ $storyCode }}').forEach(function (button) {
-                button.addEventListener('mouseenter', function () {
-                    const id = this.id.split('-')[1];
-                    const button1 = document.getElementById('rbtnry1-' + id);
-                    const srcard1 = document.getElementById('srcard1-' + id);
-                    srcard1.classList.remove('hidden');
-                });
-                button.addEventListener('mouseleave', function () {
-                    const id = this.id.split('-')[1];
-                    const button1 = document.getElementById('rbtnry1-' + id);
-                    const srcard1 = document.getElementById('srcard1-' + id);
-                    setTimeout(() => {
-                        if (!srcard1.matches(':hover')) {
-                            srcard1.classList.add('hidden');
-                        }}, 0);
-                });
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('[id^="rbtnry-"]').forEach(rbtnry => {
+            const id = rbtnry.id.replace('rbtnry-', '');
+            rbtnry.addEventListener('mouseenter', function () {
+                const button1 = document.getElementById('rbtnry1-' + id);
+                const srcard1 = document.getElementById('srcard1-' + id);
+                srcard1.classList.remove('hidden');
             });
-            document.querySelectorAll('.rbtnry2-{{ $storyCode }}').forEach(function (button) {
-                button.addEventListener('mouseenter', function () {
-                    const id = this.id.split('-')[1];
-                    const button2 = document.getElementById('rbtnry2-' + id);
-                    const srcard2 = document.getElementById('srcard2-' + id);
-                    srcard2.classList.remove('hidden');
-                });
-                button.addEventListener('mouseleave', function () {
-                    const id = this.id.split('-')[1];
-                    const button2 = document.getElementById('rbtnry2-' + id);
-                    const srcard2 = document.getElementById('srcard2-' + id);
-                    setTimeout(() => {
-                        if (!srcard2.matches(':hover')) {
-                            srcard2.classList.add('hidden');
-                        }}, 0);
-                });
+            rbtnry.addEventListener('mouseleave', function () {
+                const button1 = document.getElementById('rbtnry1-' + id);
+                const srcard1 = document.getElementById('srcard1-' + id);
+                setTimeout(() => {
+                    if (!srcard1.matches(':hover')) {
+                        srcard1.classList.add('hidden');
+                    }}, 0);
             });
-            document.querySelectorAll('.cardstories-{{ $storyCode }}, .cbtnry1-{{ $storyCode }}').forEach(function (button) {
-            if (button.tagName.toLowerCase() === 'video') return;
-                button.addEventListener('click', function () {
-                    const id = this.id.split('-')[1];
-                    const input = document.getElementById("inpcom-" + id);
-                    const modal = document.getElementById("commentarist-" + id);
-                    history.pushState({}, '', 'Artiestories?GetContent=' + id);
-                    document.querySelectorAll('video').forEach(function(video) {
-                        video.pause();
-                    });
-                    if (modal) {
-                        modal.classList.remove("hidden");
-                        const closeBtn = document.getElementById("closeCommentarist-" + id);
-                        document.body.classList.add('noscroll');
-                        if (closeBtn) {
-                            closeBtn.addEventListener("click", function () {
-                                input.value = "";
-                                modal.classList.add("hidden");
-                                history.pushState({}, '','Artieses');
-                                document.body.classList.remove('noscroll');
-                            });
-                        }
-                    }
-                });
+        });
+        document.querySelectorAll('[id^="rbtnry2-"]').forEach(rbtnry2 => {
+            const id = rbtnry2.id.replace('rbtnry2-', '');
+            rbtnry2.addEventListener('mouseenter', function () {
+                const button2 = document.getElementById('rbtnry2-' + id);
+                const srcard2 = document.getElementById('srcard2-' + id);
+                srcard2.classList.remove('hidden');
             });
-            document.querySelectorAll('.closecmtrst').forEach(function (button) {
-                button.addEventListener('click', function () {
-                    const id = this.id.split('-')[1];
-                    const input = document.getElementById("inpcom-" + id);
-                    const modal = document.getElementById("commentarist-" + id);
-                    document.body.classList.remove('noscroll');
-                    modal.classList.add("hidden");
-                    modal.classList.remove("block");
-                    history.pushState({}, '','Artieses');
-                });
+            rbtnry2.addEventListener('mouseleave', function () {
+                const button2 = document.getElementById('rbtnry2-' + id);
+                const srcard2 = document.getElementById('srcard2-' + id);
+                setTimeout(() => {
+                    if (!srcard2.matches(':hover')) {
+                        srcard2.classList.add('hidden');
+                    }}, 0);
             });
-            window.addEventListener('popstate', function () {
-                const params = new URLSearchParams(window.location.search);
-                const id = params.get('GetContent');
-
-                if (id) {
-                    const modal = document.getElementById("commentarist-" + id);
-                    const input = document.getElementById("inpcom-" + id);
-                    if (modal) {
-                        modal.classList.remove("hidden");
-                        document.body.classList.add('noscroll');
-
-                        const closeBtn = document.getElementById("closeCommentarist-" + id);
-                        if (closeBtn) {
-                            closeBtn.addEventListener("click", function () {
-                                input.value = "";
-                                modal.classList.add("hidden");
-                                history.pushState({}, '', 'Artieses');
-                                document.body.classList.remove('noscroll');
-                            });
-                        }
-                    }
+        });
+        document.querySelectorAll('[id^="cardstories-"], [id^="cbtnry1-"]').forEach(cardstories => {
+            let id = cardstories.id;
+            const match = id.match(/(?:cardstories|cbtnry1)-([^-]+)(?:-\d+)?/);
+            if (match) {
+                id = match[1];
+            }
+            if (cardstories.tagName.toLowerCase() === 'video') return;
+            cardstories.addEventListener('click', function () {
+                const input = document.getElementById("inpcom-" + id);
+                const modal = document.getElementById("commentarist-" + id);
+                const currentPath = window.location.pathname;
+                const isProfile = currentPath.startsWith('/profiles/');
+                let newUrl = '';
+                if (isProfile) {
+                    const parts = currentPath.split('/');
+                    const username = parts[2] ?? '';
+                    newUrl = `/profiles/${username}/Artiestories?GetContent=${id}`;
                 } else {
-                    document.querySelectorAll('.commentarist').forEach(modal => {
-                        modal.classList.add("hidden");
-                    });
-                    document.body.classList.remove('noscroll');
+                    newUrl = `Artiestories?GetContent=${id}`;
+                }
+                history.pushState({}, '', newUrl);
+                document.querySelectorAll('video').forEach(function(video) {
+                    video.pause();
+                });
+                if (modal) {
+                    modal.classList.remove("hidden");
+                    const closeBtn = document.getElementById("closeCommentarist-" + id);
+                    document.body.classList.add('noscroll');
+                    if (closeBtn) {
+                        closeBtn.addEventListener("click", function () {
+                            input.value = "";
+                            modal.classList.add("hidden");
+                            document.body.classList.remove('noscroll');
+                            let path = window.location.pathname;
+                            let isProfile = path.startsWith('/profiles/');
+                            if (isProfile) {
+                                let backUrl = path.replace(/\/Artiestories(\?.*)?$/i, '');
+                                history.pushState({}, '', backUrl);
+                            } else {
+                                history.pushState({}, '', 'Artieses');
+                            }
+                        });
+                    }
                 }
             });
-
         });
-        </script>
+        
+        function getBackUrl() {
+            const path = window.location.pathname + window.location.search;
+            const isProfile = path.startsWith('/profiles/') && path.includes('/Artiestories');
+            if (isProfile) {
+                return path.replace(/\/Artiestories(\?.*)?$/i, '');
+            }
+            return 'Artieses';
+        }
+        document.querySelectorAll('[id^="closeCommentarist-"]').forEach(closeBtn => {
+            const id = closeBtn.id.replace('closeCommentarist-', '');
+            closeBtn.addEventListener('click', function () {
+                const input = document.getElementById("inpcom-" + id);
+                const modal = document.getElementById("commentarist-" + id);
+                document.body.classList.remove('noscroll');
+                if (modal) {
+                    modal.classList.add("hidden");
+                    modal.classList.remove("block");
+                }
+                history.pushState({}, '', getBackUrl());
+            });
+        });
+        window.addEventListener('popstate', function () {
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get('GetContent');
+
+            if (id) {
+                const modal = document.getElementById("commentarist-" + id);
+                const input = document.getElementById("inpcom-" + id);
+                if (modal) {
+                    modal.classList.remove("hidden");
+                    document.body.classList.add('noscroll');
+
+                    const closeBtn = document.getElementById("closeCommentarist-" + id);
+                    if (closeBtn) {
+                        closeBtn.addEventListener("click", function () {
+                            input.value = "";
+                            modal.classList.add("hidden");
+                            document.body.classList.remove('noscroll');
+                            history.pushState({}, '', getBackUrl());
+                        });
+                    }
+                }
+            } else {
+                document.querySelectorAll('.commentarist').forEach(modal => {
+                    modal.classList.add("hidden");
+                });
+                document.body.classList.remove('noscroll');
+            }
+        });
+    });
+</script>

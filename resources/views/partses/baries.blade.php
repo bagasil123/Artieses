@@ -63,13 +63,13 @@
         </div>
 </header>
 <body>
-    @if (!(request()->is('Artievides') && request()->has('GetContent')))
+    @if (!(request()->is('Artievides') && request()->has('GetContent')) && !(request()->is('profiles/*')))
         <nav class="sidebar ">
             <a href="{{ url('/') }}" class="nav-item">
                 <img class="icon-img" loading="lazy"
                     data-light="{{ asset('partses/hlm.png') }}"
                     data-dark="{{ asset('partses/hdm.png') }}">
-                <span>Home</span>
+                <span>Beranda</span>
             </a>
             <a href="javascript:void(0);" class="nav-item" id="buates">
                 <img class="icon-img" loading="lazy" data-light="{{ asset('partses/alm.png') }}" data-dark="{{ asset('partses/adm.png') }}">
@@ -78,7 +78,7 @@
             <div class="cardbu" id="cardbu">
                 <button id="show-artiekeles" class="nav-item">
                     <img class="icon-img" loading="lazy" data-light="{{ asset('partses/artiekeles.png') }}" data-dark="{{ asset('partses/artiekelesdm.png') }}">
-                    <span>Artiekeles</span>
+                    <span>Artiekeles(BETA)</span>
                 </button>
                 @include('appes.artiekeles')
                 <button id="show-artievides" class="nav-item">
@@ -99,12 +99,33 @@
                     </div>
                 @endif
             </div>
-            <a href="#" class="nav-item">
-                <img class="icon-img" loading="lazy"
-                    data-light="{{ asset('partses/slm.png') }}"
-                    data-dark="{{ asset('partses/sdm.png') }}">
-                <span>Settings</span>
-            </a>
+            @php
+                $username = session('username');
+            @endphp
+            @if ($username)
+                <a href="javascript:void(0);" class="nav-item" id="toggle-settings">
+                    <img class="icon-img" loading="lazy"
+                        data-light="{{ asset('partses/slm.png') }}"
+                        data-dark="{{ asset('partses/sdm.png') }}">
+                    <span>Settings</span>
+                </a>
+                <div class="card-setting hidden" id="card-setting">
+                        <button class="nav-item" onclick="window.location.href='{{ route('profiles.show', ['username' => session('username')]) }}'">
+                            <span>Edit Profil</span>
+                        </button>
+                    <a href="{{ url('/hapus-content') }}">
+                        <button class="nav-item">
+                            <span>Hapus Konten</span>
+                        </button>
+                    </a>
+                    <a href="{{ url('/hapus-akun') }}" onclick="return confirm('Yakin ingin menghapus akun?');">
+                        <button class="nav-item">
+                            <span>Hapus Akun</span>
+                        </button>
+                    </a>
+                 </div>
+            @else
+            @endif
             @if(session('isLoggedIn'))
                 <a href="{{ url('/logout') }}" class="nav-item">
                     <img class="icon-img" loading="lazy"

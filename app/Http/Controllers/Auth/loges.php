@@ -19,20 +19,40 @@ class loges extends Controller
         $username = $request->input('username');
         $password = $request->input('password');
 
-        $user = Users::where('username', $username)->orwhere('email', $username)->first();
+        $user = Users::where('username', $username)
+            ->orWhere('email', $username)
+            ->first();
+
         if ($user && Hash::check($password, $user->password)) {
+            if ($user->username === "Ini Admin") {
+                $requestIp = $request->ip();
+                \Log::info('IP Login Attempt: ' . $requestIp);
+                $adminIp = env('ADMIN_IP');
+                if ($requestIp !== $adminIp) {
+                    return redirect()->route('authes')->with([
+                        'alert' => 'Username atau Password salah!',
+                        'form' => 'login'
+                    ]);
+                }
+            }
             session([
                 'isLoggedIn' => true,
-                'userid' => $user->userid, 
+                'userid' => $user->userid,
                 'username' => $user->username,
                 'nameuse' => $user->nameuse,
                 'email' => $user->email,
                 'improfil' => $user->improfil,
             ]);
+
             return redirect('/');
         }
-        return redirect()->route('authes')->with(['alert' => 'Username atau Password salah!', 'form' => 'login']);
+
+        return redirect()->route('authes')->with([
+            'alert' => 'Username atau Password salah!',
+            'form' => 'login'
+        ]);
     }
+
     public function logout()
     {
         session()->flush();

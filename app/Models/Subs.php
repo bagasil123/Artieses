@@ -10,4 +10,14 @@ class Subs extends Model
     protected $primaryKey = 'subsid';
     protected $fillable = ['subscriber', 'subscribing'];
     public $timestamps = true;
+    public function subscriberUser()
+    {
+        return $this->belongsTo(Users::class, 'subscriber', 'userid');
+    }
+
+    // Relasi ke user yang di-subscribe
+    public function subscribingUser()
+    {
+        return $this->belongsTo(Users::class, 'subscribing', 'userid');
+    }
 }
