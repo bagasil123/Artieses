@@ -307,33 +307,45 @@ h2 {
   border-radius: 12px;
 }
 .srcard3 {
-  z-index:999;
-  margin-left: 0px;
-  margin-top: -35px !important;
-  padding-left: 9px;
-  display: flex;
-  position: absolute;
-  flex-direction: row !important;
-  height: fit-content;
-  width: 42.5%;
-  max-width: 590px;
+  display: inline-flex;
+  padding-left:10px;
+  border-radius: 10px;
   background-color: #888;
-  border-radius: 12px;
+  margin-top: -10px;
+  margin-left: -60px;
+  align-items: center;
+  flex-wrap: wrap;
+  width: 50.5%;
+}
+.srcard3 img {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+.srcard3 img:hover {
+  transform: scale(1.2);
 }
 .srcard4 {
-  z-index:999;
-  margin-left: 0px;
-  margin-top:-20px;
-  margin-left:-15px;
-  padding-left: 12px;
-  display: flex;
-  position: absolute;
-  flex-direction: row !important;
-  height: fit-content;
-  width: 49.5%;
-  max-width: 590px;
+  display: inline-flex;
+  padding-left:10px;
+  border-radius: 10px;
   background-color: #888;
-  border-radius: 12px;
+  margin-top: 0px;
+  margin-left: -60px;
+  align-items: center;
+  flex-wrap: wrap;
+  width: 60%;
+  height: 40px;
+}
+.srcard4 img {
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+.srcard4 img:hover {
+  transform: scale(1.2);
 }
 .commentarist {
   display: flex;
@@ -587,6 +599,7 @@ h2 {
 }
 .balaskan001 {
   display: flex;
+  position: relative;
   align-items: center;
   gap: 12px;
   font-size: 17.5px;

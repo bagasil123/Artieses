@@ -18,9 +18,21 @@ class forgetesR2 extends Controller
         if ($password !== $password_confirmation) {
             return redirect()->route('authes')->with(['alert' => 'Password dan Konfirmasi Password tidak cocok!', 'form' => 'forget1']);
         } if ($existingUser){
-            Users::where('email', $existingUser->email)->update(['password' => bcrypt($password)]);
+            Users::where('email', $existingUser->email)->update([
+                'password' => bcrypt($password)
+            ]);
             session()->flush();
-            return redirect()->route('authes')->with(['alert' => 'Password kamu sudah diganti!', 'form' => 'login']);
+            $userde = Users::whereNotNull('deleteaccount')->where('username', $existingUser->username)->first();
+            if ($userde) {
+                $userde->deleteaccount = null;
+                $userde->save();
+                return redirect()->route('authes')->with([
+                    'alert' => 'Akun mu sudah dikembalikan!',
+                    'form' => 'login'
+                ]);   
+            } else {
+                return redirect()->route('authes')->with(['alert' => 'Password kamu sudah diganti!', 'form' => 'login']);
+            }
         }
     }
 }

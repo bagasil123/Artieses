@@ -10,7 +10,7 @@
     $getreactketawa = $check->where('reaksi', 'ketawa')->first();
     $username = $comment->userComments->username ?? 'defaultuser';
     $improfil = $comment->userComments->improfil ?? 'default.png';
-    $path = $username . '/profil/' . $improfil;
+    $path = $improfil;
     $ext = pathinfo($improfil, PATHINFO_EXTENSION);
     $reactions = [
         'suka' => $getreactsuka,
@@ -104,7 +104,7 @@
                         @php
                             $username = $reply->userBalcom->username ?? 'defaultuser';
                             $improfil = $reply->userBalcom->improfil ?? 'default.png';
-                            $path = $username . '/profil/' . $improfil;
+                            $path = $improfil;
                             $ext = pathinfo($improfil, PATHINFO_EXTENSION);
                         @endphp
                         @if(in_array(strtolower($ext), ['gif', 'png', 'jpg', 'jpeg', 'webp']))

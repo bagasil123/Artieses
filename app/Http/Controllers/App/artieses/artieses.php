@@ -31,13 +31,14 @@ class artieses extends Controller
     {
         $page = $request->query('page', 1);
         $perPage = 12;
-        $videos = Artievides::with('usericonVides')
+        $videos = Artievides::whereNull('deltime')
+            ->with('usericonVides')
             ->withCount('likeVides')
             ->orderByDesc('like_vides_count')
             ->orderByDesc('created_at')
             ->get();
-
-        $stories = Artiestories::withCount('reactStories', 'comments')
+        $stories = Artiestories::whereNull('deltime')
+            ->withCount('reactStories', 'comments')
             ->orderByDesc('react_stories_count')
             ->with([
                 'usericonStories',
@@ -55,12 +56,14 @@ class artieses extends Controller
     }
     public function Homes(Request $request)
     {
-        $videos = Artievides::with('usericonVides')
+        $videos = Artievides::whereNull('deltime')
+            ->with('usericonVides')
             ->withCount('likeVides')
             ->orderByDesc('like_vides_count')
             ->orderByDesc('created_at')
             ->get();
-        $stories = Artiestories::withCount('reactStories', 'comments')
+        $stories = Artiestories::whereNull('deltime')
+            ->withCount('reactStories', 'comments')
             ->orderByDesc('react_stories_count')
             ->with([
                 'usericonStories',

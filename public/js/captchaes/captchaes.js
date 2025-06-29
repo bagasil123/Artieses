@@ -7,7 +7,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const imgRotate2 = document.getElementById("img-rotate2");
     const btnLeft = document.getElementById("rotasi-kiri");
     const btnRight = document.getElementById("rotasi-kanan");
-
     fetch("/get-random-images")
         .then(response => response.json())
         .then(data => {
@@ -21,8 +20,6 @@ document.addEventListener("DOMContentLoaded", function () {
             imgRotate2.style.transform = `rotate(${rotation2}deg)`;
         })
         .catch(error => console.error("Error fetching images:", error));
-
-    // Rotate images
     btnLeft.addEventListener("click", function () {
         rotation2 = (rotation2 - 45 + 360) % 360;
         imgRotate1.style.transform = `rotate(${rotation1}deg)`;
@@ -30,7 +27,6 @@ document.addEventListener("DOMContentLoaded", function () {
         rotasiInput1.value = rotation1;
         rotasiInput2.value = rotation2;
     });
-
     btnRight.addEventListener("click", function () {
         rotation2 = (rotation2 + 45) % 360;
         imgRotate1.style.transform = `rotate(${rotation1}deg)`;
@@ -44,7 +40,6 @@ document.addEventListener("DOMContentLoaded", function () {
 document.addEventListener('DOMContentLoaded', () => {
     const captchaForm = document.getElementById('captcha-form');
     const captchaForm1 = document.getElementById('captcha-form1');
-
     function showCaptcha(type) {
         if (type === 'captcha1') {
             captchaForm?.classList.add('hidden');
@@ -54,13 +49,9 @@ document.addEventListener('DOMContentLoaded', () => {
             captchaForm1?.classList.add('hidden');
         }
     }
-
-    // Cek apakah captcha perlu ditampilkan
     const formToShow = document.body.getAttribute('data-show-form');
     if (formToShow === 'captcha' || formToShow === 'captcha1') {
         showCaptcha(formToShow);
     }
-
-    // Simpan fungsi ke global scope jika butuh akses di HTML
     window.showCaptcha = showCaptcha;
 });

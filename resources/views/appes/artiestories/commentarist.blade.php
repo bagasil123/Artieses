@@ -2,24 +2,33 @@
     $storyCode = $story->coderies;
 @endphp
 <div id="commentarist-{{ $storyCode }}" class="commentarist commentarist-{{ $storyCode }} {{isset($open_commentarist) && $open_commentarist == $storyCode? (request()->is('profiles/') ? 'block' : 'block'): 'hidden'}}"data-story="{{ $storyCode }}">
+    @php
+        $isUserOwner = $story->usericonStories->username === session('username');
+        $loggedInUser = \App\Models\Users::where('username', session('username'))->first();
+        $isAdmin = $loggedInUser && $loggedInUser->admin;
+    @endphp
+    @if ($isUserOwner || $isAdmin)
+        <img class="delete-content" id="delete-content-{{ $storyCode }}" data-light="{{ asset('partses/deletelm.png') }}" data-dark="{{ asset('partses/deletedm.png') }}">
+    @else
+    @endif
     <div class="commentaristcardimg">
         @foreach ($images as $index => $img)
-                @php
-                    $isImage = in_array(pathinfo($img->konten, PATHINFO_EXTENSION), ['jpg', 'jpeg', 'png', 'gif']);
-                    $isVideo = in_array(pathinfo($img->konten, PATHINFO_EXTENSION), ['mp4', 'webm', 'ogg']);
-                @endphp
-                @if ($isImage)
-                    <img src="{{ url('/Artiestoriesimg/' . basename($img->konten) . '?GetContent=' . $story->coderies) }}"
-                        class="crimg cardstories-{{ $storyCode }} {{ $index !== 0 ? 'hidden' : '' }}"
-                        id="cbtnry001-{{ $storyCode }}-{{ $index }}" >
-                @elseif ($isVideo)
-                    <video controls
-                        class="crimg cardstories-{{ $storyCode }} {{ $index !== 0 ? 'hidden' : '' }}"
-                        id="cbtnry001-{{ $storyCode }}-{{ $index }}" tabindex="-1">
-                        <source src="{{ url('/Artiestoriesvideo/' . basename($img->konten) . '?GetContent=' . $story->coderies) }}" type="video/mp4">
-                        Browsermu tidak mendukung video.
-                    </video>
-                @endif
+            @php
+                $isImage = in_array(pathinfo($img->konten, PATHINFO_EXTENSION), ['jpg', 'jpeg', 'png', 'gif']);
+                $isVideo = in_array(pathinfo($img->konten, PATHINFO_EXTENSION), ['mp4', 'webm', 'ogg']);
+            @endphp
+            @if ($isImage)
+                <img src="{{ url('/Artiestoriesimg/' . basename($img->konten) . '?GetContent=' . $story->coderies) }}"
+                    class="crimg cardstories-{{ $storyCode }} {{ $index !== 0 ? 'hidden' : '' }}"
+                    id="cbtnry001-{{ $storyCode }}-{{ $index }}" >
+            @elseif ($isVideo)
+                <video controls
+                    class="crimg cardstories-{{ $storyCode }} {{ $index !== 0 ? 'hidden' : '' }}"
+                    id="cbtnry001-{{ $storyCode }}-{{ $index }}" tabindex="-1">
+                    <source src="{{ url('/Artiestoriesvideo/' . basename($img->konten) . '?GetContent=' . $story->coderies) }}" type="video/mp4">
+                    Browsermu tidak mendukung video.
+                </video>
+            @endif
         @endforeach
         <button id="previmg-{{ $storyCode }}-comment" class="nav-button prev1">◀</button>
         <button id="nextimg-{{ $storyCode }}-comment" class="nav-button next1">▶</button>

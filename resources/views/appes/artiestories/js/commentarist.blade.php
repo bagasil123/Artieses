@@ -1,37 +1,5 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        document.querySelectorAll('[id^="rbtnry-"]').forEach(rbtnry => {
-            const id = rbtnry.id.replace('rbtnry-', '');
-            rbtnry.addEventListener('mouseenter', function () {
-                const button1 = document.getElementById('rbtnry1-' + id);
-                const srcard1 = document.getElementById('srcard1-' + id);
-                srcard1.classList.remove('hidden');
-            });
-            rbtnry.addEventListener('mouseleave', function () {
-                const button1 = document.getElementById('rbtnry1-' + id);
-                const srcard1 = document.getElementById('srcard1-' + id);
-                setTimeout(() => {
-                    if (!srcard1.matches(':hover')) {
-                        srcard1.classList.add('hidden');
-                    }}, 0);
-            });
-        });
-        document.querySelectorAll('[id^="rbtnry2-"]').forEach(rbtnry2 => {
-            const id = rbtnry2.id.replace('rbtnry2-', '');
-            rbtnry2.addEventListener('mouseenter', function () {
-                const button2 = document.getElementById('rbtnry2-' + id);
-                const srcard2 = document.getElementById('srcard2-' + id);
-                srcard2.classList.remove('hidden');
-            });
-            rbtnry2.addEventListener('mouseleave', function () {
-                const button2 = document.getElementById('rbtnry2-' + id);
-                const srcard2 = document.getElementById('srcard2-' + id);
-                setTimeout(() => {
-                    if (!srcard2.matches(':hover')) {
-                        srcard2.classList.add('hidden');
-                    }}, 0);
-            });
-        });
         document.querySelectorAll('[id^="cardstories-"], [id^="cbtnry1-"]').forEach(cardstories => {
             let id = cardstories.id;
             const match = id.match(/(?:cardstories|cbtnry1)-([^-]+)(?:-\d+)?/);

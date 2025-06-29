@@ -11,9 +11,12 @@
     <link rel="stylesheet" href="{{ asset('css/appes/artievides.css') }}">
     <link rel="icon" href="{{ asset('partses/favicon.ico') }}">
     <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cropperjs@1.5.13/dist/cropper.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/cropperjs@1.5.13/dist/cropper.min.js"></script>
     @include('partses.baries')
 </head>
 <body class="dark-mode noscroll">
+    @include('captchaes.captchaes')
     @if(session('alert'))
         <div class="feedback error">
             {{ session('alert') }}
@@ -23,12 +26,37 @@
         @php
             $username = $user->username ?? 'defaultuser';
             $improfil = $user->improfil ?? 'default.png';
-            $path = $username . '/profil/' . $improfil;
+            $path = session('improfil');
             $ext = pathinfo($improfil, PATHINFO_EXTENSION);
         @endphp
         <div class="card-name">
             @if(in_array(strtolower($ext), ['gif', 'png', 'jpg', 'jpeg', 'webp']))
-                <img src="{{ asset($path) }}" class="creatorprofile" alt="{{ asset($path) }}">
+                @if($user->username == session('username'))
+                    <div class="profile-container">
+                        <img src="{{ asset($path) }}" class="creatorprofile" alt="Foto Profil">
+                        <img id="edit-photo-btn"
+                            src="{{ asset('partses/editingdm.png') }}"
+                            data-light="{{ asset('partses/editinglm.png') }}"
+                            data-dark="{{ asset('partses/editingdm.png') }}" style="cursor:pointer;">
+                    </div>
+                    <input type="file" id="fileInput" accept=".jpg,.jpeg,.png,.webp,.gif" style="display: none;">
+                    <div id="cropModal" class="card-confirm hidden">
+                        <p>Crop Gambar</p>
+                        <img id="preview-image" style="max-width: 100%; max-height: 400px;">
+                        <button id="cropConfirmBtn">Crop & Lanjut</button>
+                        <button id="cropCancelBtn">Batal</button>
+                    </div>
+                    <div id="photo-modal" class="card-confirm hidden">
+                        <p>Konfirmasi Foto Profil</p>
+                        <div>
+                            <img id="crop-preview" style="max-width: 100%; max-height: 300px;" />
+                        </div>
+                        <button id="confirm-photo">Simpan</button>
+                        <button id="cancel-photo">Batal</button>
+                    </div>
+                @else
+                    <img src="{{ asset($path) }}" class="creatorprofile" alt="{{ asset($path) }}">
+                @endif
             @endif
             <div class="text-section">
                 <div class="top-subs">
@@ -38,16 +66,18 @@
                                 {{ $user->username }}
                                 <img class="icon-img-p" id="edit-username-btn" data-light="{{ asset('partses/editinglm.png') }}" data-dark="{{ asset('partses/editingdm.png') }}" style="cursor:pointer;">
                             </span>
-                            <input type="text" id="username-input" class="hidden-input" value="{{ $user->username }}" style="display:none;">
+                            <input type="text" id="username-input" class="hidden-input" value="{{ $user->username }}" required style="display:none;">
                         </div>
                         <div id="confirm-username-card" class="card-confirm hidden">
                             <p>Yakin ingin mengubah username? Perubahan hanya bisa dilakukan 7 hari sekali.</p>
-                            <button id="confirm-username-change">Ya, Ubah</button>
-                            <button id="cancel-username-change">Batal</button>
+                            <div class="button-group-acc">
+                                <button id="confirm-username-change">Ya, Ubah</button>
+                                <button id="cancel-username-change">Batal</button>
+                            </div>
                         </div>
                         <p class="nameprofiles use">
                             {{ $user->nameuse }}
-                            <img class="icon-img-p" loading="lazy" data-light="{{ asset('partses/editinglm.png') }}" data-dark="{{ asset('partses/editingdm.png') }}">
+                            <img class="icon-img-p" loading="lazy" data-light="{{ asset('partses/editinglm.png') }}" data-dark="{{ asset('partses/editingdm.png') }}" style="cursor:pointer;">
                         </p>
                         <input type="text" id="username-input" class="hidden-input" value="{{ $user->username }}" style="display:none;">
                     @else
@@ -130,7 +160,7 @@
                             {{ $user->bio }}
                             <img id="edit-bio-btn" class="icon-img-p" loading="lazy"
                                 data-light="{{ asset('partses/editinglm.png') }}"
-                                data-dark="{{ asset('partses/editingdm.png') }}">
+                                data-dark="{{ asset('partses/editingdm.png') }}" style="cursor:pointer;">
                         </p>
                         <textarea id="bio-input" class="hidden-input" style="display:none;">{{ $user->bio }}</textarea>
                     @else
@@ -147,7 +177,7 @@
             </div>
             <div id="videos-tab" class="tab-content active">
                 <div class="video-grid">
-                    @forelse($user->videos as $video)
+                    @forelse($videscontent as $video)
                         <div class="video-item">
                             <a href="/Artievides?GetContent={{ $video->codevides }}">
                                 <div class="video-container-{{ $video->codevides }}">
@@ -170,20 +200,19 @@
             </div>
             <div id="stories-tab" class="tab-content">
                 <div class="stories-grid">
-                    @forelse($user->stories as $story)
+                    @forelse($storiescontent as $story)
                         @php
                             $images = $story->images->sortBy('artiestoriesimgid');
                             $totalImages = $images->count();
                             $storyCode = $story->coderies; 
                         @endphp
-                        <div class="story-item">
+                        <div class="story-item" id="rclick">
                             @foreach ($images as $index => $img)
                                 @php
                                     $ext = pathinfo($img->konten, PATHINFO_EXTENSION);
                                     $isImage = in_array($ext, ['jpg', 'jpeg', 'png', 'gif']);
                                     $isVideo = in_array($ext, ['mp4', 'webm', 'ogg']);
                                 @endphp
-
                                 @if ($isVideo)
                                     <video id="cbtnry1-{{ $storyCode }}-{{ $index }}" class="cardstories-{{ $storyCode }} {{ $index !== 0 ? 'hidden' : '' }}" controls>
                                         <source src="{{ url('/profiles/' . $username . '/' . basename($img->konten) . '?GetContent=' . $story->coderies) }}" type="video/{{ $ext }}">
@@ -260,7 +289,7 @@
             <div id="articles-tab" class="tab-content">
                 <h2>Articles</h2>
                 <div class="articles-list">
-                    @forelse($user->artiekeles as $article)
+                    @forelse($articlescontent as $article)
                         <div class="article-item">
                             <h3><a href="{{ route('article.show', $article->slug) }}">{{ $article->title }}</a></h3>
                             <p>{{ Str::limit($article->content, 150) }}</p>
@@ -274,6 +303,65 @@
     </div>
     <script src="{{ asset('js/appes/togglemode.js') }}"></script>
     <script src="{{ asset('js/appes/artievides1.js') }}"></script>
+    <script>
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const deleteBtns = document.querySelectorAll('[id^="delete-content-"]');
+            deleteBtns.forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const idAttr = btn.id;
+                    const storyId = idAttr.replace('delete-content-', '');
+                    if (!storyId) {
+                        return;
+                    }
+                    fetch('/delete-konten', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        },
+                        body: JSON.stringify({ artiestoriesid: storyId })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            location.reload();
+                        } else if (data.requireCaptcha) {
+                            const captchaFormes = document.getElementById('captcha-form');
+                            captchaFormes.style.zIndex = '10000';
+                            captchaFormes.classList.remove('hidden');
+                        } else {
+                        }
+                    })
+                });
+            });
+        });
+    </script><!-- delete konten(first) -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const runDelete = "{{ session('runDelete') }}";
+            const storyId = "{{ session('artiestoriesid') }}";
+            if (runDelete && storyId) {
+                console.log('y');
+                fetch('/delete-konten', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    },
+                    body: JSON.stringify({ artiestoriesid: storyId })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                    }
+                });
+            }
+        });
+    </script><!-- tangkap delete(last) -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const display = document.getElementById('username-display');
@@ -300,21 +388,30 @@
             });
             confirmBtn.addEventListener('click', function () {
                 const newUsername = input.value.trim();
-                fetch(`/update-username/{{ $user->username }}`, {
+                const oldUsername = display.textContent.trim();
+                console.log("Mengirim fetch ke:", `/updateusername/${oldUsername}`);
+                console.log("Username baru:", newUsername);
+                fetch(`/updateusername/${encodeURIComponent(oldUsername)}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
                     },
                     body: JSON.stringify({ username: newUsername }),
                 })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) {
-                        window.location.reload();
-                    } else {
-                        alert(data.message);
-                        confirmCard.classList.add('hidden');
+                .then(async res => {
+                    const text = await res.text();
+                    console.log("Raw response:", text);
+                    try {
+                        const data = JSON.parse(text);
+                        if (data.success) {
+                            window.location.href = data.redirect;
+                        } else {
+                            alert(data.message);
+                            confirmCard.classList.add('hidden');
+                        }
+                    } catch (e) {
+                        console.error("Gagal parse JSON:", text);
                     }
                 });
             });
@@ -418,6 +515,78 @@
             }
         });
     </script><!-- edit profil(bio) -->
+    <script>
+        let cropper;
+        let selectedFile = null;
+        const fileInput = document.getElementById('fileInput');
+        const editBtn = document.getElementById('edit-photo-btn');
+        const cropModal = document.getElementById('cropModal');
+        const previewImage = document.getElementById('preview-image');
+        const photoModal = document.getElementById('photo-modal');
+        const cropPreview = document.getElementById('crop-preview');
+        editBtn.addEventListener('click', () => {
+            fileInput.click();
+        });
+        fileInput.addEventListener('change', function () {
+            const file = this.files[0];
+            if (!file) return;
+            const fileType = file.type;
+            const isGIF = fileType === 'image/gif';
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                if (!isGIF) {
+                    previewImage.src = e.target.result;
+                    cropModal.classList.remove('hidden');
+                    if (cropper) cropper.destroy();
+                    cropper = new Cropper(previewImage, {
+                        aspectRatio: 1,
+                        viewMode: 1
+                    });
+                    document.getElementById('cropConfirmBtn').onclick = function () {
+                        cropper.getCroppedCanvas().toBlob(blob => {
+                            selectedFile = blob;
+                            cropPreview.src = URL.createObjectURL(blob);
+                            cropModal.classList.add('hidden');
+                            photoModal.classList.remove('hidden');
+                        });
+                    };
+                    document.getElementById('cropCancelBtn').onclick = function () {
+                        cropModal.classList.add('hidden');
+                        if (cropper) cropper.destroy();
+                    };
+                } else {
+                    cropPreview.src = e.target.result;
+                    selectedFile = file;
+                    photoModal.classList.remove('hidden');
+                }
+            };
+            reader.readAsDataURL(file);
+        });
+        document.getElementById('cancel-photo').addEventListener('click', () => {
+            photoModal.classList.add('hidden');
+            selectedFile = null;
+        });
+        document.getElementById('confirm-photo').addEventListener('click', () => {
+            if (!selectedFile) return;
+            const formData = new FormData();
+            formData.append('foto', selectedFile);
+            fetch(`/updatefoto/{{ $user->username }}`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                },
+                body: formData
+            }).then(res => res.json())
+            .then(res => {
+                if (res.success) {
+                    alert('Foto berhasil diperbarui');
+                    location.reload();
+                } else {
+                    alert(res.message || 'Gagal mengunggah foto');
+                }
+            });
+        });
+    </script><!-- edit profil(foto) -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const tabButtons = document.querySelectorAll('.tab-button');

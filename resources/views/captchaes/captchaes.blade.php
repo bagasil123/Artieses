@@ -27,7 +27,6 @@
         <button class="close-btn">x</button>
     </form>
 </div>
-
 <div id="captcha-form1" class="captcha-form hidden">
     <h2>CODE CAPTCHA</h2>
     <form method="POST" action="{{ route('captcha1.action') }}">

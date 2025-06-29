@@ -27,17 +27,26 @@ class searcheses extends Controller
             'search' => $request->search,
         ]);
         $query = $request->input('search');
-        $videos = Artievides::where('judul', 'LIKE', "%{$query}%")
-            ->orWhere('kseo', 'LIKE', "%{$query}%")
-            ->orWhere('lseo', 'LIKE', "%{$query}%")
+        $videos = Artievides::whereNull('deltime')
+            ->where(function ($queryBuilder) use ($query) {
+                $queryBuilder->where('judul', 'LIKE', "%{$query}%")
+                    ->orWhere('kseo', 'LIKE', "%{$query}%")
+                    ->orWhere('lseo', 'LIKE', "%{$query}%");
+            })
             ->get();
-        $stories = Artiestories::where('caption', 'LIKE', "%{$query}%")
-            ->orWhere('kseo', 'LIKE', "%{$query}%")
-            ->orWhere('lseo', 'LIKE', "%{$query}%")
+        $stories = Artiestories::whereNull('deltime')
+            ->where(function ($queryBuilder) use ($query) {
+                $queryBuilder->where('caption', 'LIKE', "%{$query}%")
+                    ->orWhere('kseo', 'LIKE', "%{$query}%")
+                    ->orWhere('lseo', 'LIKE', "%{$query}%");
+            })
             ->get();
-        $articles = Artiekeles::where('judul', 'LIKE', "%{$query}%")
-            ->orWhere('kseo', 'LIKE', "%{$query}%")
-            ->orWhere('lseo', 'LIKE', "%{$query}%")
+        $articles = Artiekeles::whereNull('deltime')
+            ->where(function ($queryBuilder) use ($query) {
+                $queryBuilder->where('judul', 'LIKE', "%{$query}%")
+                    ->orWhere('kseo', 'LIKE', "%{$query}%")
+                    ->orWhere('lseo', 'LIKE', "%{$query}%");
+            })
             ->get();
         $formattedVideos = $videos->map(function ($item) {
             return ['type' => 'video', 'data' => $item];

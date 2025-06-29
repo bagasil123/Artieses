@@ -13,6 +13,12 @@
   @include('partses.baries')
 </head>
 <body class="dark-mode">
+  <div id="delete-confirm-card" class="card-confirm hidden">
+    <p>Yakin ingin menghapus akun? Akun anda akan dihapus permanent dalam waktu 30 hari, dan dapat dikembalikan selama belum menyentuh waktu permanent.</p>
+    <button id="goto-captcha" class="btn-confirm">Ya, Lanjut ke Verifikasi</button>
+    <button type="button" class="btn-cancel" id="cancel-delete">Batal</button>
+  </div>
+  @include('captchaes.captchaes')
   @if(session('alert'))
     <div class="feedback error">
     </div>
@@ -107,6 +113,66 @@
         });
     });
   </script><!-- video autoplay -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const deleteBtns = document.querySelectorAll('[id^="delete-content-"]');
+        deleteBtns.forEach(btn => {
+            btn.addEventListener('click', function () {
+                const idAttr = btn.id;
+                const storyId = idAttr.replace('delete-content-', '');
+                if (!storyId) {
+                    return;
+                }
+                fetch('/delete-konten', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    },
+                    body: JSON.stringify({ artiestoriesid: storyId })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    } else if (data.requireCaptcha) {
+                        const captchaFormes = document.getElementById('captcha-form');
+                        captchaFormes.style.zIndex = '10000';
+                        captchaFormes.classList.remove('hidden');
+                    } else {
+                    }
+                })
+            });
+        });
+    });
+  </script><!-- delete konten(first) -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const runDelete = "{{ session('runDelete') }}";
+        const storyId = "{{ session('artiestoriesid') }}";
+
+        if (runDelete && storyId) {
+            console.log('y');
+            fetch('/delete-konten', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                },
+                body: JSON.stringify({ artiestoriesid: storyId })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                }
+            });
+        }
+    });
+  </script><!-- tangkap delete(last) -->
+  @include('appes.artiestories.js.commentarist0')<!-- give reacted artietories(front) -->
+  @include('appes.artiestories.js.commentarist01')<!-- give reacted artietories(back) -->
   @include('appes.artiestories.js.commentarist')<!-- buka content artiestories -->
   @include('appes.artiestories.js.cnoscroll')<!-- noscroll open comment -->
   @include('appes.artiestories.js.commentarist001')<!-- open session artiestories -->

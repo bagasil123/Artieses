@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('password');
             $table->text('improfil')->nullable();
             $table->timestamp('editusername')->nullable();
+            $table->timestamp('deleteaccount')->nullable();
             $table->timestamps();
         });
     }

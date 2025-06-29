@@ -2,18 +2,31 @@
 namespace App\Http\Controllers\App\profil;
 
 use App\Http\Controllers\Controller;
+use App\Models\Artiekeles;
+use App\Models\Artiestories;
+use App\Models\Artievides;
 use App\Models\Users;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 class profilcontroller extends Controller
 {
     public function show(Request $request, $username)
-    {
-        $reqplat = $request->query('GetContent');
+    {    
+        $reqplat = $request->query('GetContent') ?? session('artiestoriesid');
         $user = Users::where('username', $username)->firstOrFail();
-        $videscontent = $user->videos()->orderByDesc('created_at')->get();
-        $storiescontent = $user->stories()->orderByDesc('created_at')->get();
-        $articlescontent = $user->artiekeles()->orderByDesc('created_at')->get();
+        $videscontent = Artievides::where('userid', $user->userid)
+                        ->whereNull('deltime')
+                        ->orderByDesc('created_at')
+                        ->get();
+        $storiescontent = Artiestories::where('userid', $user->userid)
+                        ->whereNull('deltime')
+                        ->orderByDesc('created_at')
+                        ->get();
+        $articlescontent = Artiekeles::where('userid', $user->userid)
+                        ->whereNull('deltime')
+                        ->orderByDesc('created_at')
+                        ->get();
         $subscriber = $user->subscriber()->latest()->get();
         $subscribing = $user->subscribing()->latest()->get();
         return view('appes.Artieprofil', [
@@ -24,32 +37,34 @@ class profilcontroller extends Controller
     }
     public function updateUsername(Request $request, $username)
     {
-        $request->validate([
-            'username' => 'required|string|alpha_dash|unique:users,username'
-        ]);
-
         $user = Users::where('username', $username)->firstOrFail();
-
+        $request->validate([
+            'username' => 'required|string|max:255'
+        ]);
         $lastUpdated = $user->editusername;
+        if (!$request->username || strlen($request->username) < 3) {
+            return response()->json(['success' => false, 'message' => 'Username tidak valid.']);
+        }
         if ($lastUpdated && now()->diffInDays($lastUpdated) < 7) {
             return response()->json([
                 'success' => false,
                 'message' => 'Username hanya bisa diubah setiap 7 hari.'
             ]);
         }
-
         if (Users::where('username', $request->username)->exists()) {
             return response()->json([
                 'success' => false,
                 'message' => 'Username sudah digunakan.'
             ]);
         }
-
         $user->username = $request->username;
         $user->editusername = now();
         $user->save();
         session(['username' => $request->username]);
-        return response()->json(['success' => true]);
+        return response()->json([
+            'success' => true,
+            'redirect' => route('profiles.show', ['username' => $request->username])
+        ]);
     }
     public function updatenameuse(Request $request, $username)
     {
@@ -71,6 +86,24 @@ class profilcontroller extends Controller
         $user->bio = $request->bio;
         $user->save();
         session(['bio' => $request->bio]);
+        return response()->json(['success' => true]);
+    }
+    public function updatefoto(Request $request, $username)
+    {
+        $request->validate([
+            'foto' => 'required|mimes:jpeg,jpg,png,gif,webp'
+        ]);
+        $user = Users::where('username', $username)->firstOrFail();
+        $file = $request->file('foto');
+        $filename = uniqid() . '.' . $file->getClientOriginalExtension();
+        $destination = public_path('users/' .$username . '/profil');
+        if (!File::exists($destination)) {
+            File::makeDirectory($destination, 0755, true);
+        }
+        $file->move($destination, $filename);
+        $user->improfil = $filename;
+        $user->save();
+        session(['improfil' => $filename]);
         return response()->json(['success' => true]);
     }
 }

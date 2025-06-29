@@ -75,7 +75,6 @@ class artiestoriesreact extends Controller
             ]);
             $message = 'Reaksi berhasil ditambahkan';
         }
-
         return response()->json([
             'logged_in' => true,
             'success' => true,
@@ -98,7 +97,6 @@ class artiestoriesreact extends Controller
             'reaksi' => 'required|string',
             'balcomstoriesid' => 'required|integer|exists:balcomstories,balcomstoriesid',
         ]);
-
         $existingReaction = Rcm2Story::where('userid', session('userid'))->where('balcomstoriesid', $validated['balcomstoriesid'])->first();
         if ($existingReaction) {
             $existingReaction->reaksi = $validated['reaksi'];

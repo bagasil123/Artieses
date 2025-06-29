@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DeleteKonten;
 use App\Http\Controllers\Auth\forgetesR1;
 use App\Http\Controllers\Auth\forgetesR2;
 use App\Http\Controllers\Auth\loges;
@@ -62,6 +63,14 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
         session()->flash('form', $request->input('form'));
         return response()->json(['status' => 'ok']);
     })->name('set.alert.session');
+    Route::post('/set-session-delete', function () {
+        session(['delete' => true]);
+        return response()->json(['success' => true]);
+    });
+##
+
+## DELETE KONTEN ##
+    Route::post('/delete-konten', [DeleteKonten::class, 'delete'])->name('konten.delete');
 ##
 
 # AUTHENTICATION #
@@ -114,10 +123,11 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
         ], true, null, true, true);
     })->where('filename', '.*\.(mp4|webm|ogg|jpg|jpeg|png|svg|gif)$');
     Route::get('/profiles/{username}', [profilcontroller::class, 'show'])->name('profiles.show');
-    Route::get('/profiles/{username}/Artiestories', [ProfilController::class, 'show']);
-    Route::post('/update-username/{username}', [ProfilController::class, 'updateUsername'])->name('username.update');
+    Route::get('/profiles/{username}/Artiestories', [ProfilController::class, 'show'])->name('profiles.show.withcontent');
+    Route::post('/updateusername/{username}', [ProfilController::class, 'updateUsername']);
     Route::post('/updatenameuse/{username}', [ProfilController::class, 'updatenameuse'])->name('nameuse.update');
     Route::post('/updatebio/{username}', [ProfilController::class, 'updateBio'])->name('bio.update');
+    Route::post('/updatefoto/{username}', [ProfilController::class, 'updatefoto'])->name('foto.update');
 ##
 
 # ARTIEKELES #
@@ -133,81 +143,85 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
     });
     Route::get('/Artiestories', function (Request $request) {
         $reqplat = $request->query('GetContent');
-            if (!session('isLoggedIn')) {
-                    $videos = Artievides::with('usericonVides')
-                        ->withCount('likeVides')
-                        ->orderByDesc('like_vides_count')
-                        ->orderByDesc('created_at')
-                        ->get();
-                
-                    $stories = Artiestories::withCount('reactStories')
-                        ->orderByDesc('react_stories_count')
-                        ->with([
-                            'usericonStories',
-                            'ReactStories',
-                            'comments.replies',
-                            'comments.userComments',
-                            'comments.replies.userBalcom'
-                        ])
-                        ->latest()
-                        ->get();
-                
-                    $articles = Artiekeles::latest()->get();
-                
-                    $mergedFeed = [];
-                    $videoIndex = $storyIndex = $articleIndex = 0;
-                
-                    while ($videoIndex < $videos->count() || $storyIndex < $stories->count() || $articleIndex < $articles->count()) {
-                        for ($i = 0; $i < 6 && $videoIndex < $videos->count(); $i++) {
-                            $mergedFeed[] = ['type' => 'video', 'data' => $videos[$videoIndex++]];
-                        }
-                
-                        for ($i = 0; $i < 3 && $storyIndex < $stories->count(); $i++) {
-                            $mergedFeed[] = ['type' => 'story', 'data' => $stories[$storyIndex++]];
-                        }
-                
-                        for ($i = 0; $i < 3 && $articleIndex < $articles->count(); $i++) {
-                            $mergedFeed[] = ['type' => 'article', 'data' => $articles[$articleIndex++]];
-                        }
+        if (!session('isLoggedIn')) {
+                $videos = Artievides::whereNull('deltime')
+                    ->with('usericonVides')
+                    ->withCount('likeVides')
+                    ->orderByDesc('like_vides_count')
+                    ->orderByDesc('created_at')
+                    ->get();
+            
+                $stories = Artiestories::whereNull('deltime')
+                    ->withCount('reactStories')
+                    ->orderByDesc('react_stories_count')
+                    ->with([
+                        'usericonStories',
+                        'ReactStories',
+                        'comments.replies',
+                        'comments.userComments',
+                        'comments.replies.userBalcom'
+                    ])
+                    ->latest()
+                    ->get();
+            
+                $articles = Artiekeles::latest()->get();
+            
+                $mergedFeed = [];
+                $videoIndex = $storyIndex = $articleIndex = 0;
+            
+                while ($videoIndex < $videos->count() || $storyIndex < $stories->count() || $articleIndex < $articles->count()) {
+                    for ($i = 0; $i < 6 && $videoIndex < $videos->count(); $i++) {
+                        $mergedFeed[] = ['type' => 'video', 'data' => $videos[$videoIndex++]];
                     }
-            }
-            if (session('isLoggedIn')) {
-                    $videos = Artievides::with('usericonVides')
-                        ->withCount('likeVides')
-                        ->orderByDesc('like_vides_count')
-                        ->orderByDesc('created_at')
-                        ->get();
-                
-                    $stories = Artiestories::withCount('reactStories')
-                        ->orderByDesc('react_stories_count')
-                        ->with([
-                            'usericonStories',
-                            'ReactStories',
-                            'comments.replies',
-                            'comments.userComments',
-                            'comments.replies.userBalcom'
-                        ])
-                        ->latest()
-                        ->get();
-                    $articles = Artiekeles::latest()->get();
-                    $mergedFeed = [];
-                    $videoIndex = $storyIndex = $articleIndex = 0;
-                
-                    while ($videoIndex < $videos->count() || $storyIndex < $stories->count() || $articleIndex < $articles->count()) {
-                        for ($i = 0; $i < 6 && $videoIndex < $videos->count(); $i++) {
-                            $mergedFeed[] = ['type' => 'video', 'data' => $videos[$videoIndex++]];
-                        }
-                
-                        for ($i = 0; $i < 3 && $storyIndex < $stories->count(); $i++) {
-                            $mergedFeed[] = ['type' => 'story', 'data' => $stories[$storyIndex++]];
-                        }
-                
-                        for ($i = 0; $i < 3 && $articleIndex < $articles->count(); $i++) {
-                            $mergedFeed[] = ['type' => 'article', 'data' => $articles[$articleIndex++]];
-                        }
+            
+                    for ($i = 0; $i < 3 && $storyIndex < $stories->count(); $i++) {
+                        $mergedFeed[] = ['type' => 'story', 'data' => $stories[$storyIndex++]];
                     }
-            }
-            return view('appes.artieses', compact('mergedFeed', 'reqplat'))->with('open_commentarist', $reqplat);
+            
+                    for ($i = 0; $i < 3 && $articleIndex < $articles->count(); $i++) {
+                        $mergedFeed[] = ['type' => 'article', 'data' => $articles[$articleIndex++]];
+                    }
+                }
+        }
+        if (session('isLoggedIn')) {
+                $videos = Artievides::whereNull('deltime')
+                    ->with('usericonVides')
+                    ->withCount('likeVides')
+                    ->orderByDesc('like_vides_count')
+                    ->orderByDesc('created_at')
+                    ->get();
+            
+                $stories = Artiestories::whereNull('deltime')
+                    ->withCount('reactStories')
+                    ->orderByDesc('react_stories_count')
+                    ->with([
+                        'usericonStories',
+                        'ReactStories',
+                        'comments.replies',
+                        'comments.userComments',
+                        'comments.replies.userBalcom'
+                    ])
+                    ->latest()
+                    ->get();
+                $articles = Artiekeles::latest()->get();
+                $mergedFeed = [];
+                $videoIndex = $storyIndex = $articleIndex = 0;
+            
+                while ($videoIndex < $videos->count() || $storyIndex < $stories->count() || $articleIndex < $articles->count()) {
+                    for ($i = 0; $i < 6 && $videoIndex < $videos->count(); $i++) {
+                        $mergedFeed[] = ['type' => 'video', 'data' => $videos[$videoIndex++]];
+                    }
+            
+                    for ($i = 0; $i < 3 && $storyIndex < $stories->count(); $i++) {
+                        $mergedFeed[] = ['type' => 'story', 'data' => $stories[$storyIndex++]];
+                    }
+            
+                    for ($i = 0; $i < 3 && $articleIndex < $articles->count(); $i++) {
+                        $mergedFeed[] = ['type' => 'article', 'data' => $articles[$articleIndex++]];
+                    }
+                }
+        }
+        return view('appes.artieses', compact('mergedFeed', 'reqplat'))->with('open_commentarist', $reqplat);
     })->name('artiestories');
     Route::get('/Artiestoriesvideo/{filename}', function ($filename, Request $request) {
         $reqplat = $request->query('GetContent');

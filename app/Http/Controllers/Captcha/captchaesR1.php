@@ -7,7 +7,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\File;
 use App\Mail\VerifikasiEmail;
+use App\Models\Artiekeles;
+use App\Models\Artiestories;
+use App\Models\Artievides;
 use Exception;
+use Illuminate\Support\Str;
 
 class captchaesR1 extends Controller
 {
@@ -41,7 +45,99 @@ class captchaesR1 extends Controller
             session()->put(['captcha_verified' => $randominputes]);
             try {
                 Mail::to($emails)->send(new VerifikasiEmail($randominputes));
-                return redirect()->route('authes')->with(['captchaes' => 'Masukkan kode verifikasi!', 'form' => 'captcha1']);
+                if(session('delete') ){
+                    return redirect()->route('artieses')->with(['captchaes' => 'Masukkan kode verifikasi!', 'form' => 'captcha1']);
+                } if (session('deleteistuser')) {
+                    $reqplat = session('artiestoriesid');
+                    session(['open_commentarist' => $reqplat]);
+                    $story = Artiestories::where('coderies', $reqplat)->first();
+                    $pemilik = $story?->usericonStories?->username;
+                    $referer = $request->headers->get('referer');
+                    if ($referer && Str::contains($referer, '/profiles/')) {
+                        return redirect()->route('profiles.show.withcontent', ['username' => $pemilik]);
+                    } else {
+                        if (!session('isLoggedIn')) {
+                                $videos = Artievides::whereNull('deltime')
+                                    ->with('usericonVides')
+                                    ->withCount('likeVides')
+                                    ->orderByDesc('like_vides_count')
+                                    ->orderByDesc('created_at')
+                                    ->get();
+                            
+                                $stories = Artiestories::whereNull('deltime')
+                                    ->withCount('reactStories')
+                                    ->orderByDesc('react_stories_count')
+                                    ->with([
+                                        'usericonStories',
+                                        'ReactStories',
+                                        'comments.replies',
+                                        'comments.userComments',
+                                        'comments.replies.userBalcom'
+                                    ])
+                                    ->latest()
+                                    ->get();
+                            
+                                $articles = Artiekeles::latest()->get();
+                            
+                                $mergedFeed = [];
+                                $videoIndex = $storyIndex = $articleIndex = 0;
+                            
+                                while ($videoIndex < $videos->count() || $storyIndex < $stories->count() || $articleIndex < $articles->count()) {
+                                    for ($i = 0; $i < 6 && $videoIndex < $videos->count(); $i++) {
+                                        $mergedFeed[] = ['type' => 'video', 'data' => $videos[$videoIndex++]];
+                                    }
+                            
+                                    for ($i = 0; $i < 3 && $storyIndex < $stories->count(); $i++) {
+                                        $mergedFeed[] = ['type' => 'story', 'data' => $stories[$storyIndex++]];
+                                    }
+                            
+                                    for ($i = 0; $i < 3 && $articleIndex < $articles->count(); $i++) {
+                                        $mergedFeed[] = ['type' => 'article', 'data' => $articles[$articleIndex++]];
+                                    }
+                                }
+                        }
+                        if (session('isLoggedIn')) {
+                                $videos = Artievides::whereNull('deltime')
+                                    ->with('usericonVides')
+                                    ->withCount('likeVides')
+                                    ->orderByDesc('like_vides_count')
+                                    ->orderByDesc('created_at')
+                                    ->get();
+                            
+                                $stories = Artiestories::whereNull('deltime')
+                                    ->withCount('reactStories')
+                                    ->orderByDesc('react_stories_count')
+                                    ->with([
+                                        'usericonStories',
+                                        'ReactStories',
+                                        'comments.replies',
+                                        'comments.userComments',
+                                        'comments.replies.userBalcom'
+                                    ])
+                                    ->latest()
+                                    ->get();
+                                $articles = Artiekeles::latest()->get();
+                                $mergedFeed = [];
+                                $videoIndex = $storyIndex = $articleIndex = 0;
+                                while ($videoIndex < $videos->count() || $storyIndex < $stories->count() || $articleIndex < $articles->count()) {
+                                    for ($i = 0; $i < 6 && $videoIndex < $videos->count(); $i++) {
+                                        $mergedFeed[] = ['type' => 'video', 'data' => $videos[$videoIndex++]];
+                                    }
+                            
+                                    for ($i = 0; $i < 3 && $storyIndex < $stories->count(); $i++) {
+                                        $mergedFeed[] = ['type' => 'story', 'data' => $stories[$storyIndex++]];
+                                    }
+                            
+                                    for ($i = 0; $i < 3 && $articleIndex < $articles->count(); $i++) {
+                                        $mergedFeed[] = ['type' => 'article', 'data' => $articles[$articleIndex++]];
+                                    }
+                                }
+                        }
+                        return redirect()->to('/Artiestories?GetContent=' . $reqplat)->with('open_commentarist', $reqplat)->with(['captchaes' => 'Masukkan kode verifikasi!', 'form' => 'captcha1']);
+                    }
+                } else {
+                    return redirect()->route('authes')->with(['captchaes' => 'Masukkan kode verifikasi!', 'form' => 'captcha1']);
+                }
             } catch (Exception $e) {
                 session()->forget('captcha_verified');
                 return redirect()->route('authes')->with(['alert' => 'Kesalahan teknis maafkan aku dan coba lagi!', 'form' => 'captcha']);

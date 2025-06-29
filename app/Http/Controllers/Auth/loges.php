@@ -18,15 +18,12 @@ class loges extends Controller
     {
         $username = $request->input('username');
         $password = $request->input('password');
-
         $user = Users::where('username', $username)
             ->orWhere('email', $username)
             ->first();
-
         if ($user && Hash::check($password, $user->password)) {
             if ($user->username === "Ini Admin") {
                 $requestIp = $request->ip();
-                \Log::info('IP Login Attempt: ' . $requestIp);
                 $adminIp = env('ADMIN_IP');
                 if ($requestIp !== $adminIp) {
                     return redirect()->route('authes')->with([
@@ -34,6 +31,12 @@ class loges extends Controller
                         'form' => 'login'
                     ]);
                 }
+            }
+            if ($user->deleteaccount) {
+                return redirect()->route('authes')->with([
+                    'alert' => 'Akun baru dihapus!',
+                    'form' => 'login'
+                ]);
             }
             session([
                 'isLoggedIn' => true,
@@ -43,7 +46,6 @@ class loges extends Controller
                 'email' => $user->email,
                 'improfil' => $user->improfil,
             ]);
-
             return redirect('/');
         }
 

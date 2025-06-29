@@ -1,6 +1,7 @@
-
 .dark-mode .commentarist-container .comment001,
+.commentarist-container .comment001,
 .dark-mode .commentarist-container .dispname,
+.commentarist-container .dispname,
 .dark-mode .commentarist-container .captionStoriess,
 .dark-mode .commentarist-container .captionStories,
 .dark-mode .commentarist-container .p-artiestories,
@@ -8,8 +9,9 @@
 .dark-mode .commentarist-container .balaskan002,
 .dark-mode .commentarist-container .urungkan001
 {
-    color: white;
+  color: white;
 }
+
 .commentarist {
   display: flex;
   flex-direction: row !important;
@@ -288,33 +290,45 @@
   border-radius: 12px;
 }
 .commentarist-container .srcard3 {
-  z-index:999;
-  margin-left: 0px;
-  margin-top: -35px !important;
-  padding-left: 9px;
-  display: flex;
-  position: absolute;
-  flex-direction: row !important;
-  height: fit-content;
-  width: 42.5%;
-  max-width: 590px;
+  display: inline-flex;
+  padding-left:10px;
+  border-radius: 10px;
   background-color: #888;
-  border-radius: 12px;
+  margin-top: -30px;
+  margin-left: -60px;
+  align-items: center;
+  flex-wrap: wrap;
+  width: 50.5%;
+}
+.commentarist-container .srcard3 img {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+.commentarist-container .srcard3 img:hover {
+  transform: scale(1.2);
 }
 .commentarist-container .srcard4 {
-  z-index:999;
-  margin-left: 0px;
-  margin-top:-20px;
-  margin-left:-15px;
-  padding-left: 12px;
-  display: flex;
-  position: absolute;
-  flex-direction: row !important;
-  height: fit-content;
-  width: 49.5%;
-  max-width: 590px;
+  display: inline-flex;
+  padding-left:10px;
+  border-radius: 10px;
   background-color: #888;
-  border-radius: 12px;
+  margin-top: -20px;
+  margin-left: -60px;
+  align-items: center;
+  flex-wrap: wrap;
+  width: 60%;
+  height: 40px;
+}
+.commentarist-container .srcard4 img {
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+.commentarist-container .srcard4 img:hover {
+  transform: scale(1.2);
 }
 .commentarist-container .filepicker1-hidden {
   opacity: 0;
@@ -352,12 +366,11 @@
   padding-top: 30px;
   border-radius: 12px;
   padding-left: 20px;
+  background-color: #777;
   padding-right: 20px;
   position: relative;
+  color: #fff;
   top: -18px;
-}
-.dark-mode .commentarist-container .dispcard {
-  background-color: #777;
 }
 .commentarist-container .dispname {
   position: relative;
@@ -394,10 +407,10 @@
 }
 .commentarist-container .balaskan001 {
   display: flex;
+  position: relative;
   align-items: center;
   gap: 12px;
   font-size: 17.5px;
-  margin-top: 4px;
 }
 .commentarist-container .urungkan001 {
   display: flex;

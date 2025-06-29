@@ -23,7 +23,7 @@
     <a href="javascript:void(0);" id="profile-icon">
     @if(session('isLoggedIn'))
         @php
-            $path = implode('/', [session('username'), 'profil', session('improfil')]);
+            $path = session('improfil');
             $ext = pathinfo($path, PATHINFO_EXTENSION);
         @endphp
         @if(in_array($ext, ['gif', 'png', 'jpg', 'jpeg', 'webp']))
@@ -39,7 +39,7 @@
                     <button class="button-group" onclick="window.location.href='{{ route('profiles.show', ['username' => session('username')]) }}'">
                         <span>{{ session('username') }}</span>
                         @php
-                            $path = implode('/', [session('username'), 'profil', session('improfil')]);
+                            $path = session('improfil');
                             $ext = pathinfo($path, PATHINFO_EXTENSION);
                         @endphp
 
@@ -118,11 +118,9 @@
                             <span>Hapus Konten</span>
                         </button>
                     </a>
-                    <a href="{{ url('/hapus-akun') }}" onclick="return confirm('Yakin ingin menghapus akun?');">
-                        <button class="nav-item">
-                            <span>Hapus Akun</span>
-                        </button>
-                    </a>
+                    <button class="nav-item" id="show-delete-confirm">
+                        <span>Hapus Akun</span>
+                    </button>
                  </div>
             @else
             @endif
@@ -144,6 +142,42 @@
         </nav>
     @endif
 </body>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const showBtn = document.getElementById('show-delete-confirm');
+    const confirmCard = document.getElementById('delete-confirm-card');
+    const cancelBtn = document.getElementById('cancel-delete');
+    const gotoCaptcha = document.getElementById('goto-captcha');
+    const captchaForm = document.getElementById('captcha-form');
+    showBtn?.addEventListener('click', () => {
+    fetch('/set-session-delete', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+        },
+        body: JSON.stringify({})
+    });
+        confirmCard.classList.remove('hidden');
+    });
+    cancelBtn?.addEventListener('click', () => {
+        confirmCard.classList.add('hidden');
+    });
+    gotoCaptcha?.addEventListener('click', () => {
+        confirmCard.classList.add('hidden');
+        captchaForm.classList.remove('hidden');
+    });
+
+    const body = document.querySelector('body');
+    const showForm = body.dataset.showForm;
+    if (showForm === 'captcha') {
+        captchaForm.classList.remove('hidden');
+    } else if (showForm === 'captcha1') {
+        document.getElementById('captcha-form1').classList.remove('hidden');
+    }
+  });
+</script><!-- delete account -->
 <script src="{{ asset('js/appes/artieses.js') }}"></script>
 <script src="{{ asset('js/partses/topbares.js') }}"></script>
 <script src="{{ asset('js/partses/sidebares.js') }}"></script>
